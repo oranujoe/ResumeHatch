@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, FileText, ChartBar } from 'lucide-react';
 const steps = [{
@@ -30,7 +31,10 @@ const HowItWorksSection = () => {
         </div>
         
         <div className="grid md:grid-cols-3 gap-8 relative">
-          {steps.map((step, index) => <div key={step.number} className="bg-white rounded-xl p-8 shadow-md hover:shadow-lg transition-shadow border border-gray-100">
+          {steps.map((step, index) => <div 
+              key={step.number} 
+              className={`bg-white rounded-xl p-8 shadow-md hover:shadow-lg transition-shadow border border-gray-100 ${index === 1 ? 'mt-8 md:mt-12' : ''}`}
+            >
               <div className="relative mb-6">
                 <div className={`w-16 h-16 rounded-full flex items-center justify-center ${index === 0 ? "bg-blue-100" : index === 1 ? "bg-orange-100" : "bg-blue-100"}`}>
                   <step.icon className={`w-6 h-6 ${index === 0 ? "text-blue-500" : index === 1 ? "text-orange-500" : "text-blue-500"}`} />
