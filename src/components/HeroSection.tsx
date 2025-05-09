@@ -12,8 +12,7 @@ const HeroSection = () => {
           <div className="w-full lg:w-1/2 space-y-6 mb-10 lg:mb-0 pr-0 lg:pr-10">
             <div className="uppercase text-sm font-semibold text-gray-500 tracking-wider">Your personal career assistant</div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-              Hatch résumés that land interviews—
-              <span className="text-brand-blue">automatically</span>.
+              Get Your Dream Job with <span className="text-brand-blue">AI-Powered</span> Applications
             </h1>
             <p className="text-xl text-gray-600 leading-relaxed max-w-xl">
               Paste any job link, let our AI craft a perfectly tailored résumé and cover letter, 
