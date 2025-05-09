@@ -54,7 +54,7 @@ const HeroSection = () => {
           </div>
           
           {/* Apply negative margin top only on desktop screens */}
-          <div className={`w-full lg:w-1/2 relative ${!isMobile ? 'lg:-mt-16' : ''}`}>
+          <div className={`w-full lg:w-1/2 relative ${!isMobile ? 'lg:-mt-24' : ''}`}>
             <div className="bg-white rounded-lg shadow-xl p-4 transform rotate-1 relative z-10">
               <div className="bg-blue-50 rounded-lg p-2">
                 <div className="bg-white rounded-lg shadow-sm p-4">
