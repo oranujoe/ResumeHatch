@@ -1,9 +1,7 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileText, Key, BarChart2, Bell, Shield } from "lucide-react";
-
 const features = [{
   icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -35,7 +33,6 @@ const features = [{
   title: "Quick Apply",
   description: "Apply to multiple jobs with a single click using your tailored résumés and cover letters."
 }];
-
 const FeaturesSection = () => {
   return <section id="features" className="py-16 md:py-24 px-4 bg-gray-50">
       <div className="container mx-auto">
@@ -46,15 +43,7 @@ const FeaturesSection = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {features.map((feature, index) => (
-            <div key={index} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-              <div className="text-brand-blue mb-4">{feature.icon}</div>
-              <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-gray-600">{feature.description}</p>
-            </div>
-          ))}
-        </div>
+        
         
         <div className="max-w-4xl mx-auto">
           <Tabs defaultValue="resume" className="w-full">
@@ -550,5 +539,4 @@ const FeaturesSection = () => {
       </div>
     </section>;
 };
-
 export default FeaturesSection;
