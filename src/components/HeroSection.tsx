@@ -2,10 +2,12 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import WaitlistDialog from './WaitlistDialog';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const HeroSection = () => {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
   const [isYellowShapeActive, setIsYellowShapeActive] = useState(false);
+  const isMobile = useIsMobile();
 
   const handleYellowShapeClick = () => {
     setIsYellowShapeActive(!isYellowShapeActive);
@@ -51,8 +53,8 @@ const HeroSection = () => {
             </div>
           </div>
           
-          {/* Moved the div higher by adding -mt-8 class */}
-          <div className="w-full lg:w-1/2 relative -mt-8">
+          {/* Apply negative margin top only on desktop screens */}
+          <div className={`w-full lg:w-1/2 relative ${!isMobile ? 'lg:-mt-16' : ''}`}>
             <div className="bg-white rounded-lg shadow-xl p-4 transform rotate-1 relative z-10">
               <div className="bg-blue-50 rounded-lg p-2">
                 <div className="bg-white rounded-lg shadow-sm p-4">
