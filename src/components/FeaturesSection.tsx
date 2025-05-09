@@ -1,7 +1,9 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { FileText, Key, BarChart2, Bell, Shield } from "lucide-react";
+
 const features = [{
   icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -36,15 +38,17 @@ const features = [{
 const FeaturesSection = () => {
   return <section id="features" className="py-16 md:py-24 px-4 bg-gray-50">
       <div className="container mx-auto">
+        <div className="flex justify-center mb-4">
+          <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-200 px-4 py-2 text-base font-medium rounded-full">
+            Powerful Features
+          </Badge>
+        </div>
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Everything you need to land that job</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Our comprehensive platform handles every step of the job application process, from customizing your résumé to tracking your applications.
           </p>
         </div>
-        
-        
-        
         <div className="max-w-4xl mx-auto">
           <Tabs defaultValue="resume" className="w-full">
             <TabsList className="w-full flex flex-wrap justify-between mb-10 bg-transparent p-0 space-y-2 md:space-y-0">
@@ -407,7 +411,7 @@ const FeaturesSection = () => {
                       <div className="flex space-x-2">
                         <div className="h-8 w-8 bg-gray-100 rounded-md flex items-center justify-center text-amber-600">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6z" />
+                            <path d="M8 9a3 3 0 100-6 3 3 0 000 6zm8-2v2H7V7a3 3 0 016 0z" />
                           </svg>
                         </div>
                         <div className="h-8 w-8 bg-gray-100 rounded-md flex items-center justify-center text-amber-600">
@@ -486,7 +490,7 @@ const FeaturesSection = () => {
                       <div className="h-24 w-24 bg-red-100 rounded-full flex items-center justify-center">
                         <div className="h-12 w-12 bg-red-500 rounded-md flex items-center justify-center">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                            <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2h8a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                           </svg>
                         </div>
                       </div>
