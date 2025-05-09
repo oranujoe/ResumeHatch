@@ -1,60 +1,42 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileText, Key, BarChart2, Bell, Shield } from "lucide-react";
-
 const TemplatesSection = () => {
-  return (
-    <section className="py-16 md:py-24 px-4" id="templates">
+  return <section className="py-16 md:py-24 px-4" id="templates">
       <div className="container mx-auto">
         <div className="max-w-4xl mx-auto">
           <Tabs defaultValue="resume" className="w-full">
             <TabsList className="w-full flex flex-wrap justify-between mb-10 bg-transparent p-0 space-y-2 md:space-y-0">
-              <TabsTrigger 
-                value="resume" 
-                className="flex items-center gap-2 data-[state=active]:bg-brand-blue/10 data-[state=active]:text-brand-blue rounded-lg px-4 py-3 w-full md:w-auto"
-              >
+              <TabsTrigger value="resume" className="flex items-center gap-2 data-[state=active]:bg-brand-blue/10 data-[state=active]:text-brand-blue rounded-lg px-4 py-3 w-full md:w-auto">
                 <div className="bg-green-100 p-2 rounded-md">
                   <FileText size={20} className="text-green-600" />
                 </div>
                 <span>Resume</span>
               </TabsTrigger>
               
-              <TabsTrigger 
-                value="ats" 
-                className="flex items-center gap-2 data-[state=active]:bg-brand-blue/10 data-[state=active]:text-brand-blue rounded-lg px-4 py-3 w-full md:w-auto"
-              >
+              <TabsTrigger value="ats" className="flex items-center gap-2 data-[state=active]:bg-brand-blue/10 data-[state=active]:text-brand-blue rounded-lg px-4 py-3 w-full md:w-auto">
                 <div className="bg-purple-100 p-2 rounded-md">
                   <Key size={20} className="text-purple-600" />
                 </div>
                 <span>ATS-optimization</span>
               </TabsTrigger>
               
-              <TabsTrigger 
-                value="dashboard" 
-                className="flex items-center gap-2 data-[state=active]:bg-brand-blue/10 data-[state=active]:text-brand-blue rounded-lg px-4 py-3 w-full md:w-auto"
-              >
+              <TabsTrigger value="dashboard" className="flex items-center gap-2 data-[state=active]:bg-brand-blue/10 data-[state=active]:text-brand-blue rounded-lg px-4 py-3 w-full md:w-auto">
                 <div className="bg-blue-100 p-2 rounded-md">
                   <BarChart2 size={20} className="text-blue-600" />
                 </div>
                 <span>Dashboard</span>
               </TabsTrigger>
               
-              <TabsTrigger 
-                value="smart" 
-                className="flex items-center gap-2 data-[state=active]:bg-brand-blue/10 data-[state=active]:text-brand-blue rounded-lg px-4 py-3 w-full md:w-auto"
-              >
+              <TabsTrigger value="smart" className="flex items-center gap-2 data-[state=active]:bg-brand-blue/10 data-[state=active]:text-brand-blue rounded-lg px-4 py-3 w-full md:w-auto">
                 <div className="bg-amber-100 p-2 rounded-md">
                   <Bell size={20} className="text-amber-600" />
                 </div>
                 <span>Smart</span>
               </TabsTrigger>
               
-              <TabsTrigger 
-                value="secure" 
-                className="flex items-center gap-2 data-[state=active]:bg-brand-blue/10 data-[state=active]:text-brand-blue rounded-lg px-4 py-3 w-full md:w-auto"
-              >
+              <TabsTrigger value="secure" className="flex items-center gap-2 data-[state=active]:bg-brand-blue/10 data-[state=active]:text-brand-blue rounded-lg px-4 py-3 w-full md:w-auto">
                 <div className="bg-red-100 p-2 rounded-md">
                   <Shield size={20} className="text-red-600" />
                 </div>
@@ -515,8 +497,6 @@ const TemplatesSection = () => {
           </Tabs>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default TemplatesSection;
