@@ -15,10 +15,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
+  wants_updates: z.boolean().default(false),
 });
 
 type WaitlistFormValues = z.infer<typeof formSchema>;
@@ -37,17 +40,29 @@ const WaitlistDialog = ({ open, onOpenChange }: WaitlistDialogProps) => {
     defaultValues: {
       name: "",
       email: "",
+      wants_updates: false,
     },
   });
 
   const onSubmit = async (data: WaitlistFormValues) => {
     setIsSubmitting(true);
     try {
-      // In a real application, this would send data to your backend
-      console.log("Waitlist submission:", data);
+      // Insert data into Supabase waitlist table
+      const { error } = await supabase
+        .from('waitlist')
+        .insert([
+          { 
+            name: data.name,
+            email: data.email,
+            wants_updates: data.wants_updates,
+            status: 'pending'
+          }
+        ]);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (error) {
+        console.error("Supabase error:", error);
+        throw new Error(error.message);
+      }
       
       // Success message
       toast({
@@ -61,6 +76,7 @@ const WaitlistDialog = ({ open, onOpenChange }: WaitlistDialogProps) => {
       // Reset the form
       form.reset();
     } catch (error) {
+      console.error("Error submitting waitlist form:", error);
       toast({
         title: "Something went wrong",
         description: "Please try again later.",
@@ -107,6 +123,29 @@ const WaitlistDialog = ({ open, onOpenChange }: WaitlistDialogProps) => {
                     <Input placeholder="Enter your email" type="email" {...field} />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="wants_updates"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      Keep me updated about ResumeHatch
+                    </FormLabel>
+                    <FormDescription className="text-sm text-muted-foreground">
+                      Receive occasional updates about new features and launches.
+                    </FormDescription>
+                  </div>
                 </FormItem>
               )}
             />
