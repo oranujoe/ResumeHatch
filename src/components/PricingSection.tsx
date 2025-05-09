@@ -3,9 +3,11 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Calendar } from "lucide-react";
+import WaitlistDialog from './WaitlistDialog';
 
 const PricingSection = () => {
   const [isAnnual, setIsAnnual] = useState(false);
+  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
 
   const plans = [
     {
@@ -20,7 +22,7 @@ const PricingSection = () => {
         "Basic résumé templates",
         "Email support",
       ],
-      buttonText: "Get Started",
+      buttonText: "Join the Waitlist",
       popular: false,
     },
     {
@@ -37,7 +39,7 @@ const PricingSection = () => {
         "Priority email support",
         "Interview preparation tips",
       ],
-      buttonText: "Get Started",
+      buttonText: "Join the Waitlist",
       popular: true,
     },
     {
@@ -131,6 +133,7 @@ const PricingSection = () => {
               <div className="text-center">
                 <Button 
                   className={`w-full ${plan.popular ? 'bg-brand-blue hover:bg-blue-700 text-white' : 'bg-gray-50 hover:bg-gray-100 text-gray-800 border border-gray-200'}`}
+                  onClick={plan.buttonText === "Contact Sales" ? undefined : () => setIsWaitlistOpen(true)}
                 >
                   {plan.buttonText}
                 </Button>
@@ -139,6 +142,11 @@ const PricingSection = () => {
           ))}
         </div>
       </div>
+
+      <WaitlistDialog 
+        open={isWaitlistOpen}
+        onOpenChange={setIsWaitlistOpen}
+      />
     </section>
   );
 };

@@ -1,8 +1,11 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
+import WaitlistDialog from './WaitlistDialog';
 
 const Header = () => {
+  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
+
   return (
     <header className="py-4 px-4 sm:px-6 lg:px-8 w-full border-b">
       <div className="container mx-auto flex items-center justify-between">
@@ -16,10 +19,20 @@ const Header = () => {
           <a href="#faq" className="text-gray-600 hover:text-brand-blue transition-colors">FAQ</a>
         </nav>
         <div className="flex items-center space-x-3">
-          <Button variant="outline" className="hidden sm:inline-flex">Log in</Button>
-          <Button className="bg-brand-blue hover:bg-blue-700 text-white">Sign Up Free</Button>
+          <Button variant="outline" className="hidden sm:inline-flex" onClick={() => setIsWaitlistOpen(true)}>Log in</Button>
+          <Button 
+            className="bg-brand-blue hover:bg-blue-700 text-white"
+            onClick={() => setIsWaitlistOpen(true)}
+          >
+            Join the Waitlist
+          </Button>
         </div>
       </div>
+
+      <WaitlistDialog 
+        open={isWaitlistOpen}
+        onOpenChange={setIsWaitlistOpen}
+      />
     </header>
   );
 };

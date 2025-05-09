@@ -1,8 +1,10 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
+import WaitlistDialog from './WaitlistDialog';
 
 const HeroSection = () => {
+  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
+
   return (
     <section className="py-16 md:py-24 px-4 bg-gradient-to-b from-blue-50 to-white">
       <div className="container mx-auto">
@@ -18,8 +20,11 @@ const HeroSection = () => {
               then apply with a single click — all while tracking every application in your personal dashboard.
             </p>
             <div className="pt-4 space-x-4 flex flex-wrap gap-4">
-              <Button className="bg-brand-blue hover:bg-blue-700 text-white h-12 px-8 rounded-md text-lg">
-                Get Started Free
+              <Button 
+                className="bg-brand-blue hover:bg-blue-700 text-white h-12 px-8 rounded-md text-lg"
+                onClick={() => setIsWaitlistOpen(true)}
+              >
+                Join the Waitlist
               </Button>
               <Button variant="outline" className="h-12 px-8 rounded-md text-lg">
                 See How it Works
@@ -81,6 +86,11 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
+      
+      <WaitlistDialog 
+        open={isWaitlistOpen}
+        onOpenChange={setIsWaitlistOpen}
+      />
     </section>
   );
 };
