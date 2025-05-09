@@ -1,9 +1,15 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import WaitlistDialog from './WaitlistDialog';
 
 const HeroSection = () => {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
+  const [isYellowShapeActive, setIsYellowShapeActive] = useState(false);
+
+  const handleYellowShapeClick = () => {
+    setIsYellowShapeActive(!isYellowShapeActive);
+  };
 
   return (
     <section className="py-16 md:py-24 px-4 bg-gradient-to-b from-blue-50 to-white">
@@ -44,7 +50,9 @@ const HeroSection = () => {
               </div>
             </div>
           </div>
-          <div className="w-full lg:w-1/2 relative">
+          
+          {/* Moved the div higher by adding -mt-8 class */}
+          <div className="w-full lg:w-1/2 relative -mt-8">
             <div className="bg-white rounded-lg shadow-xl p-4 transform rotate-1 relative z-10">
               <div className="bg-blue-50 rounded-lg p-2">
                 <div className="bg-white rounded-lg shadow-sm p-4">
@@ -79,8 +87,17 @@ const HeroSection = () => {
                 </div>
               </div>
             </div>
-            <div className="absolute -bottom-6 -right-6 w-20 h-20 bg-brand-yellow rounded-full flex items-center justify-center">
-              <div className="text-white text-xl font-bold">AI</div>
+            
+            {/* Made the yellow shape interactive with hover and click effects */}
+            <div 
+              onClick={handleYellowShapeClick}
+              className={`absolute -bottom-6 -right-6 w-20 h-20 bg-brand-yellow rounded-full flex items-center justify-center 
+                cursor-pointer transition-all duration-300 hover:scale-110 
+                ${isYellowShapeActive ? 'animate-pulse bg-yellow-400 shadow-lg scale-110' : ''}`}
+            >
+              <div className={`text-white text-xl font-bold transition-all ${isYellowShapeActive ? 'scale-110' : ''}`}>
+                AI
+              </div>
             </div>
           </div>
         </div>
