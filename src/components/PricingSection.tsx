@@ -92,7 +92,7 @@ const PricingSection = () => {
             <div 
               key={index} 
               className={`
-                bg-white rounded-xl p-6 shadow-sm border transition-all hover:shadow-md relative
+                bg-white rounded-xl p-6 shadow-sm border transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 hover:border-brand-blue
                 ${pack.popular ? 'border-brand-blue' : 'border-gray-100'}
               `}
             >
@@ -127,7 +127,7 @@ const PricingSection = () => {
               
               <div className="text-center">
                 <Button 
-                  className={`w-full ${pack.popular ? 'bg-brand-blue hover:bg-blue-700 text-white' : 'bg-gray-50 hover:bg-gray-100 text-gray-800 border border-gray-200'}`}
+                  className={`w-full transition-colors duration-300 ${pack.popular ? 'bg-brand-blue hover:bg-blue-700 text-white' : 'bg-gray-50 hover:bg-gray-100 text-gray-800 border border-gray-200 hover:bg-brand-blue hover:text-white'}`}
                   onClick={pack.buttonText === "Contact Sales" ? undefined : () => setIsWaitlistOpen(true)}
                 >
                   {pack.buttonText}
