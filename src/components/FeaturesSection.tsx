@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Key, BarChart2, Bell, Shield } from "lucide-react";
-
 const features = [{
   icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -39,7 +38,7 @@ const FeaturesSection = () => {
   return <section id="features" className="py-16 md:py-24 px-4 bg-gray-50">
       <div className="container mx-auto">
         <div className="flex justify-center mb-4">
-          <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-200 px-4 py-2 text-base font-medium rounded-full">
+          <Badge className="inline-block rounded-full px-4 py-1 text-sm font-medium text-gray-700 mb-4 bg-white">
             Powerful Features
           </Badge>
         </div>
