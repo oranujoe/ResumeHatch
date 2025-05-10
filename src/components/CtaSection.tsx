@@ -22,7 +22,10 @@ const CtaSection = () => {
             <Wallet className="h-5 w-5" />
             Join Our Waitlist
           </Button>
-          <Button variant="outline" className="h-12 px-8 rounded-md text-lg border-white text-white hover:bg-white hover:text-brand-dark">
+          <Button 
+            variant="outline" 
+            className="h-12 px-8 rounded-md text-lg border-white text-black hover:bg-transparent"
+          >
             Schedule a Demo
           </Button>
         </div>
