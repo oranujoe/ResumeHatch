@@ -1,8 +1,8 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import WaitlistDialog from './WaitlistDialog';
 import { useIsMobile } from '@/hooks/use-mobile';
+import PricingBadge from './pricing/PricingBadge';
 
 const HeroSection = () => {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
@@ -18,7 +18,9 @@ const HeroSection = () => {
       <div className="container mx-auto">
         <div className="flex flex-col lg:flex-row items-center">
           <div className="w-full lg:w-1/2 space-y-6 mb-12 lg:mb-0 pr-0 lg:pr-12">
-            <div className="uppercase text-sm font-semibold text-gray-500 tracking-wider">Your personal career assistant</div>
+            <div className="mb-2">
+              <PricingBadge text="Launching Soon • Join the Waitlist" className="bg-blue-50 text-blue-700 font-medium" />
+            </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
               Get Your Dream Job with <span className="text-brand-blue">AI-Powered</span> Applications
             </h1>
