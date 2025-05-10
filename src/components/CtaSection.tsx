@@ -1,9 +1,12 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Wallet } from "lucide-react";
+import WaitlistDialog from './WaitlistDialog';
 
 const CtaSection = () => {
+  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
+
   return (
     <section className="py-16 bg-brand-dark text-white">
       <div className="container mx-auto px-4 text-center">
@@ -12,7 +15,10 @@ const CtaSection = () => {
           Join thousands of job seekers who are saving money with Resume Hatch's pay-as-you-go credit system.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Button className="bg-brand-blue hover:bg-blue-700 text-white h-12 px-8 rounded-md text-lg flex items-center gap-2">
+          <Button 
+            className="bg-brand-blue hover:bg-blue-700 text-white h-12 px-8 rounded-md text-lg flex items-center gap-2"
+            onClick={() => setIsWaitlistOpen(true)}
+          >
             <Wallet className="h-5 w-5" />
             Join Our Waitlist
           </Button>
@@ -21,6 +27,11 @@ const CtaSection = () => {
           </Button>
         </div>
       </div>
+      
+      <WaitlistDialog 
+        open={isWaitlistOpen}
+        onOpenChange={setIsWaitlistOpen}
+      />
     </section>
   );
 };
