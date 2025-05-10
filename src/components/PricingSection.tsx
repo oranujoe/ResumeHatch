@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -173,11 +174,9 @@ const PricingSection = () => {
           </Card>
         </div>
         
-        {/* Added text below the custom credit package */}
+        {/* Changed from badge to regular text with appropriate styling */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-block bg-gray-50 rounded-full px-4 py-1 text-sm font-medium text-gray-700 mb-4">
-            Pay Only For What You Use
-          </div>
+          <p className="text-gray-600 text-sm">Payment processors: Paystack, Stripe</p>
         </div>
         
       </div>
