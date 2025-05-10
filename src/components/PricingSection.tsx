@@ -1,11 +1,9 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { CreditCard, Zap, Sparkles, CheckCircle2 } from "lucide-react";
 import WaitlistDialog from './WaitlistDialog';
 import { Card, CardContent } from "@/components/ui/card";
-
 const PricingSection = () => {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
   const [creditCount, setCreditCount] = useState(45);
@@ -25,37 +23,32 @@ const PricingSection = () => {
       applications: credits // 100% of credits could be used for applications
     };
   };
-  
   const documentCounts = getDocumentCounts(creditCount);
-  
-  const creditPackages = [
-    {
-      name: "Starter",
-      credits: 25,
-      price: "₦15,000",
-      description: "Perfect for job seekers applying to a few positions",
-      features: ["Generate 5 tailored résumés", "Generate 3 cover letters", "Basic résumé templates", "Email support"],
-      buttonText: "Join the Waitlist",
-      popular: false
-    }, {
-      name: "Pro Value",
-      credits: 100,
-      price: "₦45,000",
-      description: "Best value for serious job seekers in active search mode",
-      features: ["Generate 25 tailored résumés", "Generate 15 cover letters", "All premium templates", "Application tracking dashboard", "Priority email support", "Interview preparation tips"],
-      buttonText: "Join the Waitlist",
-      popular: true
-    }, {
-      name: "Custom",
-      credits: "Flexible",
-      price: "You decide",
-      description: "Load any amount and pay only for what you use",
-      features: ["Flexible credit system", "No expiration on credits", "All premium features", "API access for teams", "Dedicated account manager", "Bulk processing available"],
-      buttonText: "Contact Sales",
-      popular: false
-    }
-  ];
-  
+  const creditPackages = [{
+    name: "Starter",
+    credits: 25,
+    price: "₦15,000",
+    description: "Perfect for job seekers applying to a few positions",
+    features: ["Generate 5 tailored résumés", "Generate 3 cover letters", "Basic résumé templates", "Email support"],
+    buttonText: "Join the Waitlist",
+    popular: false
+  }, {
+    name: "Pro Value",
+    credits: 100,
+    price: "₦45,000",
+    description: "Best value for serious job seekers in active search mode",
+    features: ["Generate 25 tailored résumés", "Generate 15 cover letters", "All premium templates", "Application tracking dashboard", "Priority email support", "Interview preparation tips"],
+    buttonText: "Join the Waitlist",
+    popular: true
+  }, {
+    name: "Custom",
+    credits: "Flexible",
+    price: "You decide",
+    description: "Load any amount and pay only for what you use",
+    features: ["Flexible credit system", "No expiration on credits", "All premium features", "API access for teams", "Dedicated account manager", "Bulk processing available"],
+    buttonText: "Contact Sales",
+    popular: false
+  }];
   return <section id="pricing" className="py-16 md:py-24 px-4">
       <div className="container mx-auto max-w-6xl">
         {/* Updated badge to match the styling of the "Simple 3-Step Process" badge */}
@@ -177,33 +170,10 @@ const PricingSection = () => {
           </Card>
         </div>
         
-        <div className="mt-16 text-center">
-          <div className="max-w-2xl mx-auto bg-blue-50 rounded-lg p-6">
-            <h3 className="text-xl font-bold mb-3">Credit System Explained</h3>
-            <p className="text-gray-600 mb-4">
-              Our credit system gives you complete control over your spending. 
-              Load your wallet once and use credits only when you need them:
-            </p>
-            <div className="grid md:grid-cols-3 gap-4 text-left">
-              <div className="bg-white p-4 rounded-lg shadow-sm">
-                <div className="font-semibold mb-1">1 Credit</div>
-                <div className="text-sm text-gray-600">Generate 1 tailored résumé</div>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm">
-                <div className="font-semibold mb-1">2 Credits</div>
-                <div className="text-sm text-gray-600">Generate 1 cover letter</div>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm">
-                <div className="font-semibold mb-1">3 Credits</div>
-                <div className="text-sm text-gray-600">Submit 1 application</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        
       </div>
 
       <WaitlistDialog open={isWaitlistOpen} onOpenChange={setIsWaitlistOpen} />
     </section>;
 };
-
 export default PricingSection;
