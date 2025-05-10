@@ -1,11 +1,30 @@
 
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
 import { CreditCard, Zap, Sparkles, CheckCircle2 } from "lucide-react";
 import WaitlistDialog from './WaitlistDialog';
+import { Card, CardContent } from "@/components/ui/card";
 
 const PricingSection = () => {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
+  const [creditCount, setCreditCount] = useState(45);
+
+  // Calculate price based on credits (200 Naira per credit)
+  const calculatePrice = (credits: number) => {
+    return (credits * 200).toLocaleString();
+  };
+
+  // Calculate document counts based on credits
+  const getDocumentCounts = (credits: number) => {
+    return {
+      resumes: Math.floor(credits * 0.2),      // 20% of credits for resumes
+      coverLetters: Math.floor(credits * 0.33), // 33% of credits for cover letters
+      applications: credits                    // 100% of credits could be used for applications
+    };
+  };
+
+  const documentCounts = getDocumentCounts(creditCount);
 
   const creditPackages = [
     {
@@ -85,6 +104,66 @@ const PricingSection = () => {
               <span className="text-sm text-green-800">Top up anytime</span>
             </div>
           </div>
+        </div>
+        
+        {/* Custom Credit Package Card */}
+        <div className="max-w-3xl mx-auto mb-16">
+          <Card className="border-brand-blue shadow-md">
+            <CardContent className="p-6 md:p-8">
+              <h3 className="text-2xl font-bold mb-2 text-center">Custom Credit Package</h3>
+              <p className="text-gray-600 text-center mb-8">Choose exactly how many credits you need</p>
+              
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-lg font-medium">Credits: {creditCount}</span>
+                <span className="text-xl font-bold text-brand-blue">₦{calculatePrice(creditCount)}</span>
+              </div>
+              
+              <div className="mb-8">
+                <Slider
+                  value={[creditCount]}
+                  min={10}
+                  max={200}
+                  step={5}
+                  className="my-4"
+                  onValueChange={(value) => setCreditCount(value[0])}
+                />
+              </div>
+              
+              <div className="grid grid-cols-3 gap-4 mb-8">
+                <div className="bg-blue-50 p-4 rounded-lg text-center">
+                  <div className="text-2xl font-bold text-blue-600">
+                    {documentCounts.resumes}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    Résumés
+                  </div>
+                </div>
+                <div className="bg-amber-50 p-4 rounded-lg text-center">
+                  <div className="text-2xl font-bold text-amber-600">
+                    {documentCounts.coverLetters}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    Cover Letters
+                  </div>
+                </div>
+                <div className="bg-sky-50 p-4 rounded-lg text-center">
+                  <div className="text-2xl font-bold text-sky-600">
+                    {documentCounts.applications}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    Applications
+                  </div>
+                </div>
+              </div>
+              
+              <Button 
+                className="w-full bg-brand-blue hover:bg-blue-700 text-white flex items-center justify-center text-lg py-6"
+                onClick={() => setIsWaitlistOpen(true)}
+              >
+                <CreditCard className="mr-2" /> Join waitlist
+              </Button>
+            </CardContent>
+          </Card>
         </div>
         
         <div className="grid md:grid-cols-3 gap-8">
