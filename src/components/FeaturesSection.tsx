@@ -1,41 +1,51 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Key, BarChart2, Bell, Shield } from "lucide-react";
-const features = [{
-  icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>,
-  title: "AI Matching",
-  description: "Our AI analyzes job descriptions and matches them with your skills and experience."
-}, {
-  icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-      </svg>,
-  title: "Templates",
-  description: "Choose from dozens of professional templates optimized for ATS systems."
-}, {
-  icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-      </svg>,
-  title: "Cover Letters",
-  description: "Generate personalized cover letters that complement your résumé and highlight key qualifications."
-}, {
-  icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-      </svg>,
-  title: "Analytics",
-  description: "Track application status, interview rates, and optimize your job search strategy."
-}, {
-  icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>,
-  title: "Quick Apply",
-  description: "Apply to multiple jobs with a single click using your tailored résumés and cover letters."
-}];
+
+const features = [
+  {
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>,
+    title: "AI Matching",
+    description: "Our AI analyzes job descriptions and matches them with your skills and experience."
+  }, 
+  {
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+        </svg>,
+    title: "Templates",
+    description: "Choose from dozens of professional templates optimized for ATS systems."
+  }, 
+  {
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>,
+    title: "Cover Letters",
+    description: "Generate personalized cover letters that complement your résumé and highlight key qualifications."
+  }, 
+  {
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>,
+    title: "Analytics",
+    description: "Track application status, interview rates, and optimize your job search strategy."
+  }, 
+  {
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>,
+    title: "Quick Apply",
+    description: "Apply to multiple jobs with a single click using your tailored résumés and cover letters."
+  }
+];
+
 const FeaturesSection = () => {
-  return <section id="features" className="py-16 md:py-24 px-4 bg-gray-50">
+  return (
+    <section id="features" className="py-16 md:py-24 px-4 bg-gray-50">
       <div className="container mx-auto">
         <div className="flex justify-center mb-4">
           <Badge className="inline-block rounded-full px-4 py-1 text-sm font-medium text-gray-700 mb-4 bg-white">
@@ -393,4 +403,149 @@ const FeaturesSection = () => {
                     <div className="flex items-center mb-6">
                       <div className="h-10 w-10 bg-amber-100 rounded-full flex items-center justify-center text-amber-600">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12h1m5-10v1m5-1v1m-9 9h1m8-1h1m-9-4l2 2m6-4l-2 2" />
+                        </svg>
+                      </div>
+                      <div className="ml-4">
+                        <p className="font-medium">Smart Suggestions</p>
+                        <p className="text-xs text-gray-500">AI-powered resume enhancement</p>
+                      </div>
+                    </div>
+                    <div className="space-y-4 mb-6">
+                      <div className="p-3 bg-amber-50 border border-amber-100 rounded-md">
+                        <div className="flex justify-between">
+                          <p className="text-sm font-medium">Recommended Skills</p>
+                          <span className="text-amber-600 text-xs">+3</span>
+                        </div>
+                        <ul className="mt-2 space-y-1">
+                          <li className="text-sm flex items-center">
+                            <div className="h-3 w-3 bg-amber-400 rounded-full mr-2"></div>
+                            Data Analysis
+                          </li>
+                          <li className="text-sm flex items-center">
+                            <div className="h-3 w-3 bg-amber-400 rounded-full mr-2"></div>
+                            Project Management
+                          </li>
+                          <li className="text-sm flex items-center">
+                            <div className="h-3 w-3 bg-amber-400 rounded-full mr-2"></div>
+                            Team Leadership
+                          </li>
+                        </ul>
+                      </div>
+                      <div className="p-3 bg-blue-50 border border-blue-100 rounded-md">
+                        <div className="flex justify-between">
+                          <p className="text-sm font-medium">Job Matches</p>
+                          <span className="text-blue-600 text-xs">12 new</span>
+                        </div>
+                        <div className="flex justify-between mt-2">
+                          <div className="h-4 w-24 bg-gray-200 rounded-md"></div>
+                          <div className="h-4 w-16 bg-gray-200 rounded-md"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="secure" className="animate-fade-in">
+              <div className="flex flex-col lg:flex-row items-center">
+                <div className="w-full lg:w-1/2 mb-10 lg:mb-0 pr-0 lg:pr-10">
+                  <h2 className="text-3xl md:text-4xl font-bold mb-6">Secure Platform</h2>
+                  <p className="text-gray-600 mb-8">
+                    Your data and privacy are our top priority with enterprise-grade security.
+                  </p>
+                  <ul className="space-y-4 mb-8">
+                    <li className="flex items-start">
+                      <div className="mr-3 text-brand-blue mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div>
+                        <strong className="font-medium">End-to-end encryption</strong> for all your resume and personal data
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="mr-3 text-brand-blue mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div>
+                        <strong className="font-medium">Data control</strong> with ability to export or delete your information
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="mr-3 text-brand-blue mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div>
+                        <strong className="font-medium">Privacy-first design</strong> with strict data handling policies
+                      </div>
+                    </li>
+                  </ul>
+                  <Button className="bg-brand-blue hover:bg-blue-700 text-white">
+                    View Security Details
+                  </Button>
+                </div>
+                <div className="w-full lg:w-1/2 relative">
+                  <div className="bg-white rounded-lg shadow-xl p-6 max-w-md mx-auto">
+                    <div className="flex justify-center mb-6">
+                      <div className="h-16 w-16 bg-red-100 rounded-full flex items-center justify-center">
+                        <Shield size={28} className="text-red-600" />
+                      </div>
+                    </div>
+                    <div className="text-center mb-6">
+                      <h3 className="text-xl font-bold mb-2">Your data is protected</h3>
+                      <p className="text-gray-500 text-sm">Enterprise-grade security for your professional information</p>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="flex items-center p-3 bg-gray-50 rounded-md">
+                        <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="font-medium text-sm">End-to-End Encryption</p>
+                          <p className="text-xs text-gray-500">AES-256 encryption standard</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center p-3 bg-gray-50 rounded-md">
+                        <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="font-medium text-sm">GDPR Compliant</p>
+                          <p className="text-xs text-gray-500">Full data rights implemented</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center p-3 bg-gray-50 rounded-md">
+                        <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 mr-3">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="font-medium text-sm">Data Controls</p>
+                          <p className="text-xs text-gray-500">Export or delete anytime</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default FeaturesSection;
