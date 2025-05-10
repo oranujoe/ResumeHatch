@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -45,18 +46,17 @@ const features = [
 const FeaturesSection = () => {
   return (
     <section id="features" className="py-16 md:py-24 px-4 bg-gray-50">
-      <div className="container mx-auto">
+      <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-4">
           <div className="inline-block bg-gray-50 rounded-full px-4 py-1 text-sm font-medium text-gray-700 mb-4">
             Powerful Features
           </div>
-        </div>
-        <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Everything you need to land that job</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto mb-16">
             Our comprehensive platform handles every step of the job application process, from customizing your résumé to tracking your applications.
           </p>
         </div>
+        
         <div className="max-w-4xl mx-auto">
           <Tabs defaultValue="resume" className="w-full">
             <TabsList className="w-full flex flex-wrap justify-between mb-10 bg-transparent p-0 space-y-2 md:space-y-0">
