@@ -1,11 +1,9 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { CreditCard, Zap, Sparkles, CheckCircle2 } from "lucide-react";
 import WaitlistDialog from './WaitlistDialog';
 import { Card, CardContent } from "@/components/ui/card";
-
 const PricingSection = () => {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
   const [creditCount, setCreditCount] = useState(45);
@@ -18,68 +16,43 @@ const PricingSection = () => {
   // Calculate document counts based on credits
   const getDocumentCounts = (credits: number) => {
     return {
-      resumes: Math.floor(credits * 0.2),      // 20% of credits for resumes
-      coverLetters: Math.floor(credits * 0.33), // 33% of credits for cover letters
-      applications: credits                    // 100% of credits could be used for applications
+      resumes: Math.floor(credits * 0.2),
+      // 20% of credits for resumes
+      coverLetters: Math.floor(credits * 0.33),
+      // 33% of credits for cover letters
+      applications: credits // 100% of credits could be used for applications
     };
   };
-
   const documentCounts = getDocumentCounts(creditCount);
-
-  const creditPackages = [
-    {
-      name: "Starter",
-      credits: 25,
-      price: "₦15,000",
-      description: "Perfect for job seekers applying to a few positions",
-      features: [
-        "Generate 5 tailored résumés",
-        "Generate 3 cover letters",
-        "Basic résumé templates",
-        "Email support",
-      ],
-      buttonText: "Join the Waitlist",
-      popular: false,
-    },
-    {
-      name: "Pro Value",
-      credits: 100,
-      price: "₦45,000",
-      description: "Best value for serious job seekers in active search mode",
-      features: [
-        "Generate 25 tailored résumés",
-        "Generate 15 cover letters",
-        "All premium templates",
-        "Application tracking dashboard",
-        "Priority email support",
-        "Interview preparation tips",
-      ],
-      buttonText: "Join the Waitlist",
-      popular: true,
-    },
-    {
-      name: "Custom",
-      credits: "Flexible",
-      price: "You decide",
-      description: "Load any amount and pay only for what you use",
-      features: [
-        "Flexible credit system",
-        "No expiration on credits",
-        "All premium features",
-        "API access for teams",
-        "Dedicated account manager",
-        "Bulk processing available",
-      ],
-      buttonText: "Contact Sales",
-      popular: false,
-    }
-  ];
-
-  return (
-    <section id="pricing" className="py-16 md:py-24 px-4">
+  const creditPackages = [{
+    name: "Starter",
+    credits: 25,
+    price: "₦15,000",
+    description: "Perfect for job seekers applying to a few positions",
+    features: ["Generate 5 tailored résumés", "Generate 3 cover letters", "Basic résumé templates", "Email support"],
+    buttonText: "Join the Waitlist",
+    popular: false
+  }, {
+    name: "Pro Value",
+    credits: 100,
+    price: "₦45,000",
+    description: "Best value for serious job seekers in active search mode",
+    features: ["Generate 25 tailored résumés", "Generate 15 cover letters", "All premium templates", "Application tracking dashboard", "Priority email support", "Interview preparation tips"],
+    buttonText: "Join the Waitlist",
+    popular: true
+  }, {
+    name: "Custom",
+    credits: "Flexible",
+    price: "You decide",
+    description: "Load any amount and pay only for what you use",
+    features: ["Flexible credit system", "No expiration on credits", "All premium features", "API access for teams", "Dedicated account manager", "Bulk processing available"],
+    buttonText: "Contact Sales",
+    popular: false
+  }];
+  return <section id="pricing" className="py-16 md:py-24 px-4">
       <div className="container mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Pay Only For What You Use</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Credit-Based Pricing</h2>
           <p className="text-gray-600 max-w-2xl mx-auto mb-8">
             No more wasted subscription fees! Load your wallet with credits and spend them only when you actually need documents generated or applications submitted.
           </p>
@@ -107,21 +80,15 @@ const PricingSection = () => {
         </div>
         
         <div className="grid md:grid-cols-3 gap-8">
-          {creditPackages.map((pack, index) => (
-            <div 
-              key={index} 
-              className={`
+          {creditPackages.map((pack, index) => <div key={index} className={`
                 bg-white rounded-xl p-6 shadow-sm border transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 hover:border-brand-blue
                 ${pack.popular ? 'border-brand-blue' : 'border-gray-100'}
-              `}
-            >
-              {pack.popular && (
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              `}>
+              {pack.popular && <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                   <span className="bg-brand-blue text-white text-xs font-semibold px-3 py-1 rounded-full">
                     Best Value
                   </span>
-                </div>
-              )}
+                </div>}
               <div className="text-center mb-6">
                 <h3 className="text-xl font-bold mb-2">{pack.name}</h3>
                 <div className="text-3xl font-bold">{pack.price}</div>
@@ -133,27 +100,21 @@ const PricingSection = () => {
               
               <div className="border-t border-b border-gray-100 py-6 mb-6">
                 <ul className="space-y-3">
-                  {pack.features.map((feature, fIndex) => (
-                    <li key={fIndex} className="flex items-start">
+                  {pack.features.map((feature, fIndex) => <li key={fIndex} className="flex items-start">
                       <div className="mr-3 text-brand-blue mt-1">
                         <CheckCircle2 className="h-5 w-5" />
                       </div>
                       <span>{feature}</span>
-                    </li>
-                  ))}
+                    </li>)}
                 </ul>
               </div>
               
               <div className="text-center">
-                <Button 
-                  className={`w-full transition-colors duration-300 ${pack.popular ? 'bg-brand-blue hover:bg-blue-700 text-white' : 'bg-gray-50 hover:bg-gray-100 text-gray-800 border border-gray-200 hover:bg-brand-blue hover:text-white'}`}
-                  onClick={pack.buttonText === "Contact Sales" ? undefined : () => setIsWaitlistOpen(true)}
-                >
+                <Button className={`w-full transition-colors duration-300 ${pack.popular ? 'bg-brand-blue hover:bg-blue-700 text-white' : 'bg-gray-50 hover:bg-gray-100 text-gray-800 border border-gray-200 hover:bg-brand-blue hover:text-white'}`} onClick={pack.buttonText === "Contact Sales" ? undefined : () => setIsWaitlistOpen(true)}>
                   {pack.buttonText}
                 </Button>
               </div>
-            </div>
-          ))}
+            </div>)}
         </div>
         
         {/* Custom Credit Package Card - Moved below the pricing tiers */}
@@ -169,14 +130,7 @@ const PricingSection = () => {
               </div>
               
               <div className="mb-8">
-                <Slider
-                  value={[creditCount]}
-                  min={10}
-                  max={200}
-                  step={5}
-                  className="my-4"
-                  onValueChange={(value) => setCreditCount(value[0])}
-                />
+                <Slider value={[creditCount]} min={10} max={200} step={5} className="my-4" onValueChange={value => setCreditCount(value[0])} />
               </div>
               
               <div className="grid grid-cols-3 gap-4 mb-8">
@@ -206,10 +160,7 @@ const PricingSection = () => {
                 </div>
               </div>
               
-              <Button 
-                className="w-full bg-brand-blue hover:bg-blue-700 text-white flex items-center justify-center text-lg py-6"
-                onClick={() => setIsWaitlistOpen(true)}
-              >
+              <Button className="w-full bg-brand-blue hover:bg-blue-700 text-white flex items-center justify-center text-lg py-6" onClick={() => setIsWaitlistOpen(true)}>
                 <CreditCard className="mr-2" /> Join waitlist
               </Button>
             </CardContent>
@@ -241,12 +192,7 @@ const PricingSection = () => {
         </div>
       </div>
 
-      <WaitlistDialog 
-        open={isWaitlistOpen}
-        onOpenChange={setIsWaitlistOpen}
-      />
-    </section>
-  );
+      <WaitlistDialog open={isWaitlistOpen} onOpenChange={setIsWaitlistOpen} />
+    </section>;
 };
-
 export default PricingSection;
