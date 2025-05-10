@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -47,11 +46,10 @@ const FeaturesSection = () => {
   return (
     <section id="features" className="py-16 md:py-24 px-4 bg-gray-50">
       <div className="container mx-auto">
-        <div className="flex justify-center mb-4">
-          {/* Removed hover effects from the badge by removing any hover: classes */}
-          <Badge className="inline-block rounded-full px-4 py-1 text-sm font-medium text-gray-700 mb-4 bg-white">
+        <div className="text-center mb-4">
+          <div className="inline-block bg-gray-50 rounded-full px-4 py-1 text-sm font-medium text-gray-700 mb-4">
             Powerful Features
-          </Badge>
+          </div>
         </div>
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Everything you need to land that job</h2>
