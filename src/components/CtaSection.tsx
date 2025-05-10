@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Wallet } from "lucide-react";
 import WaitlistDialog from './WaitlistDialog';
 
 const CtaSection = () => {
@@ -19,7 +18,6 @@ const CtaSection = () => {
             className="bg-brand-blue hover:bg-blue-700 text-white h-12 px-8 rounded-md text-lg flex items-center gap-2"
             onClick={() => setIsWaitlistOpen(true)}
           >
-            <Wallet className="h-5 w-5" />
             Join Our Waitlist
           </Button>
           <Button 
