@@ -85,9 +85,7 @@ const PricingSection = () => {
                 ${pack.popular ? 'border-brand-blue' : 'border-gray-100'}
               `}>
               {pack.popular && <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                  <span className="bg-brand-blue text-white text-xs font-semibold px-3 py-1 rounded-full">
-                    Best Value
-                  </span>
+                  
                 </div>}
               <div className="text-center mb-6">
                 <h3 className="text-xl font-bold mb-2">{pack.name}</h3>
