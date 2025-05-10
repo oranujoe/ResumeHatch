@@ -4,6 +4,7 @@ import { Slider } from "@/components/ui/slider";
 import { CreditCard, Zap, Sparkles, CheckCircle2 } from "lucide-react";
 import WaitlistDialog from './WaitlistDialog';
 import { Card, CardContent } from "@/components/ui/card";
+
 const PricingSection = () => {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
   const [creditCount, setCreditCount] = useState(45);
@@ -24,31 +25,33 @@ const PricingSection = () => {
     };
   };
   const documentCounts = getDocumentCounts(creditCount);
-  const creditPackages = [{
-    name: "Starter",
-    credits: 25,
-    price: "₦15,000",
-    description: "Perfect for job seekers applying to a few positions",
-    features: ["Generate 5 tailored résumés", "Generate 3 cover letters", "Basic résumé templates", "Email support"],
-    buttonText: "Join the Waitlist",
-    popular: false
-  }, {
-    name: "Pro Value",
-    credits: 100,
-    price: "₦45,000",
-    description: "Best value for serious job seekers in active search mode",
-    features: ["Generate 25 tailored résumés", "Generate 15 cover letters", "All premium templates", "Application tracking dashboard", "Priority email support", "Interview preparation tips"],
-    buttonText: "Join the Waitlist",
-    popular: true
-  }, {
-    name: "Custom",
-    credits: "Flexible",
-    price: "You decide",
-    description: "Load any amount and pay only for what you use",
-    features: ["Flexible credit system", "No expiration on credits", "All premium features", "API access for teams", "Dedicated account manager", "Bulk processing available"],
-    buttonText: "Contact Sales",
-    popular: false
-  }];
+  const creditPackages = [
+    {
+      name: "Starter",
+      credits: 25,
+      price: "₦15,000",
+      description: "Perfect for job seekers applying to a few positions",
+      features: ["Generate 5 tailored résumés", "Generate 3 cover letters", "Basic résumé templates", "Email support"],
+      buttonText: "Join the Waitlist",
+      popular: false
+    }, {
+      name: "Pro Value",
+      credits: 100,
+      price: "₦45,000",
+      description: "Best value for serious job seekers in active search mode",
+      features: ["Generate 25 tailored résumés", "Generate 15 cover letters", "All premium templates", "Application tracking dashboard", "Priority email support", "Interview preparation tips"],
+      buttonText: "Join the Waitlist",
+      popular: true
+    }, {
+      name: "Custom",
+      credits: "Flexible",
+      price: "You decide",
+      description: "Load any amount and pay only for what you use",
+      features: ["Flexible credit system", "No expiration on credits", "All premium features", "API access for teams", "Dedicated account manager", "Bulk processing available"],
+      buttonText: "Contact Sales",
+      popular: false
+    }
+  ];
   return <section id="pricing" className="py-16 md:py-24 px-4">
       <div className="container mx-auto max-w-6xl">
         {/* Updated badge to match the styling of the "Simple 3-Step Process" badge */}
@@ -170,6 +173,12 @@ const PricingSection = () => {
           </Card>
         </div>
         
+        {/* Added text below the custom credit package */}
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="inline-block bg-gray-50 rounded-full px-4 py-1 text-sm font-medium text-gray-700 mb-4">
+            Pay Only For What You Use
+          </div>
+        </div>
         
       </div>
 
