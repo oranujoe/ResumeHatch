@@ -24,7 +24,8 @@ const CtaSection = () => {
           </Button>
           <Button 
             variant="outline" 
-            className="h-12 px-8 rounded-md text-lg border-white text-black hover:bg-transparent"
+            className="h-12 px-8 rounded-md text-lg border-white text-black hover:text-black hover:bg-white hover:opacity-100"
+            disableHoverEffect={true}
           >
             Schedule a Demo
           </Button>
