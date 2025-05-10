@@ -1,24 +1,21 @@
 
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Calendar } from "lucide-react";
+import { CreditCard, Zap, Sparkles, CheckCircle2 } from "lucide-react";
 import WaitlistDialog from './WaitlistDialog';
 
 const PricingSection = () => {
-  const [isAnnual, setIsAnnual] = useState(false);
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
 
-  const plans = [
+  const creditPackages = [
     {
       name: "Starter",
-      priceMonthly: "₦15,000",
-      priceAnnual: "₦162,000",
-      period: isAnnual ? "per year" : "per month",
+      credits: 25,
+      price: "₦15,000",
       description: "Perfect for job seekers applying to a few positions",
       features: [
-        "5 tailored résumés per month",
-        "3 cover letters per month",
+        "Generate 5 tailored résumés",
+        "Generate 3 cover letters",
         "Basic résumé templates",
         "Email support",
       ],
@@ -26,14 +23,13 @@ const PricingSection = () => {
       popular: false,
     },
     {
-      name: "Pro",
-      priceMonthly: "₦45,000",
-      priceAnnual: "₦486,000",
-      period: isAnnual ? "per year" : "per month",
-      description: "For serious job seekers in active search mode",
+      name: "Pro Value",
+      credits: 100,
+      price: "₦45,000",
+      description: "Best value for serious job seekers in active search mode",
       features: [
-        "Unlimited tailored résumés",
-        "Unlimited cover letters",
+        "Generate 25 tailored résumés",
+        "Generate 15 cover letters",
         "All premium templates",
         "Application tracking dashboard",
         "Priority email support",
@@ -43,19 +39,17 @@ const PricingSection = () => {
       popular: true,
     },
     {
-      name: "Enterprise",
-      priceMonthly: "Custom",
-      priceAnnual: "Custom",
-      period: "",
-      description: "For teams and organizations with special requirements",
+      name: "Custom",
+      credits: "Flexible",
+      price: "You decide",
+      description: "Load any amount and pay only for what you use",
       features: [
-        "Everything in Pro plan",
-        "Custom branding",
-        "API access",
+        "Flexible credit system",
+        "No expiration on credits",
+        "All premium features",
+        "API access for teams",
         "Dedicated account manager",
-        "Bulk processing",
-        "Custom integrations",
-        "Advanced analytics",
+        "Bulk processing available",
       ],
       buttonText: "Contact Sales",
       popular: false,
@@ -66,63 +60,64 @@ const PricingSection = () => {
     <section id="pricing" className="py-16 md:py-24 px-4">
       <div className="container mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Pay Only For What You Use</h2>
           <p className="text-gray-600 max-w-2xl mx-auto mb-8">
-            Choose the plan that best fits your job search needs. All plans include our AI-powered résumé tailoring technology.
+            No more wasted subscription fees! Load your wallet with credits and spend them only when you actually need documents generated or applications submitted.
           </p>
-
-          {/* Billing toggle */}
-          <div className="flex items-center justify-center gap-3 mb-8">
-            <span className={`text-sm font-medium ${!isAnnual ? 'text-brand-blue' : 'text-gray-500'}`}>Monthly</span>
-            <div className="flex items-center gap-2" onClick={() => setIsAnnual(!isAnnual)}>
-              <Switch 
-                checked={isAnnual}
-                onCheckedChange={setIsAnnual}
-              />
+          
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6 max-w-3xl mx-auto">
+            <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg w-full md:w-auto">
+              <div className="bg-green-100 p-2 rounded-full">
+                <Zap className="h-5 w-5 text-green-600" />
+              </div>
+              <span className="text-sm text-green-800">No monthly commitments</span>
             </div>
-            <div className="flex items-center gap-1">
-              <span className={`text-sm font-medium ${isAnnual ? 'text-brand-blue' : 'text-gray-500'}`}>Annual</span>
-              <span className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
-                <Calendar className="h-3 w-3" />
-                Save 10%
-              </span>
+            <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg w-full md:w-auto">
+              <div className="bg-green-100 p-2 rounded-full">
+                <CreditCard className="h-5 w-5 text-green-600" />
+              </div>
+              <span className="text-sm text-green-800">Credits never expire</span>
+            </div>
+            <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg w-full md:w-auto">
+              <div className="bg-green-100 p-2 rounded-full">
+                <Sparkles className="h-5 w-5 text-green-600" />
+              </div>
+              <span className="text-sm text-green-800">Top up anytime</span>
             </div>
           </div>
         </div>
         
         <div className="grid md:grid-cols-3 gap-8">
-          {plans.map((plan, index) => (
+          {creditPackages.map((pack, index) => (
             <div 
               key={index} 
               className={`
-                bg-white rounded-xl p-6 shadow-sm border transition-all hover:shadow-md
-                ${plan.popular ? 'border-brand-blue relative' : 'border-gray-100'}
+                bg-white rounded-xl p-6 shadow-sm border transition-all hover:shadow-md relative
+                ${pack.popular ? 'border-brand-blue' : 'border-gray-100'}
               `}
             >
-              {plan.popular && (
+              {pack.popular && (
                 <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                   <span className="bg-brand-blue text-white text-xs font-semibold px-3 py-1 rounded-full">
-                    Most Popular
+                    Best Value
                   </span>
                 </div>
               )}
               <div className="text-center mb-6">
-                <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
-                <div className="text-3xl font-bold">{isAnnual ? plan.priceAnnual : plan.priceMonthly}</div>
-                {plan.period && (
-                  <div className="text-gray-500 text-sm">{plan.period}</div>
-                )}
-                <div className="mt-3 text-gray-600 min-h-[50px]">{plan.description}</div>
+                <h3 className="text-xl font-bold mb-2">{pack.name}</h3>
+                <div className="text-3xl font-bold">{pack.price}</div>
+                <div className="inline-block bg-blue-50 text-blue-700 font-semibold px-3 py-1 rounded-full text-sm mt-2">
+                  {typeof pack.credits === 'number' ? `${pack.credits} Credits` : pack.credits}
+                </div>
+                <div className="mt-3 text-gray-600 min-h-[50px]">{pack.description}</div>
               </div>
               
               <div className="border-t border-b border-gray-100 py-6 mb-6">
                 <ul className="space-y-3">
-                  {plan.features.map((feature, fIndex) => (
+                  {pack.features.map((feature, fIndex) => (
                     <li key={fIndex} className="flex items-start">
                       <div className="mr-3 text-brand-blue mt-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
+                        <CheckCircle2 className="h-5 w-5" />
                       </div>
                       <span>{feature}</span>
                     </li>
@@ -132,14 +127,38 @@ const PricingSection = () => {
               
               <div className="text-center">
                 <Button 
-                  className={`w-full ${plan.popular ? 'bg-brand-blue hover:bg-blue-700 text-white' : 'bg-gray-50 hover:bg-gray-100 text-gray-800 border border-gray-200'}`}
-                  onClick={plan.buttonText === "Contact Sales" ? undefined : () => setIsWaitlistOpen(true)}
+                  className={`w-full ${pack.popular ? 'bg-brand-blue hover:bg-blue-700 text-white' : 'bg-gray-50 hover:bg-gray-100 text-gray-800 border border-gray-200'}`}
+                  onClick={pack.buttonText === "Contact Sales" ? undefined : () => setIsWaitlistOpen(true)}
                 >
-                  {plan.buttonText}
+                  {pack.buttonText}
                 </Button>
               </div>
             </div>
           ))}
+        </div>
+        
+        <div className="mt-16 text-center">
+          <div className="max-w-2xl mx-auto bg-blue-50 rounded-lg p-6">
+            <h3 className="text-xl font-bold mb-3">Credit System Explained</h3>
+            <p className="text-gray-600 mb-4">
+              Our credit system gives you complete control over your spending. 
+              Load your wallet once and use credits only when you need them:
+            </p>
+            <div className="grid md:grid-cols-3 gap-4 text-left">
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <div className="font-semibold mb-1">1 Credit</div>
+                <div className="text-sm text-gray-600">Generate 1 tailored résumé</div>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <div className="font-semibold mb-1">2 Credits</div>
+                <div className="text-sm text-gray-600">Generate 1 cover letter</div>
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <div className="font-semibold mb-1">3 Credits</div>
+                <div className="text-sm text-gray-600">Submit 1 application</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
