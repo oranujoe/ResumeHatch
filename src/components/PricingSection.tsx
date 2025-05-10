@@ -125,7 +125,7 @@ const PricingSection = () => {
         
         {/* Custom Credit Package Card - Moved below the pricing tiers */}
         <div className="max-w-3xl mx-auto mt-16 mb-16">
-          <Card className="border-brand-blue shadow-md">
+          <Card className="shadow-[0_4px_12px_-2px_rgba(0,0,0,0.15)] border-0">
             <CardContent className="p-6 md:p-8">
               <h3 className="text-2xl font-bold mb-2 text-center">Custom Credit Package</h3>
               <p className="text-gray-600 text-center mb-8">Choose exactly how many credits you need</p>
