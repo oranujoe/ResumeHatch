@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link, FileText, ChartBar } from 'lucide-react';
+
 const steps = [{
   number: "1",
   title: "Paste job URL",
@@ -17,21 +18,24 @@ const steps = [{
   description: "Apply with a single click and track your application status in your personal dashboard.",
   icon: ChartBar
 }];
+
 const HowItWorksSection = () => {
-  return <section id="how-it-works" className="py-16 md:py-24 px-4 bg-white">
+  return (
+    <section id="how-it-works" className="py-20 md:py-28 px-4 bg-white">
       <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-4">
-          <div className="inline-block bg-gray-50 rounded-full px-4 py-1 text-sm font-medium text-gray-700 mb-4">
+        <div className="text-center mb-16">
+          <div className="inline-block bg-gray-50 rounded-full px-4 py-1.5 text-sm font-medium text-gray-700 mb-5">
             Simple 3-Step Process
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">How Resume Hatch Works</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">How Resume Hatch Works</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
             Our streamlined process takes the hassle out of job applications, letting you focus on what matters.
           </p>
         </div>
         
         <div className="grid md:grid-cols-3 gap-8 relative">
-          {steps.map((step, index) => <div 
+          {steps.map((step, index) => (
+            <div 
               key={step.number} 
               className={`bg-white rounded-xl p-8 shadow-md hover:shadow-lg transition-shadow border border-gray-100 ${index === 1 ? 'mt-8 md:mt-12' : ''}`}
             >
@@ -43,15 +47,14 @@ const HowItWorksSection = () => {
                   {step.number}
                 </div>
               </div>
-              <h3 className="text-xl font-semibold mb-3">{step.title}</h3>
+              <h3 className="text-xl font-semibold mb-4">{step.title}</h3>
               <p className="text-gray-600">{step.description}</p>
-            </div>)}
-          
-          {/* Connecting lines between cards - visible only on medium screens and above */}
-          
-          
+            </div>
+          ))}
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default HowItWorksSection;

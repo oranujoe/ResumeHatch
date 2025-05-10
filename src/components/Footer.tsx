@@ -6,12 +6,12 @@ const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-gray-100 pt-16 pb-8 px-4">
+    <footer className="bg-gray-100 pt-20 pb-8 px-4">
       <div className="container mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
           <div>
-            <h3 className="font-bold text-lg mb-4">Company</h3>
-            <ul className="space-y-2">
+            <h3 className="font-bold text-lg mb-6">Company</h3>
+            <ul className="space-y-3">
               <li><a href="#" className="text-gray-600 hover:text-brand-blue transition-colors">About</a></li>
               <li><a href="#" className="text-gray-600 hover:text-brand-blue transition-colors">Careers</a></li>
               <li><a href="#" className="text-gray-600 hover:text-brand-blue transition-colors">Press</a></li>
@@ -19,8 +19,8 @@ const Footer = () => {
             </ul>
           </div>
           <div>
-            <h3 className="font-bold text-lg mb-4">Product</h3>
-            <ul className="space-y-2">
+            <h3 className="font-bold text-lg mb-6">Product</h3>
+            <ul className="space-y-3">
               <li><a href="#features" className="text-gray-600 hover:text-brand-blue transition-colors">Features</a></li>
               <li><a href="#" className="text-gray-600 hover:text-brand-blue transition-colors">Templates</a></li>
               <li><a href="#pricing" className="text-gray-600 hover:text-brand-blue transition-colors">Pricing</a></li>
@@ -28,8 +28,8 @@ const Footer = () => {
             </ul>
           </div>
           <div>
-            <h3 className="font-bold text-lg mb-4">Resources</h3>
-            <ul className="space-y-2">
+            <h3 className="font-bold text-lg mb-6">Resources</h3>
+            <ul className="space-y-3">
               <li><a href="#" className="text-gray-600 hover:text-brand-blue transition-colors">Documentation</a></li>
               <li><a href="#" className="text-gray-600 hover:text-brand-blue transition-colors">Guides</a></li>
               <li><a href="#" className="text-gray-600 hover:text-brand-blue transition-colors">API Reference</a></li>
@@ -37,8 +37,8 @@ const Footer = () => {
             </ul>
           </div>
           <div>
-            <h3 className="font-bold text-lg mb-4">Legal</h3>
-            <ul className="space-y-2">
+            <h3 className="font-bold text-lg mb-6">Legal</h3>
+            <ul className="space-y-3">
               <li><a href="#" className="text-gray-600 hover:text-brand-blue transition-colors">Privacy</a></li>
               <li><a href="#" className="text-gray-600 hover:text-brand-blue transition-colors">Terms</a></li>
               <li><a href="#" className="text-gray-600 hover:text-brand-blue transition-colors">Security</a></li>

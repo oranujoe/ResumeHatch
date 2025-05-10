@@ -21,21 +21,21 @@ interface CreditPackageCardProps {
 const CreditPackageCard = ({ package: pack, onButtonClick }: CreditPackageCardProps) => {
   return (
     <div className={`
-      bg-white rounded-xl p-6 shadow-sm border transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 hover:border-brand-blue
+      bg-white rounded-xl p-7 shadow-sm border transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 hover:border-brand-blue
       ${pack.popular ? 'border-brand-blue' : 'border-gray-100'}
     `}>
       {pack.popular && <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>}
-      <div className="text-center mb-6">
-        <h3 className="text-xl font-bold mb-2">{pack.name}</h3>
+      <div className="text-center mb-7">
+        <h3 className="text-xl font-bold mb-3">{pack.name}</h3>
         <div className="text-3xl font-bold">{pack.price}</div>
-        <div className="inline-block bg-blue-50 text-blue-700 font-semibold px-3 py-1 rounded-full text-sm mt-2">
+        <div className="inline-block bg-blue-50 text-blue-700 font-semibold px-3.5 py-1.5 rounded-full text-sm mt-3">
           {typeof pack.credits === 'number' ? `${pack.credits} Credits` : pack.credits}
         </div>
-        <div className="mt-3 text-gray-600 min-h-[50px]">{pack.description}</div>
+        <div className="mt-4 text-gray-600 min-h-[50px]">{pack.description}</div>
       </div>
       
-      <div className="border-t border-b border-gray-100 py-6 mb-6">
-        <ul className="space-y-3">
+      <div className="border-t border-b border-gray-100 py-6 mb-7">
+        <ul className="space-y-3.5">
           {pack.features.map((feature, fIndex) => (
             <li key={fIndex} className="flex items-start">
               <div className="mr-3 text-brand-blue mt-1">

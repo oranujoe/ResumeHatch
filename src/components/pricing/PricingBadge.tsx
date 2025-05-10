@@ -7,7 +7,7 @@ interface PricingBadgeProps {
 
 const PricingBadge = ({ text }: PricingBadgeProps) => {
   return (
-    <div className="inline-block bg-gray-50 rounded-full px-4 py-1 text-sm font-medium text-gray-700 mb-4">
+    <div className="inline-block bg-gray-50 rounded-full px-4 py-1.5 text-sm font-medium text-gray-700 mb-5">
       {text}
     </div>
   );

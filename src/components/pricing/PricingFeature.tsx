@@ -15,8 +15,8 @@ const PricingFeature = ({ icon, text }: PricingFeatureProps) => {
   };
 
   return (
-    <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg w-full md:w-auto">
-      <div className="bg-green-100 p-2 rounded-full">
+    <div className="flex items-center gap-3.5 bg-green-50 p-3.5 rounded-lg w-full md:w-auto">
+      <div className="bg-green-100 p-2.5 rounded-full">
         {icons[icon]}
       </div>
       <span className="text-sm text-green-800">{text}</span>

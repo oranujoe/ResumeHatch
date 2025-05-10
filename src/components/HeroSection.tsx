@@ -14,10 +14,10 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="py-16 md:py-24 px-4 bg-gradient-to-b from-blue-50 to-white">
+    <section className="py-20 md:py-28 px-4 bg-gradient-to-b from-blue-50 to-white">
       <div className="container mx-auto">
         <div className="flex flex-col lg:flex-row items-center">
-          <div className="w-full lg:w-1/2 space-y-6 mb-10 lg:mb-0 pr-0 lg:pr-10">
+          <div className="w-full lg:w-1/2 space-y-6 mb-12 lg:mb-0 pr-0 lg:pr-12">
             <div className="uppercase text-sm font-semibold text-gray-500 tracking-wider">Your personal career assistant</div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
               Get Your Dream Job with <span className="text-brand-blue">AI-Powered</span> Applications
@@ -26,7 +26,7 @@ const HeroSection = () => {
               Paste any job link, let our AI craft a perfectly tailored résumé and cover letter, 
               then apply with a single click — all while tracking every application in your personal dashboard.
             </p>
-            <div className="pt-4 space-x-4 flex flex-wrap gap-4">
+            <div className="pt-6 space-x-4 flex flex-wrap gap-4">
               <Button 
                 className="bg-brand-blue hover:bg-blue-700 text-white h-12 px-8 rounded-md text-lg"
                 onClick={() => setIsWaitlistOpen(true)}
@@ -37,18 +37,18 @@ const HeroSection = () => {
                 See How it Works
               </Button>
             </div>
-            <div className="flex space-x-12 pt-6">
+            <div className="flex space-x-12 pt-8">
               <div className="text-center">
                 <div className="text-4xl font-bold text-brand-blue">93%</div>
-                <div className="text-sm text-gray-500">Success rate</div>
+                <div className="text-sm text-gray-500 mt-1">Success rate</div>
               </div>
               <div className="text-center">
                 <div className="text-4xl font-bold text-brand-blue">2.5x</div>
-                <div className="text-sm text-gray-500">More interviews</div>
+                <div className="text-sm text-gray-500 mt-1">More interviews</div>
               </div>
               <div className="text-center">
                 <div className="text-4xl font-bold text-brand-blue">5min</div>
-                <div className="text-sm text-gray-500">Average setup</div>
+                <div className="text-sm text-gray-500 mt-1">Average setup</div>
               </div>
             </div>
           </div>
