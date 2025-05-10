@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -56,13 +57,13 @@ const PricingSection = () => {
   ];
   
   return <section id="pricing" className="py-16 md:py-24 px-4">
-      <div className="container mx-auto">
-        {/* New heading element at the very top */}
-        <div className="bg-gray-50 rounded-full py-3 px-6 mx-auto w-fit mb-6">
-          <h2 className="text-2xl md:text-3xl font-bold text-center">Pay Only For What You Use</h2>
-        </div>
+      <div className="container mx-auto max-w-6xl">
+        {/* Updated badge to match the styling of the "Simple 3-Step Process" badge */}
+        <div className="text-center mb-4">
+          <div className="inline-block bg-gray-50 rounded-full px-4 py-1 text-sm font-medium text-gray-700 mb-4">
+            Pay Only For What You Use
+          </div>
         
-        <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Credit-Based Pricing</h2>
           <p className="text-gray-600 max-w-2xl mx-auto mb-8">
             No more wasted subscription fees! Load your wallet with credits and spend them only when you actually need documents generated or applications submitted.
