@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -48,6 +47,7 @@ const FeaturesSection = () => {
     <section id="features" className="py-16 md:py-24 px-4 bg-gray-50">
       <div className="container mx-auto">
         <div className="flex justify-center mb-4">
+          {/* Removed hover effects from the badge by removing any hover: classes */}
           <Badge className="inline-block rounded-full px-4 py-1 text-sm font-medium text-gray-700 mb-4 bg-white">
             Powerful Features
           </Badge>
@@ -403,149 +403,4 @@ const FeaturesSection = () => {
                     <div className="flex items-center mb-6">
                       <div className="h-10 w-10 bg-amber-100 rounded-full flex items-center justify-center text-amber-600">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12h1m5-10v1m5-1v1m-9 9h1m8-1h1m-9-4l2 2m6-4l-2 2" />
-                        </svg>
-                      </div>
-                      <div className="ml-4">
-                        <p className="font-medium">Smart Suggestions</p>
-                        <p className="text-xs text-gray-500">AI-powered resume enhancement</p>
-                      </div>
-                    </div>
-                    <div className="space-y-4 mb-6">
-                      <div className="p-3 bg-amber-50 border border-amber-100 rounded-md">
-                        <div className="flex justify-between">
-                          <p className="text-sm font-medium">Recommended Skills</p>
-                          <span className="text-amber-600 text-xs">+3</span>
-                        </div>
-                        <ul className="mt-2 space-y-1">
-                          <li className="text-sm flex items-center">
-                            <div className="h-3 w-3 bg-amber-400 rounded-full mr-2"></div>
-                            Data Analysis
-                          </li>
-                          <li className="text-sm flex items-center">
-                            <div className="h-3 w-3 bg-amber-400 rounded-full mr-2"></div>
-                            Project Management
-                          </li>
-                          <li className="text-sm flex items-center">
-                            <div className="h-3 w-3 bg-amber-400 rounded-full mr-2"></div>
-                            Team Leadership
-                          </li>
-                        </ul>
-                      </div>
-                      <div className="p-3 bg-blue-50 border border-blue-100 rounded-md">
-                        <div className="flex justify-between">
-                          <p className="text-sm font-medium">Job Matches</p>
-                          <span className="text-blue-600 text-xs">12 new</span>
-                        </div>
-                        <div className="flex justify-between mt-2">
-                          <div className="h-4 w-24 bg-gray-200 rounded-md"></div>
-                          <div className="h-4 w-16 bg-gray-200 rounded-md"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="secure" className="animate-fade-in">
-              <div className="flex flex-col lg:flex-row items-center">
-                <div className="w-full lg:w-1/2 mb-10 lg:mb-0 pr-0 lg:pr-10">
-                  <h2 className="text-3xl md:text-4xl font-bold mb-6">Secure Platform</h2>
-                  <p className="text-gray-600 mb-8">
-                    Your data and privacy are our top priority with enterprise-grade security.
-                  </p>
-                  <ul className="space-y-4 mb-8">
-                    <li className="flex items-start">
-                      <div className="mr-3 text-brand-blue mt-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <div>
-                        <strong className="font-medium">End-to-end encryption</strong> for all your resume and personal data
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <div className="mr-3 text-brand-blue mt-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <div>
-                        <strong className="font-medium">Data control</strong> with ability to export or delete your information
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <div className="mr-3 text-brand-blue mt-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <div>
-                        <strong className="font-medium">Privacy-first design</strong> with strict data handling policies
-                      </div>
-                    </li>
-                  </ul>
-                  <Button className="bg-brand-blue hover:bg-blue-700 text-white">
-                    View Security Details
-                  </Button>
-                </div>
-                <div className="w-full lg:w-1/2 relative">
-                  <div className="bg-white rounded-lg shadow-xl p-6 max-w-md mx-auto">
-                    <div className="flex justify-center mb-6">
-                      <div className="h-16 w-16 bg-red-100 rounded-full flex items-center justify-center">
-                        <Shield size={28} className="text-red-600" />
-                      </div>
-                    </div>
-                    <div className="text-center mb-6">
-                      <h3 className="text-xl font-bold mb-2">Your data is protected</h3>
-                      <p className="text-gray-500 text-sm">Enterprise-grade security for your professional information</p>
-                    </div>
-                    <div className="space-y-4">
-                      <div className="flex items-center p-3 bg-gray-50 rounded-md">
-                        <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 mr-3">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="font-medium text-sm">End-to-End Encryption</p>
-                          <p className="text-xs text-gray-500">AES-256 encryption standard</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center p-3 bg-gray-50 rounded-md">
-                        <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 mr-3">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="font-medium text-sm">GDPR Compliant</p>
-                          <p className="text-xs text-gray-500">Full data rights implemented</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center p-3 bg-gray-50 rounded-md">
-                        <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 mr-3">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="font-medium text-sm">Data Controls</p>
-                          <p className="text-xs text-gray-500">Export or delete anytime</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-export default FeaturesSection;
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673
