@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -92,7 +93,7 @@ const PricingSection = () => {
         
         <div className="grid md:grid-cols-3 gap-8">
           {creditPackages.map((pack, index) => <div key={index} className={`
-                bg-white rounded-xl p-6 shadow-sm border transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-105 hover:border-brand-blue
+                bg-white rounded-xl p-6 shadow-sm border transition-all duration-300 ease-in-out
                 ${pack.popular ? 'border-brand-blue' : 'border-gray-100'}
               `}>
               {pack.popular && <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -119,7 +120,7 @@ const PricingSection = () => {
               </div>
               
               <div className="text-center">
-                <Button className={`w-full transition-colors duration-300 ${pack.popular ? 'bg-brand-blue hover:bg-blue-700 text-white' : 'bg-gray-50 hover:bg-gray-100 text-gray-800 border border-gray-200 hover:bg-brand-blue hover:text-white'}`} onClick={pack.buttonText === "Contact Sales" ? undefined : () => setIsWaitlistOpen(true)}>
+                <Button className={`w-full ${pack.popular ? 'bg-brand-blue text-white' : 'bg-gray-50 text-gray-800 border border-gray-200'}`} onClick={pack.buttonText === "Contact Sales" ? undefined : () => setIsWaitlistOpen(true)}>
                   {pack.buttonText}
                 </Button>
               </div>
@@ -169,7 +170,7 @@ const PricingSection = () => {
                 </div>
               </div>
               
-              <Button className="w-full bg-brand-blue hover:bg-blue-700 text-white flex items-center justify-center text-lg py-6" onClick={() => setIsWaitlistOpen(true)}>
+              <Button className="w-full bg-brand-blue text-white flex items-center justify-center text-lg py-6" onClick={() => setIsWaitlistOpen(true)}>
                 <CreditCard className="mr-2" /> Join waitlist
               </Button>
             </CardContent>
