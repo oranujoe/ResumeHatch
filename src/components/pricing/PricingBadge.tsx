@@ -7,8 +7,10 @@ interface PricingBadgeProps {
 }
 
 const PricingBadge = ({ text, className = '' }: PricingBadgeProps) => {
+  // Remove the default gray styling from the base classes
+  // This way custom styles will be more likely to take effect
   return (
-    <div className={`inline-block bg-gray-50 rounded-full px-4 py-1.5 text-sm font-medium text-gray-700 mb-5 ${className}`}>
+    <div className={`inline-block rounded-full px-4 py-1.5 text-sm font-medium mb-5 ${className}`}>
       {text}
     </div>
   );
