@@ -44,6 +44,9 @@ const WaitlistDialog = ({ open, onOpenChange }: WaitlistDialogProps) => {
     },
   });
 
+  // Get the current value of the checkbox to determine if the button should be disabled
+  const wantsUpdatesValue = form.watch("wants_updates");
+
   const onSubmit = async (data: WaitlistFormValues) => {
     setIsSubmitting(true);
     try {
@@ -90,9 +93,6 @@ const WaitlistDialog = ({ open, onOpenChange }: WaitlistDialogProps) => {
       setIsSubmitting(false);
     }
   };
-
-  // Get the current value of the checkbox to determine if the button should be disabled
-  const wantsUpdatesValue = form.watch("wants_updates");
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
