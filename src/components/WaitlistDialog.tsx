@@ -52,24 +52,21 @@ const WaitlistDialog = ({ open, onOpenChange }: WaitlistDialogProps) => {
     try {
       console.log("Submitting data to waitlist:", data);
       
-      // Use service_role key client to bypass RLS
-      const { error, data: insertedData } = await supabase.from('waitlist')
-        .insert([
-          { 
-            name: data.name,
-            email: data.email,
-            wants_updates: data.wants_updates,
-            status: 'pending'
-          }
-        ])
-        .select();
+      // Use public client with no RLS enforcement
+      const { error } = await supabase.from('waitlist')
+        .insert({
+          name: data.name,
+          email: data.email,
+          wants_updates: data.wants_updates,
+          status: 'pending'
+        });
       
       if (error) {
         console.error("Supabase error:", error);
         throw new Error(error.message);
       }
       
-      console.log("Successfully submitted to waitlist:", insertedData);
+      console.log("Successfully submitted to waitlist");
       
       // Success message
       toast({
