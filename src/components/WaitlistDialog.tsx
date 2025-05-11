@@ -47,8 +47,10 @@ const WaitlistDialog = ({ open, onOpenChange }: WaitlistDialogProps) => {
   const onSubmit = async (data: WaitlistFormValues) => {
     setIsSubmitting(true);
     try {
+      console.log("Submitting data to waitlist:", data);
+      
       // Insert data into Supabase waitlist table
-      const { error } = await supabase
+      const { error, data: insertedData } = await supabase
         .from('waitlist')
         .insert([
           { 
@@ -57,12 +59,15 @@ const WaitlistDialog = ({ open, onOpenChange }: WaitlistDialogProps) => {
             wants_updates: data.wants_updates,
             status: 'pending'
           }
-        ]);
+        ])
+        .select();
       
       if (error) {
         console.error("Supabase error:", error);
         throw new Error(error.message);
       }
+      
+      console.log("Successfully submitted to waitlist:", insertedData);
       
       // Success message
       toast({
