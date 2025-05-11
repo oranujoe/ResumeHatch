@@ -3,18 +3,14 @@ import { Button } from "@/components/ui/button";
 import WaitlistDialog from './WaitlistDialog';
 import { useIsMobile } from '@/hooks/use-mobile';
 import PricingBadge from './pricing/PricingBadge';
-
 const HeroSection = () => {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
   const [isYellowShapeActive, setIsYellowShapeActive] = useState(false);
   const isMobile = useIsMobile();
-
   const handleYellowShapeClick = () => {
     setIsYellowShapeActive(!isYellowShapeActive);
   };
-
-  return (
-    <section className="py-20 md:py-28 px-4 bg-gradient-to-b from-blue-50 to-white">
+  return <section className="py-20 px-4 bg-gradient-to-b from-blue-50 to-white md:py-[80px]">
       <div className="container mx-auto">
         <div className="flex flex-col lg:flex-row items-center">
           <div className="w-full lg:w-1/2 space-y-6 mb-12 lg:mb-0 pr-0 lg:pr-12">
@@ -29,10 +25,7 @@ const HeroSection = () => {
               then apply with a single click — all while tracking every application in your personal dashboard.
             </p>
             <div className="pt-6 space-x-4 flex flex-wrap gap-4">
-              <Button 
-                className="bg-brand-blue hover:bg-blue-700 text-white h-12 px-8 rounded-md text-lg"
-                onClick={() => setIsWaitlistOpen(true)}
-              >
+              <Button className="bg-brand-blue hover:bg-blue-700 text-white h-12 px-8 rounded-md text-lg" onClick={() => setIsWaitlistOpen(true)}>
                 Join the Waitlist
               </Button>
               <Button variant="outline" className="h-12 px-8 rounded-md text-lg">
@@ -93,12 +86,9 @@ const HeroSection = () => {
             </div>
             
             {/* Made the yellow shape interactive with hover and click effects */}
-            <div 
-              onClick={handleYellowShapeClick}
-              className={`absolute -bottom-6 -right-6 w-20 h-20 bg-brand-yellow rounded-full flex items-center justify-center 
+            <div onClick={handleYellowShapeClick} className={`absolute -bottom-6 -right-6 w-20 h-20 bg-brand-yellow rounded-full flex items-center justify-center 
                 cursor-pointer transition-all duration-300 hover:scale-110 
-                ${isYellowShapeActive ? 'animate-pulse bg-yellow-400 shadow-lg scale-110' : ''}`}
-            >
+                ${isYellowShapeActive ? 'animate-pulse bg-yellow-400 shadow-lg scale-110' : ''}`}>
               <div className={`text-white text-xl font-bold transition-all ${isYellowShapeActive ? 'scale-110' : ''}`}>
                 AI
               </div>
@@ -107,12 +97,7 @@ const HeroSection = () => {
         </div>
       </div>
       
-      <WaitlistDialog 
-        open={isWaitlistOpen}
-        onOpenChange={setIsWaitlistOpen}
-      />
-    </section>
-  );
+      <WaitlistDialog open={isWaitlistOpen} onOpenChange={setIsWaitlistOpen} />
+    </section>;
 };
-
 export default HeroSection;
