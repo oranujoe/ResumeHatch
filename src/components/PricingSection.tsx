@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import WaitlistDialog from './WaitlistDialog';
 import PricingBadge from './pricing/PricingBadge';
@@ -5,11 +6,14 @@ import PricingFeature from './pricing/PricingFeature';
 import CreditPackageCard from './pricing/CreditPackageCard';
 import CustomCreditCard from './pricing/CustomCreditCard';
 import { calculatePrice, getDocumentCounts, creditPackages } from '@/utils/creditCalculations';
+
 const PricingSection = () => {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
   const [creditCount, setCreditCount] = useState(45);
   const documentCounts = getDocumentCounts(creditCount);
-  return <section id="pricing" className="py-20 px-4 md:py-[80px]">
+  
+  return (
+    <section id="pricing" className="py-20 px-4 md:py-[80px]">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-12">
           <PricingBadge text="Pay Only For What You Use" />
@@ -32,7 +36,13 @@ const PricingSection = () => {
         
         {/* Custom Credit Package Card - Moved below the pricing tiers */}
         <div className="max-w-3xl mx-auto mt-20 mb-20">
-          <CustomCreditCard creditCount={creditCount} setCreditCount={setCreditCount} documentCounts={documentCounts} calculatePrice={calculatePrice} onButtonClick={() => setIsWaitlistOpen(true)} />
+          <CustomCreditCard 
+            creditCount={creditCount} 
+            setCreditCount={setCreditCount} 
+            documentCounts={documentCounts} 
+            calculatePrice={calculatePrice} 
+            onButtonClick={() => setIsWaitlistOpen(true)} 
+          />
         </div>
         
         {/* Changed from badge to regular text with appropriate styling */}
@@ -43,6 +53,8 @@ const PricingSection = () => {
       </div>
 
       <WaitlistDialog open={isWaitlistOpen} onOpenChange={setIsWaitlistOpen} />
-    </section>;
+    </section>
+  );
 };
+
 export default PricingSection;
