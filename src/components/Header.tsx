@@ -18,8 +18,7 @@ const Header = () => {
           <a href="#pricing" className="text-gray-600 hover:text-brand-blue transition-colors">Pricing</a>
           <a href="#faq" className="text-gray-600 hover:text-brand-blue transition-colors">FAQ</a>
         </nav>
-        <div className="flex items-center space-x-4">
-          <Button variant="outline" className="hidden sm:inline-flex" onClick={() => setIsWaitlistOpen(true)}>Log in</Button>
+        <div className="flex items-center">
           <Button 
             className="bg-brand-blue hover:bg-blue-700 text-white"
             onClick={() => setIsWaitlistOpen(true)}
