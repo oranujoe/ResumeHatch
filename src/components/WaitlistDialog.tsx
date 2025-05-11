@@ -52,18 +52,19 @@ const WaitlistDialog = ({ open, onOpenChange }: WaitlistDialogProps) => {
     try {
       console.log("Submitting data to waitlist:", data);
       
-      // Use public client with no RLS enforcement
-      const { error } = await supabase.from('waitlist')
-        .insert({
+      // Insert data into Supabase waitlist table
+      const { error } = await supabase
+        .from('waitlist')
+        .insert([{
           name: data.name,
           email: data.email,
           wants_updates: data.wants_updates,
           status: 'pending'
-        });
+        }]);
       
       if (error) {
         console.error("Supabase error:", error);
-        throw new Error(error.message);
+        throw new Error(`Failed to join waitlist: ${error.message}`);
       }
       
       console.log("Successfully submitted to waitlist");
@@ -83,7 +84,7 @@ const WaitlistDialog = ({ open, onOpenChange }: WaitlistDialogProps) => {
       console.error("Error submitting waitlist form:", error);
       toast({
         title: "Something went wrong",
-        description: "Please try again later.",
+        description: error instanceof Error ? error.message : "Please try again later.",
         variant: "destructive",
       });
     } finally {
