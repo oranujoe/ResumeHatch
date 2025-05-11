@@ -49,9 +49,8 @@ const WaitlistDialog = ({ open, onOpenChange }: WaitlistDialogProps) => {
     try {
       console.log("Submitting data to waitlist:", data);
       
-      // Insert data into Supabase waitlist table
-      const { error, data: insertedData } = await supabase
-        .from('waitlist')
+      // Use service_role key client to bypass RLS
+      const { error, data: insertedData } = await supabase.from('waitlist')
         .insert([
           { 
             name: data.name,
@@ -91,9 +90,6 @@ const WaitlistDialog = ({ open, onOpenChange }: WaitlistDialogProps) => {
       setIsSubmitting(false);
     }
   };
-
-  // Button is only enabled if checkbox is checked
-  const isButtonDisabled = !form.watch("wants_updates") || isSubmitting;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
