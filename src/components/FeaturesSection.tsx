@@ -1,51 +1,41 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Key, BarChart2, Bell, Shield } from "lucide-react";
-
-const features = [
-  {
-    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+const features = [{
+  icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>,
-    title: "AI Matching",
-    description: "Our AI analyzes job descriptions and matches them with your skills and experience."
-  }, 
-  {
-    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  title: "AI Matching",
+  description: "Our AI analyzes job descriptions and matches them with your skills and experience."
+}, {
+  icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
         </svg>,
-    title: "Templates",
-    description: "Choose from dozens of professional templates optimized for ATS systems."
-  }, 
-  {
-    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  title: "Templates",
+  description: "Choose from dozens of professional templates optimized for ATS systems."
+}, {
+  icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
         </svg>,
-    title: "Cover Letters",
-    description: "Generate personalized cover letters that complement your résumé and highlight key qualifications."
-  }, 
-  {
-    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  title: "Cover Letters",
+  description: "Generate personalized cover letters that complement your résumé and highlight key qualifications."
+}, {
+  icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
         </svg>,
-    title: "Analytics",
-    description: "Track application status, interview rates, and optimize your job search strategy."
-  }, 
-  {
-    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  title: "Analytics",
+  description: "Track application status, interview rates, and optimize your job search strategy."
+}, {
+  icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>,
-    title: "Quick Apply",
-    description: "Apply to multiple jobs with a single click using your tailored résumés and cover letters."
-  }
-];
-
+  title: "Quick Apply",
+  description: "Apply to multiple jobs with a single click using your tailored résumés and cover letters."
+}];
 const FeaturesSection = () => {
-  return (
-    <section id="features" className="py-16 md:py-24 px-4 bg-gray-50">
+  return <section id="features" className="py-16 px-4 bg-gray-50 md:py-[80px]">
       <div className="container mx-auto">
         <div className="flex justify-center mb-4">
           {/* Removed hover effects from the badge by removing any hover: classes */}
@@ -429,7 +419,9 @@ const FeaturesSection = () => {
                         <div className="text-lg font-bold text-green-600">92%</div>
                       </div>
                       <div className="w-full bg-gray-200 h-2 rounded-full mt-2">
-                        <div className="bg-green-500 h-2 rounded-full" style={{width: '92%'}}></div>
+                        <div className="bg-green-500 h-2 rounded-full" style={{
+                        width: '92%'
+                      }}></div>
                       </div>
                     </div>
                   </div>
@@ -527,8 +519,6 @@ const FeaturesSection = () => {
           </Tabs>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default FeaturesSection;
