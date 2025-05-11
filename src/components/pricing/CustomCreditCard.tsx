@@ -3,7 +3,6 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Card, CardContent } from "@/components/ui/card";
-import { CreditCard } from "lucide-react";
 
 interface CustomCreditCardProps {
   creditCount: number;
@@ -77,7 +76,7 @@ const CustomCreditCard = ({
           className="w-full bg-brand-blue hover:bg-blue-700 text-white flex items-center justify-center text-lg py-6" 
           onClick={onButtonClick}
         >
-          <CreditCard className="mr-2" /> Join waitlist
+          Join waitlist
         </Button>
       </CardContent>
     </Card>
