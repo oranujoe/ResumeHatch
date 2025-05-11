@@ -158,7 +158,7 @@ const WaitlistDialog = ({ open, onOpenChange }: WaitlistDialogProps) => {
               <Button 
                 type="submit" 
                 className="w-full bg-brand-blue hover:bg-blue-700" 
-                disabled={isButtonDisabled}
+                disabled={isSubmitting}
               >
                 {isSubmitting ? "Submitting..." : "Join Waitlist"}
               </Button>
