@@ -13,7 +13,7 @@ const HeroSection = () => {
   return <section className="py-20 px-4 bg-gradient-to-b from-blue-50 to-white md:py-[60px]">
       <div className="container mx-auto">
         <div className="flex flex-col lg:flex-row items-center">
-          <div className="w-full lg:w-1/2 space-y-6 mb-12 lg:mb-0 pr-0 lg:pr-12">
+          <div className="w-full lg:w-1/2 space-y-0 mb-12 lg:mb-0 pr-0 lg:pr-12">
             <div className="mb-2">
               <PricingBadge text="Launching Soon • Join the Waitlist" className="!bg-blue-100 !text-blue-800 font-medium" />
             </div>
