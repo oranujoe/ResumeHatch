@@ -87,6 +87,9 @@ const WaitlistDialog = ({ open, onOpenChange }: WaitlistDialogProps) => {
     }
   };
 
+  // Button is only enabled if checkbox is checked
+  const isButtonDisabled = !form.watch("wants_updates") || isSubmitting;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
@@ -140,7 +143,7 @@ const WaitlistDialog = ({ open, onOpenChange }: WaitlistDialogProps) => {
                   </FormControl>
                   <div className="space-y-1 leading-none">
                     <FormLabel>
-                      Keep me updated about ResumeHatch
+                      I agree to join the waitlist
                     </FormLabel>
                     <FormDescription className="text-sm text-muted-foreground">
                       Receive occasional updates about new features and launches.
@@ -154,7 +157,7 @@ const WaitlistDialog = ({ open, onOpenChange }: WaitlistDialogProps) => {
               <Button 
                 type="submit" 
                 className="w-full bg-brand-blue hover:bg-blue-700" 
-                disabled={isSubmitting}
+                disabled={isButtonDisabled}
               >
                 {isSubmitting ? "Submitting..." : "Join Waitlist"}
               </Button>
