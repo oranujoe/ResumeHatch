@@ -7,7 +7,7 @@ const Header = () => {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
 
   return (
-    <header className="py-4 px-4 sm:px-6 lg:px-8 w-full border-b">
+    <header className="py-4 px-4 sm:px-6 lg:px-8 w-full border-b sticky top-0 bg-white z-50">
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center">
           <h1 className="text-2xl font-bold text-brand-dark">Resume<span className="text-brand-blue">Hatch</span></h1>
