@@ -91,6 +91,9 @@ const WaitlistDialog = ({ open, onOpenChange }: WaitlistDialogProps) => {
     }
   };
 
+  // Get the current value of the checkbox to determine if the button should be disabled
+  const wantsUpdatesValue = form.watch("wants_updates");
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
@@ -158,7 +161,7 @@ const WaitlistDialog = ({ open, onOpenChange }: WaitlistDialogProps) => {
               <Button 
                 type="submit" 
                 className="w-full bg-brand-blue hover:bg-blue-700" 
-                disabled={isSubmitting}
+                disabled={!wantsUpdatesValue || isSubmitting}
               >
                 {isSubmitting ? "Submitting..." : "Join Waitlist"}
               </Button>
