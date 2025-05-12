@@ -1,15 +1,19 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import WaitlistDialog from './WaitlistDialog';
 import { useIsMobile } from '@/hooks/use-mobile';
 import PricingBadge from './pricing/PricingBadge';
+
 const HeroSection = () => {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
   const [isYellowShapeActive, setIsYellowShapeActive] = useState(false);
   const isMobile = useIsMobile();
+  
   const handleYellowShapeClick = () => {
     setIsYellowShapeActive(!isYellowShapeActive);
   };
+  
   return <section className="py-20 px-4 bg-gradient-to-b from-blue-50 to-white md:py-[60px]">
       <div className="container mx-auto">
         <div className="flex flex-col lg:flex-row items-center">
@@ -24,7 +28,7 @@ const HeroSection = () => {
               Paste any job link, let our AI craft a perfectly tailored résumé and cover letter, 
               then apply with a single click — all while tracking every application in your personal dashboard.
             </p>
-            <div className="pt-6 space-x-4 flex flex-wrap gap-4">
+            <div className="pt-6 flex flex-col sm:flex-row gap-4">
               <Button className="bg-brand-blue hover:bg-blue-700 text-white h-12 px-8 rounded-md text-lg" onClick={() => setIsWaitlistOpen(true)}>
                 Join the Waitlist
               </Button>
@@ -100,4 +104,5 @@ const HeroSection = () => {
       <WaitlistDialog open={isWaitlistOpen} onOpenChange={setIsWaitlistOpen} />
     </section>;
 };
+
 export default HeroSection;
