@@ -1,19 +1,15 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import WaitlistDialog from './WaitlistDialog';
 import { useIsMobile } from '@/hooks/use-mobile';
 import PricingBadge from './pricing/PricingBadge';
-
 const HeroSection = () => {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
   const [isYellowShapeActive, setIsYellowShapeActive] = useState(false);
   const isMobile = useIsMobile();
-  
   const handleYellowShapeClick = () => {
     setIsYellowShapeActive(!isYellowShapeActive);
   };
-  
   return <section className="py-20 px-4 bg-gradient-to-b from-blue-50 to-white md:py-[60px]">
       <div className="container mx-auto">
         <div className="flex flex-col lg:flex-row items-center">
@@ -24,10 +20,7 @@ const HeroSection = () => {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
               Get Your Dream Job with <span className="text-brand-blue">AI-Powered</span> Applications
             </h1>
-            <p className="text-xl text-gray-600 leading-relaxed max-w-xl">
-              Paste any job link, let our AI craft a perfectly tailored résumé and cover letter, 
-              then apply with a single click — all while tracking every application in your personal dashboard.
-            </p>
+            <p className="text-xl text-gray-600 leading-relaxed max-w-xl">Paste any job link, and let our AI craft an ATS-optimised résumé and cover letter, then apply with a single click — all while tracking every application in your personal dashboard.</p>
             <div className="pt-6 flex flex-col sm:flex-row gap-4">
               <Button className="bg-brand-blue hover:bg-blue-700 text-white h-12 px-8 rounded-md text-lg" onClick={() => setIsWaitlistOpen(true)}>
                 Join the Waitlist
@@ -56,11 +49,7 @@ const HeroSection = () => {
           <div className={`w-full lg:w-1/2 relative ${!isMobile ? 'lg:-mt-24' : ''}`}>
             <div className="bg-white rounded-lg shadow-xl p-4 transform rotate-1 relative z-10">
               <div className="bg-blue-50 rounded-lg p-2">
-                <img 
-                  src="/lovable-uploads/b0f9a358-8da1-41c2-97a4-89a06e01942c.png" 
-                  alt="ResumeHatch Dashboard Preview" 
-                  className="w-full h-auto rounded-lg shadow-sm"
-                />
+                <img src="/lovable-uploads/b0f9a358-8da1-41c2-97a4-89a06e01942c.png" alt="ResumeHatch Dashboard Preview" className="w-full h-auto rounded-lg shadow-sm" />
               </div>
             </div>
             
@@ -79,5 +68,4 @@ const HeroSection = () => {
       <WaitlistDialog open={isWaitlistOpen} onOpenChange={setIsWaitlistOpen} />
     </section>;
 };
-
 export default HeroSection;
