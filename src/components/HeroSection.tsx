@@ -56,36 +56,11 @@ const HeroSection = () => {
           <div className={`w-full lg:w-1/2 relative ${!isMobile ? 'lg:-mt-24' : ''}`}>
             <div className="bg-white rounded-lg shadow-xl p-4 transform rotate-1 relative z-10">
               <div className="bg-blue-50 rounded-lg p-2">
-                <div className="bg-white rounded-lg shadow-sm p-4">
-                  <div className="flex items-center space-x-2 mb-4">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  </div>
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 rounded-full bg-brand-blue flex items-center justify-center text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <div className="h-3 w-40 bg-gray-100 rounded"></div>
-                      </div>
-                    </div>
-                    <div className="flex justify-around p-4">
-                      <div className="p-3 bg-blue-50 rounded-lg">
-                        <div className="h-10 w-10 bg-gray-100 rounded"></div>
-                      </div>
-                      <div className="p-3 bg-blue-50 rounded-lg">
-                        <div className="h-10 w-10 bg-gray-100 rounded"></div>
-                      </div>
-                      <div className="p-3 bg-blue-50 rounded-lg">
-                        <div className="h-10 w-10 bg-gray-100 rounded"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <img 
+                  src="/lovable-uploads/b0f9a358-8da1-41c2-97a4-89a06e01942c.png" 
+                  alt="ResumeHatch Dashboard Preview" 
+                  className="w-full h-auto rounded-lg shadow-sm"
+                />
               </div>
             </div>
             
