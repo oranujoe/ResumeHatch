@@ -10,7 +10,12 @@ const Header = () => {
     <header className="py-4 px-4 sm:px-6 lg:px-8 w-full border-b sticky top-0 bg-white z-50">
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center">
-          <h1 className="text-2xl font-bold text-brand-dark">Resume<span className="text-brand-blue">Hatch</span></h1>
+          <img 
+            src="/lovable-uploads/c1fa3a5b-2ee1-47c2-a887-35cc50f1f63f.png" 
+            alt="ResumeHatch Logo" 
+            className="h-8 mr-2"
+          />
+          <span className="text-2xl font-bold text-brand-dark">ResumeHatch</span>
         </div>
         <nav className="hidden md:flex items-center space-x-8">
           <a href="#features" className="text-gray-600 hover:text-brand-blue transition-colors">Features</a>
