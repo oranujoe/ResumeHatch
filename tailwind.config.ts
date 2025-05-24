@@ -68,11 +68,20 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				brand: {
-					blue: '#2563EB',
-					yellow: '#FFB30F',
+					blue: '#265BFF',
+					yellow: '#FFB703',
 					orange: '#F97316',
 					light: '#F8FAFC',
-					dark: '#1E293B'
+					dark: '#0F172A'
+				},
+				// Dashboard-specific status colors
+				status: {
+					success: '#10B981',
+					warning: '#F59E0B',
+					error: '#EF4444',
+					info: '#3B82F6',
+					interview: '#8B5CF6',
+					inactive: '#6B7280'
 				}
 			},
 			borderRadius: {
@@ -111,7 +120,10 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.3s ease-out',
 				'slide-up': 'slide-up 0.4s ease-out',
-			}
+			},
+			fontFamily: {
+				sans: ['Inter', 'sans-serif'],
+			},
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
