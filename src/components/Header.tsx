@@ -1,12 +1,33 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
+import { Moon, Sun } from 'lucide-react';
 import WaitlistDialog from './WaitlistDialog';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Header = () => {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const { user, signOut } = useAuth();
+
+  useEffect(() => {
+    // Check if dark mode is already enabled
+    const isDarkMode = document.documentElement.classList.contains('dark');
+    setIsDark(isDarkMode);
+  }, []);
+
+  const toggleDarkMode = () => {
+    const newDarkMode = !isDark;
+    setIsDark(newDarkMode);
+    
+    if (newDarkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -14,7 +35,7 @@ const Header = () => {
   };
 
   return (
-    <header className="py-4 px-4 sm:px-6 lg:px-8 w-full border-b border-white/20 sticky top-0 bg-white/80 backdrop-blur-md z-50 shadow-lg">
+    <header className="py-4 px-4 sm:px-6 lg:px-8 w-full border-b border-white/20 dark:border-gray-700/50 sticky top-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md z-50 shadow-lg">
       <div className="container mx-auto flex items-center justify-between animate-fade-in-up">
         <div className="flex items-center group">
           <img 
@@ -27,28 +48,28 @@ const Header = () => {
         <nav className="hidden md:flex items-center space-x-8">
           <a 
             href="#features" 
-            className="text-gray-600 hover:text-brand-blue transition-all duration-300 relative group font-medium"
+            className="text-gray-600 dark:text-gray-300 hover:text-brand-blue dark:hover:text-brand-blue transition-all duration-300 relative group font-medium"
           >
             Features
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-brand-blue to-purple-500 transition-all duration-300 group-hover:w-full"></span>
           </a>
           <a 
             href="#how-it-works" 
-            className="text-gray-600 hover:text-brand-blue transition-all duration-300 relative group font-medium"
+            className="text-gray-600 dark:text-gray-300 hover:text-brand-blue dark:hover:text-brand-blue transition-all duration-300 relative group font-medium"
           >
             How it Works
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-brand-blue to-purple-500 transition-all duration-300 group-hover:w-full"></span>
           </a>
           <a 
             href="#pricing" 
-            className="text-gray-600 hover:text-brand-blue transition-all duration-300 relative group font-medium"
+            className="text-gray-600 dark:text-gray-300 hover:text-brand-blue dark:hover:text-brand-blue transition-all duration-300 relative group font-medium"
           >
             Pricing
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-brand-blue to-purple-500 transition-all duration-300 group-hover:w-full"></span>
           </a>
           <a 
             href="#faq" 
-            className="text-gray-600 hover:text-brand-blue transition-all duration-300 relative group font-medium"
+            className="text-gray-600 dark:text-gray-300 hover:text-brand-blue dark:hover:text-brand-blue transition-all duration-300 relative group font-medium"
           >
             FAQ
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-brand-blue to-purple-500 transition-all duration-300 group-hover:w-full"></span>
@@ -56,7 +77,7 @@ const Header = () => {
           {user && (
             <a 
               href="/dashboard" 
-              className="text-gray-600 hover:text-brand-blue transition-all duration-300 relative group font-medium"
+              className="text-gray-600 dark:text-gray-300 hover:text-brand-blue dark:hover:text-brand-blue transition-all duration-300 relative group font-medium"
             >
               Dashboard
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-brand-blue to-purple-500 transition-all duration-300 group-hover:w-full"></span>
@@ -65,15 +86,25 @@ const Header = () => {
         </nav>
         
         <div className="flex items-center space-x-4">
+          {/* Dark Mode Toggle */}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={toggleDarkMode}
+            className="text-gray-600 dark:text-gray-300 hover:text-brand-blue dark:hover:text-brand-blue"
+          >
+            {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </Button>
+
           {user ? (
             <>
-              <span className="text-gray-600 hidden sm:inline">
+              <span className="text-gray-600 dark:text-gray-300 hidden sm:inline">
                 Welcome, {user.email}
               </span>
               <Button 
                 onClick={handleSignOut}
                 variant="outline"
-                className="hover:bg-gray-100"
+                className="hover:bg-gray-100 dark:hover:bg-gray-800 dark:border-gray-600 dark:text-gray-300"
               >
                 Sign Out
               </Button>
@@ -83,7 +114,7 @@ const Header = () => {
               <Button 
                 onClick={() => window.location.href = '/auth'}
                 variant="outline"
-                className="hover:bg-gray-100"
+                className="hover:bg-gray-100 dark:hover:bg-gray-800 dark:border-gray-600 dark:text-gray-300"
               >
                 Sign In
               </Button>
