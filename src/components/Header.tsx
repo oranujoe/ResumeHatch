@@ -46,6 +46,13 @@ const Header = () => {
             FAQ
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-brand-blue to-purple-500 transition-all duration-300 group-hover:w-full"></span>
           </a>
+          <a 
+            href="/dashboard" 
+            className="text-gray-600 hover:text-brand-blue transition-all duration-300 relative group font-medium"
+          >
+            Dashboard
+            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-brand-blue to-purple-500 transition-all duration-300 group-hover:w-full"></span>
+          </a>
         </nav>
         
         <div className="flex items-center">
