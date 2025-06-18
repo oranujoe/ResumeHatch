@@ -5,106 +5,120 @@ import { Badge } from "@/components/ui/badge";
 import { FileText, Key, BarChart2, Bell, Shield } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-const features = [{
-  icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>,
-  title: "AI Matching",
-  description: "Our AI analyzes job descriptions and matches them with your skills and experience."
-}, {
-  icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-        </svg>,
-  title: "Templates",
-  description: "Choose from dozens of professional templates optimized for ATS systems."
-}, {
-  icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>,
-  title: "Cover Letters",
-  description: "Generate personalized cover letters that complement your résumé and highlight key qualifications."
-}, {
-  icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>,
-  title: "Analytics",
-  description: "Track application status, interview rates, and optimize your job search strategy."
-}, {
-  icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>,
-  title: "Quick Apply",
-  description: "Apply to multiple jobs with a single click using your tailored résumés and cover letters."
-}];
+const features = [
+  {
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>,
+    title: "AI Matching",
+    description: "Our AI analyzes job descriptions and matches them with your skills and experience."
+  },
+  {
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+          </svg>,
+    title: "Templates",
+    description: "Choose from dozens of professional templates optimized for ATS systems."
+  },
+  {
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>,
+    title: "Cover Letters",
+    description: "Generate personalized cover letters that complement your résumé and highlight key qualifications."
+  },
+  {
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>,
+    title: "Analytics",
+    description: "Track application status, interview rates, and optimize your job search strategy."
+  },
+  {
+    icon: <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>,
+    title: "Quick Apply",
+    description: "Apply to multiple jobs with a single click using your tailored résumés and cover letters."
+  }
+];
 
 const FeaturesSection = () => {
   const isMobile = useIsMobile();
   
   return (
-    <section id="features" className="py-12 px-4 bg-gray-50 md:py-[80px]">
-      <div className="container mx-auto">
-        <div className="flex justify-center mb-4">
-          <Badge className="inline-block rounded-full px-4 py-1 text-sm font-medium text-gray-700 mb-4 bg-white">
-            Powerful Features
+    <section id="features" className="py-12 px-4 bg-gradient-to-br from-gray-50 via-blue-50/20 to-purple-50/20 md:py-[80px] relative overflow-hidden">
+      {/* Enhanced background elements */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-100/20 to-purple-100/20 animate-gradient-x"></div>
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-200/10 rounded-full blur-3xl animate-float"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-200/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
+      
+      <div className="container mx-auto relative z-10">
+        <div className="flex justify-center mb-4 animate-fade-in-up">
+          <Badge className="inline-block rounded-full px-6 py-2 text-sm font-medium text-gray-700 mb-4 bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+            ✨ Powerful Features
           </Badge>
         </div>
-        <div className="text-center mb-10 md:mb-16">
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4">Everything you need to land that job</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto px-2">
+        <div className="text-center mb-10 md:mb-16 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent">
+            Everything you need to land that job
+          </h2>
+          <p className="text-gray-600 max-w-2xl mx-auto px-2 text-lg leading-relaxed">
             Our comprehensive platform handles every step of the job application process, from customizing your résumé to tracking your applications.
           </p>
         </div>
-        <div className="max-w-4xl mx-auto">
+        
+        <div className="max-w-4xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
           <Tabs defaultValue="resume" className="w-full">
             <div className="overflow-x-auto pb-2">
-              <TabsList className={`w-full flex ${isMobile ? 'flex-nowrap overflow-x-auto' : 'flex-wrap justify-between'} mb-8 md:mb-10 bg-transparent p-0 space-y-0 space-x-2`}>
-                <TabsTrigger value="resume" className="flex items-center gap-2 data-[state=active]:bg-brand-blue/10 data-[state=active]:text-brand-blue rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap">
-                  <div className="bg-green-100 p-1 md:p-2 rounded-md">
-                    <FileText size={isMobile ? 16 : 20} className="text-green-600" />
+              <TabsList className={`w-full flex ${isMobile ? 'flex-nowrap overflow-x-auto' : 'flex-wrap justify-between'} mb-8 md:mb-10 bg-white/70 backdrop-blur-md p-2 space-y-0 space-x-2 rounded-xl border border-white/20 shadow-lg`}>
+                <TabsTrigger value="resume" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap transition-all duration-300 hover:scale-105 group">
+                  <div className="bg-green-100 group-data-[state=active]:bg-white/20 p-1 md:p-2 rounded-md transition-all duration-300">
+                    <FileText size={isMobile ? 16 : 20} className="text-green-600 group-data-[state=active]:text-white transition-colors duration-300" />
                   </div>
-                  <span>Resume</span>
+                  <span className="font-medium">Resume</span>
                 </TabsTrigger>
                 
-                <TabsTrigger value="ats" className="flex items-center gap-2 data-[state=active]:bg-brand-blue/10 data-[state=active]:text-brand-blue rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap">
-                  <div className="bg-purple-100 p-1 md:p-2 rounded-md">
-                    <Key size={isMobile ? 16 : 20} className="text-purple-600" />
+                <TabsTrigger value="ats" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-violet-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap transition-all duration-300 hover:scale-105 group">
+                  <div className="bg-purple-100 group-data-[state=active]:bg-white/20 p-1 md:p-2 rounded-md transition-all duration-300">
+                    <Key size={isMobile ? 16 : 20} className="text-purple-600 group-data-[state=active]:text-white transition-colors duration-300" />
                   </div>
-                  <span>ATS</span>
+                  <span className="font-medium">ATS</span>
                 </TabsTrigger>
                 
-                <TabsTrigger value="dashboard" className="flex items-center gap-2 data-[state=active]:bg-brand-blue/10 data-[state=active]:text-brand-blue rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap">
-                  <div className="bg-blue-100 p-1 md:p-2 rounded-md">
-                    <BarChart2 size={isMobile ? 16 : 20} className="text-blue-600" />
+                <TabsTrigger value="dashboard" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap transition-all duration-300 hover:scale-105 group">
+                  <div className="bg-blue-100 group-data-[state=active]:bg-white/20 p-1 md:p-2 rounded-md transition-all duration-300">
+                    <BarChart2 size={isMobile ? 16 : 20} className="text-blue-600 group-data-[state=active]:text-white transition-colors duration-300" />
                   </div>
-                  <span>Dashboard</span>
+                  <span className="font-medium">Dashboard</span>
                 </TabsTrigger>
                 
-                <TabsTrigger value="smart" className="flex items-center gap-2 data-[state=active]:bg-brand-blue/10 data-[state=active]:text-brand-blue rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap">
-                  <div className="bg-amber-100 p-1 md:p-2 rounded-md">
-                    <Bell size={isMobile ? 16 : 20} className="text-amber-600" />
+                <TabsTrigger value="smart" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-orange-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap transition-all duration-300 hover:scale-105 group">
+                  <div className="bg-amber-100 group-data-[state=active]:bg-white/20 p-1 md:p-2 rounded-md transition-all duration-300">
+                    <Bell size={isMobile ? 16 : 20} className="text-amber-600 group-data-[state=active]:text-white transition-colors duration-300" />
                   </div>
-                  <span>Smart</span>
+                  <span className="font-medium">Smart</span>
                 </TabsTrigger>
                 
-                <TabsTrigger value="secure" className="flex items-center gap-2 data-[state=active]:bg-brand-blue/10 data-[state=active]:text-brand-blue rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap">
-                  <div className="bg-red-100 p-1 md:p-2 rounded-md">
-                    <Shield size={isMobile ? 16 : 20} className="text-red-600" />
+                <TabsTrigger value="secure" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap transition-all duration-300 hover:scale-105 group">
+                  <div className="bg-red-100 group-data-[state=active]:bg-white/20 p-1 md:p-2 rounded-md transition-all duration-300">
+                    <Shield size={isMobile ? 16 : 20} className="text-red-600 group-data-[state=active]:text-white transition-colors duration-300" />
                   </div>
-                  <span>Secure</span>
+                  <span className="font-medium">Secure</span>
                 </TabsTrigger>
               </TabsList>
             </div>
             
-            <TabsContent value="resume" className="animate-fade-in">
-              <div className="flex flex-col lg:flex-row items-center">
+            <TabsContent value="resume" className="animate-scale-in">
+              <div className="flex flex-col lg:flex-row items-center bg-white/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
                 <div className="w-full lg:w-1/2 mb-10 lg:mb-0 pr-0 lg:pr-10">
-                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6">Resume multi-template library</h2>
-                  <p className="text-gray-600 mb-6 md:mb-8">
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Resume multi-template library</h2>
+                  <p className="text-gray-600 mb-6 md:mb-8 text-lg leading-relaxed">
                     Choose from dozens of professionally designed templates optimized for your industry.
                   </p>
                   <ul className="space-y-3 md:space-y-4 mb-6 md:mb-8">
                     <li className="flex items-start">
-                      <div className="mr-3 text-brand-blue mt-1 flex-shrink-0">
+                      <div className="mr-3 text-green-600 mt-1 flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
@@ -114,7 +128,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                     <li className="flex items-start">
-                      <div className="mr-3 text-brand-blue mt-1 flex-shrink-0">
+                      <div className="mr-3 text-green-600 mt-1 flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
@@ -124,7 +138,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                     <li className="flex items-start">
-                      <div className="mr-3 text-brand-blue mt-1 flex-shrink-0">
+                      <div className="mr-3 text-green-600 mt-1 flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
@@ -134,7 +148,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                   </ul>
-                  <Button className="bg-brand-blue hover:bg-blue-700 text-white">
+                  <Button className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-pulse-glow">
                     Browse Templates
                   </Button>
                 </div>
@@ -172,16 +186,16 @@ const FeaturesSection = () => {
               </div>
             </TabsContent>
             
-            <TabsContent value="ats" className="animate-fade-in">
-              <div className="flex flex-col lg:flex-row items-center">
+            <TabsContent value="ats" className="animate-scale-in">
+              <div className="flex flex-col lg:flex-row items-center bg-white/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
                 <div className="w-full lg:w-1/2 mb-10 lg:mb-0 pr-0 lg:pr-10">
-                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6">ATS-optimization</h2>
-                  <p className="text-gray-600 mb-6 md:mb-8">
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">ATS-optimization</h2>
+                  <p className="text-gray-600 mb-6 md:mb-8 text-lg leading-relaxed">
                     Get past automated screening systems with our ATS-optimized resume templates and tools.
                   </p>
                   <ul className="space-y-3 md:space-y-4 mb-6 md:mb-8">
                     <li className="flex items-start">
-                      <div className="mr-3 text-brand-blue mt-1 flex-shrink-0">
+                      <div className="mr-3 text-purple-600 mt-1 flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
@@ -191,7 +205,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                     <li className="flex items-start">
-                      <div className="mr-3 text-brand-blue mt-1 flex-shrink-0">
+                      <div className="mr-3 text-purple-600 mt-1 flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
@@ -201,7 +215,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                     <li className="flex items-start">
-                      <div className="mr-3 text-brand-blue mt-1 flex-shrink-0">
+                      <div className="mr-3 text-purple-600 mt-1 flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
@@ -211,7 +225,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                   </ul>
-                  <Button className="bg-brand-blue hover:bg-blue-700 text-white">
+                  <Button className="bg-gradient-to-r from-purple-500 to-violet-500 hover:from-purple-600 hover:to-violet-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-pulse-glow">
                     Try ATS Checker
                   </Button>
                 </div>
@@ -255,16 +269,16 @@ const FeaturesSection = () => {
               </div>
             </TabsContent>
             
-            <TabsContent value="dashboard" className="animate-fade-in">
-              <div className="flex flex-col lg:flex-row items-center">
+            <TabsContent value="dashboard" className="animate-scale-in">
+              <div className="flex flex-col lg:flex-row items-center bg-white/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
                 <div className="w-full lg:w-1/2 mb-10 lg:mb-0 pr-0 lg:pr-10">
-                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6">Application Dashboard</h2>
-                  <p className="text-gray-600 mb-6 md:mb-8">
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">Application Dashboard</h2>
+                  <p className="text-gray-600 mb-6 md:mb-8 text-lg leading-relaxed">
                     Track all your job applications in one centralized dashboard with powerful insights.
                   </p>
                   <ul className="space-y-3 md:space-y-4 mb-6 md:mb-8">
                     <li className="flex items-start">
-                      <div className="mr-3 text-brand-blue mt-1 flex-shrink-0">
+                      <div className="mr-3 text-blue-600 mt-1 flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
@@ -274,7 +288,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                     <li className="flex items-start">
-                      <div className="mr-3 text-brand-blue mt-1 flex-shrink-0">
+                      <div className="mr-3 text-blue-600 mt-1 flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
@@ -284,7 +298,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                     <li className="flex items-start">
-                      <div className="mr-3 text-brand-blue mt-1 flex-shrink-0">
+                      <div className="mr-3 text-blue-600 mt-1 flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
@@ -294,7 +308,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                   </ul>
-                  <Button className="bg-brand-blue hover:bg-blue-700 text-white">
+                  <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-pulse-glow">
                     Explore Dashboard
                   </Button>
                 </div>
@@ -353,16 +367,16 @@ const FeaturesSection = () => {
               </div>
             </TabsContent>
             
-            <TabsContent value="smart" className="animate-fade-in">
-              <div className="flex flex-col lg:flex-row items-center">
+            <TabsContent value="smart" className="animate-scale-in">
+              <div className="flex flex-col lg:flex-row items-center bg-white/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
                 <div className="w-full lg:w-1/2 mb-10 lg:mb-0 pr-0 lg:pr-10">
-                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6">Smart Features</h2>
-                  <p className="text-gray-600 mb-6 md:mb-8">
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">Smart Features</h2>
+                  <p className="text-gray-600 mb-6 md:mb-8 text-lg leading-relaxed">
                     Our AI-powered tools take your resume and job applications to the next level.
                   </p>
                   <ul className="space-y-3 md:space-y-4 mb-6 md:mb-8">
                     <li className="flex items-start">
-                      <div className="mr-3 text-brand-blue mt-1 flex-shrink-0">
+                      <div className="mr-3 text-amber-600 mt-1 flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M10 18a8 8 0 000-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
@@ -372,7 +386,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                     <li className="flex items-start">
-                      <div className="mr-3 text-brand-blue mt-1 flex-shrink-0">
+                      <div className="mr-3 text-amber-600 mt-1 flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M10 18a8 8 0 000-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
@@ -382,7 +396,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                     <li className="flex items-start">
-                      <div className="mr-3 text-brand-blue mt-1 flex-shrink-0">
+                      <div className="mr-3 text-amber-600 mt-1 flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M10 18a8 8 0 000-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
@@ -392,7 +406,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                   </ul>
-                  <Button className="bg-brand-blue hover:bg-blue-700 text-white">
+                  <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-pulse-glow">
                     Discover Smart Features
                   </Button>
                 </div>
@@ -436,16 +450,16 @@ const FeaturesSection = () => {
               </div>
             </TabsContent>
             
-            <TabsContent value="secure" className="animate-fade-in">
-              <div className="flex flex-col lg:flex-row items-center">
+            <TabsContent value="secure" className="animate-scale-in">
+              <div className="flex flex-col lg:flex-row items-center bg-white/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
                 <div className="w-full lg:w-1/2 mb-10 lg:mb-0 pr-0 lg:pr-10">
-                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6">Secure Platform</h2>
-                  <p className="text-gray-600 mb-6 md:mb-8">
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">Secure Platform</h2>
+                  <p className="text-gray-600 mb-6 md:mb-8 text-lg leading-relaxed">
                     We prioritize your data security and privacy with enterprise-grade protection.
                   </p>
                   <ul className="space-y-3 md:space-y-4 mb-6 md:mb-8">
                     <li className="flex items-start">
-                      <div className="mr-3 text-brand-blue mt-1 flex-shrink-0">
+                      <div className="mr-3 text-red-600 mt-1 flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
@@ -455,7 +469,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                     <li className="flex items-start">
-                      <div className="mr-3 text-brand-blue mt-1 flex-shrink-0">
+                      <div className="mr-3 text-red-600 mt-1 flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
@@ -465,7 +479,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                     <li className="flex items-start">
-                      <div className="mr-3 text-brand-blue mt-1 flex-shrink-0">
+                      <div className="mr-3 text-red-600 mt-1 flex-shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
@@ -475,7 +489,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                   </ul>
-                  <Button className="bg-brand-blue hover:bg-blue-700 text-white">
+                  <Button className="bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-pulse-glow">
                     Learn About Security
                   </Button>
                 </div>
