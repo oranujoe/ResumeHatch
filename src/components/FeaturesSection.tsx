@@ -148,7 +148,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                   </ul>
-                  <Button className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-pulse-glow">
+                  <Button className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     Browse Templates
                   </Button>
                 </div>
@@ -225,7 +225,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                   </ul>
-                  <Button className="bg-gradient-to-r from-purple-500 to-violet-500 hover:from-purple-600 hover:to-violet-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-pulse-glow">
+                  <Button className="bg-gradient-to-r from-purple-500 to-violet-500 hover:from-purple-600 hover:to-violet-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     Try ATS Checker
                   </Button>
                 </div>
@@ -308,7 +308,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                   </ul>
-                  <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-pulse-glow">
+                  <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     Explore Dashboard
                   </Button>
                 </div>
@@ -406,7 +406,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                   </ul>
-                  <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-pulse-glow">
+                  <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     Discover Smart Features
                   </Button>
                 </div>
@@ -489,7 +489,7 @@ const FeaturesSection = () => {
                       </div>
                     </li>
                   </ul>
-                  <Button className="bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-pulse-glow">
+                  <Button className="bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     Learn About Security
                   </Button>
                 </div>
