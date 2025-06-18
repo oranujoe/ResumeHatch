@@ -23,7 +23,7 @@ const HowItWorksSection = () => {
           <div className="inline-block bg-gray-50 rounded-full px-4 py-1.5 text-sm font-medium text-gray-700 mb-5">
             Simple 3-Step Process
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">How Resume Hatch Works</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">How Resume Hatch Work</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Our streamlined process takes the hassle out of job applications, letting you focus on what matters.
           </p>
