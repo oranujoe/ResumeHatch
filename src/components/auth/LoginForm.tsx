@@ -8,6 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { loginSchema, LoginFormValues } from './schemas';
+import ForgotPasswordDialog from './ForgotPasswordDialog';
 
 interface LoginFormProps {
   onToggleMode: () => void;
@@ -17,6 +18,7 @@ const LoginForm = ({ onToggleMode }: LoginFormProps) => {
   const { signIn } = useAuth();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -104,6 +106,16 @@ const LoginForm = ({ onToggleMode }: LoginFormProps) => {
             )}
           />
           
+          <div className="flex items-center justify-between">
+            <button
+              type="button"
+              onClick={() => setIsForgotPasswordOpen(true)}
+              className="text-sm text-brand-blue hover:text-blue-700 font-medium"
+            >
+              Forgot password?
+            </button>
+          </div>
+          
           <Button 
             type="submit" 
             className="w-full bg-brand-blue hover:bg-blue-700"
@@ -123,6 +135,11 @@ const LoginForm = ({ onToggleMode }: LoginFormProps) => {
           Don't have an account? Sign up
         </button>
       </div>
+
+      <ForgotPasswordDialog 
+        open={isForgotPasswordOpen} 
+        onOpenChange={setIsForgotPasswordOpen} 
+      />
     </>
   );
 };

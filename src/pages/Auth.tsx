@@ -1,21 +1,24 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useSearchParams } from 'react-router-dom';
 import AuthLayout from '@/components/auth/AuthLayout';
 import LoginForm from '@/components/auth/LoginForm';
 import SignupForm from '@/components/auth/SignupForm';
+import ResetPasswordForm from '@/components/auth/ResetPasswordForm';
 
 const Auth = () => {
   const { user, loading } = useAuth();
+  const [searchParams] = useSearchParams();
   const [isLogin, setIsLogin] = useState(true);
+  const mode = searchParams.get('mode');
 
   // Redirect authenticated users to dashboard
   useEffect(() => {
-    if (user) {
+    if (user && mode !== 'reset') {
       window.location.href = '/dashboard';
     }
-  }, [user]);
+  }, [user, mode]);
 
   if (loading) {
     return (
@@ -25,7 +28,7 @@ const Auth = () => {
     );
   }
 
-  if (user) {
+  if (user && mode !== 'reset') {
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -36,6 +39,21 @@ const Auth = () => {
   const handleSignupSuccess = () => {
     setIsLogin(true);
   };
+
+  const handleResetSuccess = () => {
+    window.location.href = '/dashboard';
+  };
+
+  if (mode === 'reset') {
+    return (
+      <AuthLayout
+        title="Reset your password"
+        subtitle="Enter your new password below"
+      >
+        <ResetPasswordForm onSuccess={handleResetSuccess} />
+      </AuthLayout>
+    );
+  }
 
   return (
     <AuthLayout
