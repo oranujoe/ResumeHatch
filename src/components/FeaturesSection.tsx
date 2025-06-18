@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -121,7 +122,7 @@ const FeaturesSection = () => {
               </div>
             ) : (
               /* Desktop/Tablet Tabs */
-              <TabsList className="w-full flex-wrap justify-between mb-8 md:mb-10 bg-white/70 backdrop-blur-md p-2 space-y-0 space-x-2 rounded-xl border border-white/20 shadow-lg pb-2">
+              <TabsList className="w-full flex-wrap justify-between mb-8 md:mb-10 bg-white/70 backdrop-blur-md p-2 space-y-0 space-x-2 rounded-xl border border-white/20 shadow-lg min-h-fit py-3">
                 <TabsTrigger value="resume" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap transition-all duration-300 hover:scale-105 group">
                   <div className="bg-green-100 group-data-[state=active]:bg-white/20 p-1 md:p-2 rounded-md transition-all duration-300">
                     <FileText size={20} className="text-green-600 group-data-[state=active]:text-white transition-colors duration-300" />
