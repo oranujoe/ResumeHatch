@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Key, BarChart2, Bell, Shield } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -43,8 +44,17 @@ const features = [
   }
 ];
 
+const tabOptions = [
+  { value: "resume", label: "Resume", icon: FileText, color: "green" },
+  { value: "ats", label: "ATS", icon: Key, color: "purple" },
+  { value: "dashboard", label: "Dashboard", icon: BarChart2, color: "blue" },
+  { value: "smart", label: "Smart", icon: Bell, color: "amber" },
+  { value: "secure", label: "Secure", icon: Shield, color: "red" }
+];
+
 const FeaturesSection = () => {
   const isMobile = useIsMobile();
+  const [activeTab, setActiveTab] = React.useState("resume");
   
   return (
     <section id="features" className="py-12 px-4 bg-gradient-to-br from-gray-50 via-blue-50/20 to-purple-50/20 md:py-[80px] relative overflow-hidden">
@@ -69,43 +79,85 @@ const FeaturesSection = () => {
         </div>
         
         <div className="max-w-4xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-          <Tabs defaultValue="resume" className="w-full">
-            <TabsList className={`${isMobile ? 'min-w-fit overflow-x-auto' : 'w-full flex-wrap justify-between'} mb-8 md:mb-10 bg-white/70 backdrop-blur-md p-2 space-y-0 space-x-2 rounded-xl border border-white/20 shadow-lg pb-2`}>
-              <TabsTrigger value="resume" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap transition-all duration-300 hover:scale-105 group">
-                <div className="bg-green-100 group-data-[state=active]:bg-white/20 p-1 md:p-2 rounded-md transition-all duration-300">
-                  <FileText size={isMobile ? 16 : 20} className="text-green-600 group-data-[state=active]:text-white transition-colors duration-300" />
-                </div>
-                <span className="font-medium">Resume</span>
-              </TabsTrigger>
-              
-              <TabsTrigger value="ats" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-violet-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap transition-all duration-300 hover:scale-105 group">
-                <div className="bg-purple-100 group-data-[state=active]:bg-white/20 p-1 md:p-2 rounded-md transition-all duration-300">
-                  <Key size={isMobile ? 16 : 20} className="text-purple-600 group-data-[state=active]:text-white transition-colors duration-300" />
-                </div>
-                <span className="font-medium">ATS</span>
-              </TabsTrigger>
-              
-              <TabsTrigger value="dashboard" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap transition-all duration-300 hover:scale-105 group">
-                <div className="bg-blue-100 group-data-[state=active]:bg-white/20 p-1 md:p-2 rounded-md transition-all duration-300">
-                  <BarChart2 size={isMobile ? 16 : 20} className="text-blue-600 group-data-[state=active]:text-white transition-colors duration-300" />
-                </div>
-                <span className="font-medium">Dashboard</span>
-              </TabsTrigger>
-              
-              <TabsTrigger value="smart" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-orange-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap transition-all duration-300 hover:scale-105 group">
-                <div className="bg-amber-100 group-data-[state=active]:bg-white/20 p-1 md:p-2 rounded-md transition-all duration-300">
-                  <Bell size={isMobile ? 16 : 20} className="text-amber-600 group-data-[state=active]:text-white transition-colors duration-300" />
-                </div>
-                <span className="font-medium">Smart</span>
-              </TabsTrigger>
-              
-              <TabsTrigger value="secure" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap transition-all duration-300 hover:scale-105 group">
-                <div className="bg-red-100 group-data-[state=active]:bg-white/20 p-1 md:p-2 rounded-md transition-all duration-300">
-                  <Shield size={isMobile ? 16 : 20} className="text-red-600 group-data-[state=active]:text-white transition-colors duration-300" />
-                </div>
-                <span className="font-medium">Secure</span>
-              </TabsTrigger>
-            </TabsList>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            {/* Mobile Dropdown */}
+            {isMobile ? (
+              <div className="mb-8 md:mb-10">
+                <Select value={activeTab} onValueChange={setActiveTab}>
+                  <SelectTrigger className="w-full bg-white/70 backdrop-blur-md border border-white/20 shadow-lg rounded-xl h-14">
+                    <SelectValue>
+                      {(() => {
+                        const currentTab = tabOptions.find(tab => tab.value === activeTab);
+                        const IconComponent = currentTab?.icon;
+                        return (
+                          <div className="flex items-center gap-3">
+                            {IconComponent && (
+                              <div className={`bg-${currentTab.color}-100 p-2 rounded-md`}>
+                                <IconComponent size={20} className={`text-${currentTab.color}-600`} />
+                              </div>
+                            )}
+                            <span className="font-medium">{currentTab?.label}</span>
+                          </div>
+                        );
+                      })()}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent className="bg-white/95 backdrop-blur-md border border-white/20 shadow-xl">
+                    {tabOptions.map((tab) => {
+                      const IconComponent = tab.icon;
+                      return (
+                        <SelectItem key={tab.value} value={tab.value} className="focus:bg-gray-50">
+                          <div className="flex items-center gap-3">
+                            <div className={`bg-${tab.color}-100 p-2 rounded-md`}>
+                              <IconComponent size={16} className={`text-${tab.color}-600`} />
+                            </div>
+                            <span className="font-medium">{tab.label}</span>
+                          </div>
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+              </div>
+            ) : (
+              /* Desktop/Tablet Tabs */
+              <TabsList className="w-full flex-wrap justify-between mb-8 md:mb-10 bg-white/70 backdrop-blur-md p-2 space-y-0 space-x-2 rounded-xl border border-white/20 shadow-lg pb-2">
+                <TabsTrigger value="resume" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap transition-all duration-300 hover:scale-105 group">
+                  <div className="bg-green-100 group-data-[state=active]:bg-white/20 p-1 md:p-2 rounded-md transition-all duration-300">
+                    <FileText size={20} className="text-green-600 group-data-[state=active]:text-white transition-colors duration-300" />
+                  </div>
+                  <span className="font-medium">Resume</span>
+                </TabsTrigger>
+                
+                <TabsTrigger value="ats" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-violet-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap transition-all duration-300 hover:scale-105 group">
+                  <div className="bg-purple-100 group-data-[state=active]:bg-white/20 p-1 md:p-2 rounded-md transition-all duration-300">
+                    <Key size={20} className="text-purple-600 group-data-[state=active]:text-white transition-colors duration-300" />
+                  </div>
+                  <span className="font-medium">ATS</span>
+                </TabsTrigger>
+                
+                <TabsTrigger value="dashboard" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap transition-all duration-300 hover:scale-105 group">
+                  <div className="bg-blue-100 group-data-[state=active]:bg-white/20 p-1 md:p-2 rounded-md transition-all duration-300">
+                    <BarChart2 size={20} className="text-blue-600 group-data-[state=active]:text-white transition-colors duration-300" />
+                  </div>
+                  <span className="font-medium">Dashboard</span>
+                </TabsTrigger>
+                
+                <TabsTrigger value="smart" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-orange-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap transition-all duration-300 hover:scale-105 group">
+                  <div className="bg-amber-100 group-data-[state=active]:bg-white/20 p-1 md:p-2 rounded-md transition-all duration-300">
+                    <Bell size={20} className="text-amber-600 group-data-[state=active]:text-white transition-colors duration-300" />
+                  </div>
+                  <span className="font-medium">Smart</span>
+                </TabsTrigger>
+                
+                <TabsTrigger value="secure" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap transition-all duration-300 hover:scale-105 group">
+                  <div className="bg-red-100 group-data-[state=active]:bg-white/20 p-1 md:p-2 rounded-md transition-all duration-300">
+                    <Shield size={20} className="text-red-600 group-data-[state=active]:text-white transition-colors duration-300" />
+                  </div>
+                  <span className="font-medium">Secure</span>
+                </TabsTrigger>
+              </TabsList>
+            )}
             
             <TabsContent value="resume" className="animate-scale-in">
               <div className="flex flex-col lg:flex-row items-center bg-white/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
