@@ -57,7 +57,7 @@ const Header = () => {
         
         <div className="flex items-center">
           <Button 
-            className="bg-gradient-to-r from-brand-blue to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 font-semibold px-6 animate-pulse-glow" 
+            className="bg-gradient-to-r from-brand-blue to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 font-semibold px-6" 
             onClick={() => setIsWaitlistOpen(true)}
           >
             Join the Waitlist

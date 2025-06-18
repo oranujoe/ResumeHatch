@@ -32,7 +32,7 @@ const CtaSection = () => {
           
           <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
             <Button 
-              className="bg-gradient-to-r from-brand-blue to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white h-14 px-8 rounded-xl text-lg font-semibold flex items-center gap-3 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 animate-pulse-glow group"
+              className="bg-gradient-to-r from-brand-blue to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white h-14 px-8 rounded-xl text-lg font-semibold flex items-center gap-3 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 group"
               onClick={() => setIsWaitlistOpen(true)}
             >
               <span>Join Our Waitlist</span>
