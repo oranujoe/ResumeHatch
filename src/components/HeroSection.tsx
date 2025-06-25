@@ -44,7 +44,7 @@ const HeroSection = () => {
             </h1>
 
             {/* Description with animation */}
-            <p className={`text-xl text-gray-600 leading-relaxed max-w-xl transition-all duration-700 delay-400 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>Paste any job link, and let our AI craft an ATS-optimised résumé and cover letter, then apply with a single click — all while tracking every application in your personal dashboard</p>
+            <p className={`text-xl text-gray-600 leading-relaxed max-w-xl transition-all duration-700 delay-400 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>Paste any job link, and let our AI craft an ATS-optimised résumé and cover letter, then apply with a single click — all while tracking every application in your personal dashboard.</p>
 
             {/* CTA Buttons with enhanced styling and animation */}
             <div className={`pt-6 flex flex-col sm:flex-row gap-4 transition-all duration-700 delay-600 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
