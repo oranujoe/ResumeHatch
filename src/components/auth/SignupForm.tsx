@@ -41,7 +41,7 @@ const SignupForm = ({ onToggleMode, onSignupSuccess }: SignupFormProps) => {
       };
 
       const { error } = await signUp(sanitizedData.email, data.password, {
-        full_name: sanitizedData.fullName,
+        fullName: sanitizedData.fullName,
       });
       
       if (error) {
