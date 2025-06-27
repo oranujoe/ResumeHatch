@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { loginSchema, LoginFormValues } from './schemas';
 import { validateAndSanitizeInput } from '@/utils/inputSanitization';
 import ForgotPasswordDialog from './ForgotPasswordDialog';
+import GoogleSignInButton from './GoogleSignInButton';
 
 interface LoginFormProps {
   onToggleMode: () => void;
@@ -79,67 +80,80 @@ const LoginForm = ({ onToggleMode }: LoginFormProps) => {
 
   return (
     <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email address</FormLabel>
-                <FormControl>
-                  <Input 
-                    placeholder="Enter your email" 
-                    type="email" 
-                    {...field} 
-                    className="w-full"
-                    autoComplete="email"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input 
-                    placeholder="Enter your password" 
-                    type="password" 
-                    {...field} 
-                    className="w-full"
-                    autoComplete="current-password"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <div className="flex items-center justify-between">
-            <button
-              type="button"
-              onClick={() => setIsForgotPasswordOpen(true)}
-              className="text-sm text-brand-blue hover:text-blue-700 font-medium"
-            >
-              Forgot password?
-            </button>
+      <div className="space-y-6">
+        <GoogleSignInButton />
+        
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
           </div>
-          
-          <Button 
-            type="submit" 
-            className="w-full bg-brand-blue hover:bg-blue-700"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Signing in..." : "Sign in"}
-          </Button>
-        </form>
-      </Form>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-white px-2 text-gray-500">Or continue with email</span>
+          </div>
+        </div>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email address</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Enter your email" 
+                      type="email" 
+                      {...field} 
+                      className="w-full"
+                      autoComplete="email"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Enter your password" 
+                      type="password" 
+                      {...field} 
+                      className="w-full"
+                      autoComplete="current-password"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <div className="flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => setIsForgotPasswordOpen(true)}
+                className="text-sm text-brand-blue hover:text-blue-700 font-medium"
+              >
+                Forgot password?
+              </button>
+            </div>
+            
+            <Button 
+              type="submit" 
+              className="w-full bg-brand-blue hover:bg-blue-700"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Signing in..." : "Sign in"}
+            </Button>
+          </form>
+        </Form>
+      </div>
 
       <div className="mt-6 text-center">
         <button

@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { signupSchema, SignupFormValues } from './schemas';
 import { validateAndSanitizeInput } from '@/utils/inputSanitization';
+import GoogleSignInButton from './GoogleSignInButton';
 
 interface SignupFormProps {
   onToggleMode: () => void;
@@ -86,95 +87,108 @@ const SignupForm = ({ onToggleMode, onSignupSuccess }: SignupFormProps) => {
 
   return (
     <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="fullName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Full Name</FormLabel>
-                <FormControl>
-                  <Input 
-                    placeholder="Enter your full name" 
-                    {...field} 
-                    className="w-full"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email address</FormLabel>
-                <FormControl>
-                  <Input 
-                    placeholder="Enter your email" 
-                    type="email" 
-                    {...field} 
-                    className="w-full"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input 
-                    placeholder="Create a strong password" 
-                    type="password" 
-                    {...field} 
-                    className="w-full"
-                  />
-                </FormControl>
-                <FormMessage />
-                <div className="text-xs text-gray-600 mt-1">
-                  Must contain: 8+ characters, uppercase, lowercase, number, and special character
-                </div>
-              </FormItem>
-            )}
-          />
-          
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Confirm Password</FormLabel>
-                <FormControl>
-                  <Input 
-                    placeholder="Confirm your password" 
-                    type="password" 
-                    {...field} 
-                    className="w-full"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <Button 
-            type="submit" 
-            className="w-full bg-brand-blue hover:bg-blue-700"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Creating account..." : "Create account"}
-          </Button>
-        </form>
-      </Form>
+      <div className="space-y-6">
+        <GoogleSignInButton />
+        
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-white px-2 text-gray-500">Or continue with email</span>
+          </div>
+        </div>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="fullName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Full Name</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Enter your full name" 
+                      {...field} 
+                      className="w-full"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email address</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Enter your email" 
+                      type="email" 
+                      {...field} 
+                      className="w-full"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Create a strong password" 
+                      type="password" 
+                      {...field} 
+                      className="w-full"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                  <div className="text-xs text-gray-600 mt-1">
+                    Must contain: 8+ characters, uppercase, lowercase, number, and special character
+                  </div>
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Confirm your password" 
+                      type="password" 
+                      {...field} 
+                      className="w-full"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <Button 
+              type="submit" 
+              className="w-full bg-brand-blue hover:bg-blue-700"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Creating account..." : "Create account"}
+            </Button>
+          </form>
+        </Form>
+      </div>
 
       <div className="mt-6 text-center">
         <button
