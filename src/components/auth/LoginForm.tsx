@@ -8,6 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { loginSchema, LoginFormValues } from './schemas';
+import { validateAndSanitizeInput } from '@/utils/inputSanitization';
 import ForgotPasswordDialog from './ForgotPasswordDialog';
 
 interface LoginFormProps {
@@ -31,32 +32,44 @@ const LoginForm = ({ onToggleMode }: LoginFormProps) => {
   const onSubmit = async (data: LoginFormValues) => {
     setIsSubmitting(true);
     try {
-      const { error } = await signIn(data.email, data.password);
+      // Sanitize email input for additional security
+      const sanitizedEmail = validateAndSanitizeInput(data.email, 'email');
+      
+      const { error } = await signIn(sanitizedEmail, data.password);
       
       if (error) {
-        if (error.message.includes('Invalid login credentials')) {
+        // Generic error messages to prevent information leakage
+        if (error.message.includes('Invalid login credentials') || 
+            error.message.includes('Email not confirmed')) {
           toast({
-            title: "Login failed",
-            description: "Invalid email or password. Please try again.",
+            title: "Sign in failed",
+            description: "Invalid email or password. Please check your credentials and try again.",
             variant: "destructive",
+          });
+        } else if (error.message.includes('Too many requests')) {
+          toast({
+            title: "Too many attempts",
+            description: "Please wait a moment before trying again.",
+            variant: "destructive",  
           });
         } else {
           toast({
-            title: "Login failed",
-            description: error.message,
+            title: "Sign in failed",
+            description: "Unable to sign in. Please try again later.",
             variant: "destructive",
           });
         }
       } else {
         toast({
           title: "Welcome back!",
-          description: "You've been successfully logged in.",
+          description: "You've been successfully signed in.",
         });
       }
     } catch (error) {
+      console.error('Login error:', error);
       toast({
-        title: "Something went wrong",
-        description: "Please try again later.",
+        title: "Sign in failed",
+        description: "An unexpected error occurred. Please try again later.",
         variant: "destructive",
       });
     } finally {
@@ -80,6 +93,7 @@ const LoginForm = ({ onToggleMode }: LoginFormProps) => {
                     type="email" 
                     {...field} 
                     className="w-full"
+                    autoComplete="email"
                   />
                 </FormControl>
                 <FormMessage />
@@ -99,6 +113,7 @@ const LoginForm = ({ onToggleMode }: LoginFormProps) => {
                     type="password" 
                     {...field} 
                     className="w-full"
+                    autoComplete="current-password"
                   />
                 </FormControl>
                 <FormMessage />

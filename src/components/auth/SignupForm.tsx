@@ -8,6 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { signupSchema, SignupFormValues } from './schemas';
+import { validateAndSanitizeInput } from '@/utils/inputSanitization';
 
 interface SignupFormProps {
   onToggleMode: () => void;
@@ -25,39 +26,57 @@ const SignupForm = ({ onToggleMode, onSignupSuccess }: SignupFormProps) => {
       email: "",
       password: "",
       fullName: "",
+      confirmPassword: "",
     },
   });
 
   const onSubmit = async (data: SignupFormValues) => {
     setIsSubmitting(true);
     try {
-      const { error } = await signUp(data.email, data.password, data.fullName);
+      // Sanitize inputs for additional security
+      const sanitizedData = {
+        email: validateAndSanitizeInput(data.email, 'email'),
+        fullName: validateAndSanitizeInput(data.fullName, 'name'),
+        password: data.password, // Don't sanitize passwords
+      };
+
+      const { error } = await signUp(sanitizedData.email, data.password, {
+        full_name: sanitizedData.fullName,
+      });
       
       if (error) {
-        if (error.message.includes('User already registered')) {
+        // Generic error message to avoid information leakage
+        if (error.message.includes('already registered')) {
           toast({
             title: "Account exists",
-            description: "An account with this email already exists. Please log in instead.",
+            description: "An account with this email already exists. Please sign in instead.",
+            variant: "destructive",
+          });
+        } else if (error.message.includes('Password')) {
+          toast({
+            title: "Password requirements not met",
+            description: "Please ensure your password meets all requirements.",
             variant: "destructive",
           });
         } else {
           toast({
-            title: "Signup failed",
-            description: error.message,
+            title: "Registration failed",
+            description: "Unable to create account. Please check your information and try again.",
             variant: "destructive",
           });
         }
       } else {
         toast({
-          title: "Account created!",
-          description: "Please check your email for verification instructions.",
+          title: "Account created successfully!",
+          description: "Please check your email to verify your account.",
         });
         onSignupSuccess();
       }
     } catch (error) {
+      console.error('Signup error:', error);
       toast({
-        title: "Something went wrong",
-        description: "Please try again later.",
+        title: "Registration failed",
+        description: "An unexpected error occurred. Please try again later.",
         variant: "destructive",
       });
     } finally {
@@ -114,7 +133,29 @@ const SignupForm = ({ onToggleMode, onSignupSuccess }: SignupFormProps) => {
                 <FormLabel>Password</FormLabel>
                 <FormControl>
                   <Input 
-                    placeholder="Enter your password" 
+                    placeholder="Create a strong password" 
+                    type="password" 
+                    {...field} 
+                    className="w-full"
+                  />
+                </FormControl>
+                <FormMessage />
+                <div className="text-xs text-gray-600 mt-1">
+                  Must contain: 8+ characters, uppercase, lowercase, number, and special character
+                </div>
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm Password</FormLabel>
+                <FormControl>
+                  <Input 
+                    placeholder="Confirm your password" 
                     type="password" 
                     {...field} 
                     className="w-full"
