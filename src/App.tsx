@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -8,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
+import JobParser from "./pages/JobParser";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
@@ -34,10 +34,10 @@ const App: React.FC = () => {
                 } 
               />
               <Route 
-                path="/dashboard/*" 
+                path="/dashboard/job-parser/*" 
                 element={
                   <ProtectedRoute>
-                    <Dashboard />
+                    <JobParser />
                   </ProtectedRoute>
                 } 
               />
