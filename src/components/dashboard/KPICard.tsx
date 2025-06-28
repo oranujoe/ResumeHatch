@@ -55,7 +55,7 @@ const KPICard: React.FC<KPICardProps> = ({
   return (
     <div className="kpi-card group">
       <div className="flex items-start justify-between mb-4">
-        <div className={cn("p-3 rounded-xl shadow-lg", iconColor)}>
+        <div className={cn("p-3 rounded-xl", iconColor)}>
           <Icon className="h-5 w-5 md:h-6 md:w-6 text-white" />
         </div>
         <div className={cn("text-label-small font-medium", getTrendClasses())}>

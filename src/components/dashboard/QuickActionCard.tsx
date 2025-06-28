@@ -25,7 +25,7 @@ const QuickActionCard: React.FC<QuickActionCardProps> = ({
   return (
     <div className="glass-card glass-card-hover p-4 md:p-6 rounded-xl group cursor-pointer" onClick={onClick}>
       <div className="flex items-start space-x-4">
-        <div className={cn("p-3 rounded-xl shadow-lg relative", iconColor)}>
+        <div className={cn("p-3 rounded-xl relative", iconColor)}>
           <Icon className="h-5 w-5 md:h-6 md:w-6 text-white" />
           {isNew && (
             <div className="absolute -top-1 -right-1 w-3 h-3 bg-warning-primary rounded-full animate-pulse-glow">
@@ -47,7 +47,7 @@ const QuickActionCard: React.FC<QuickActionCardProps> = ({
           <p className="text-body-small text-muted-foreground mb-4 leading-relaxed">
             {description}
           </p>
-          <button className="btn-primary px-4 py-2 text-label-medium group-hover:shadow-lg transition-all duration-200 flex items-center space-x-2">
+          <button className="btn-primary px-4 py-2 text-label-medium group-hover:bg-primary/80 transition-all duration-200 flex items-center space-x-2">
             <span>{action}</span>
             <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
           </button>

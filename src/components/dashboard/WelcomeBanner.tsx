@@ -16,7 +16,7 @@ const WelcomeBanner: React.FC<WelcomeBannerProps> = ({ onClose, className }) => 
       className
     )}>
       <div className="flex items-start space-x-4">
-        <div className="w-12 h-12 bg-gradient-to-br from-warning-primary to-warning-secondary rounded-xl flex items-center justify-center shadow-lg">
+        <div className="w-12 h-12 bg-gradient-to-br from-warning-primary to-warning-secondary rounded-xl flex items-center justify-center">
           <Sparkles className="h-6 w-6 text-white" />
         </div>
         

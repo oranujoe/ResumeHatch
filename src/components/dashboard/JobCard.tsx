@@ -80,7 +80,7 @@ const JobCard: React.FC<JobCardProps> = ({
     <div className={cn("job-card", statusInfo.bgClass)}>
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-start space-x-3 flex-1 min-w-0">
-          <div className="w-12 h-12 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
+          <div className="w-12 h-12 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl flex items-center justify-center flex-shrink-0">
             <Building2 className="h-6 w-6 text-primary" />
           </div>
           <div className="flex-1 min-w-0">
@@ -118,7 +118,7 @@ const JobCard: React.FC<JobCardProps> = ({
       </div>
 
       <div className="flex items-center justify-between mb-4">
-        <div className={cn("px-3 py-1.5 rounded-full text-label-small font-medium shadow-sm", statusInfo.color)}>
+        <div className={cn("px-3 py-1.5 rounded-full text-label-small font-medium", statusInfo.color)}>
           {statusInfo.label}
         </div>
         <div className="flex items-center space-x-4 text-label-small text-muted-foreground">
