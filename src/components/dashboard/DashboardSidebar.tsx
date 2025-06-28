@@ -1,121 +1,281 @@
+import React, { useState } from 'react';
+import { 
+  Home, 
+  FileText, 
+  Briefcase, 
+  FolderOpen, 
+  BookOpen, 
+  Rss, 
+  MessageSquare, 
+  Users, 
+  Settings, 
+  User, 
+  HelpCircle,
+  ChevronRight,
+  ChevronDown,
+  Menu,
+  X
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-import React from 'react';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { LayoutDashboard, FileText, Briefcase, Users, BookOpen, MessageSquare, Settings, User, HelpCircle, ChevronRight } from 'lucide-react';
+interface NavItem {
+  title: string;
+  url: string;
+  icon: React.ComponentType<{ className?: string }>;
+  subItems?: { title: string; url: string }[];
+}
 
-const mainNavItems = [{
-  title: "Dashboard",
-  url: "/dashboard",
-  icon: LayoutDashboard
-}, {
-  title: "Job Parser",
-  url: "/dashboard/job-parser",
-  icon: FileText,
-  subItems: [{
-    title: "Parse Job",
-    url: "/dashboard/job-parser/parse"
-  }, {
-    title: "Saved Jobs",
-    url: "/dashboard/job-parser/saved"
-  }]
-}, {
-  title: "Applications",
-  url: "/dashboard/applications",
-  icon: Briefcase
-}, {
-  title: "Documents",
-  url: "/dashboard/documents",
-  icon: FileText
-}, {
-  title: "Knowledge Base",
-  url: "/dashboard/knowledge",
-  icon: BookOpen
-}, {
-  title: "Job Feed",
-  url: "/dashboard/job-feed",
-  icon: Briefcase
-}, {
-  title: "Interview Prep",
-  url: "/dashboard/interview-prep",
-  icon: MessageSquare
-}, {
-  title: "Referrals",
-  url: "/dashboard/referrals",
-  icon: Users
-}];
+const mainNavItems: NavItem[] = [
+  {
+    title: "Home",
+    url: "/dashboard",
+    icon: Home
+  },
+  {
+    title: "Job Parser",
+    url: "/dashboard/job-parser",
+    icon: FileText,
+    subItems: [
+      { title: "Parse & Apply", url: "/dashboard/job-parser/parse" },
+      { title: "Drop-zone Chrome", url: "/dashboard/job-parser/chrome" },
+      { title: "Bulk Queue", url: "/dashboard/job-parser/bulk" }
+    ]
+  },
+  {
+    title: "Applications",
+    url: "/dashboard/applications",
+    icon: Briefcase,
+    subItems: [
+      { title: "My Applications", url: "/dashboard/applications/list" },
+      { title: "Analytics", url: "/dashboard/applications/analytics" },
+      { title: "Funnel View", url: "/dashboard/applications/funnel" }
+    ]
+  },
+  {
+    title: "Documents",
+    url: "/dashboard/documents",
+    icon: FolderOpen,
+    subItems: [
+      { title: "Résumés", url: "/dashboard/documents/resumes" },
+      { title: "Cover Letters", url: "/dashboard/documents/cover-letters" },
+      { title: "Templates Gallery", url: "/dashboard/documents/templates" },
+      { title: "Document Locker", url: "/dashboard/documents/locker" }
+    ]
+  },
+  {
+    title: "Knowledge Base",
+    url: "/dashboard/knowledge",
+    icon: BookOpen,
+    subItems: [
+      { title: "Profile Data", url: "/dashboard/knowledge/profile" },
+      { title: "Skills Gap", url: "/dashboard/knowledge/skills" }
+    ]
+  },
+  {
+    title: "Job Feed",
+    url: "/dashboard/job-feed",
+    icon: Rss
+  },
+  {
+    title: "Interview Prep",
+    url: "/dashboard/interview-prep",
+    icon: MessageSquare,
+    subItems: [
+      { title: "AI Coach", url: "/dashboard/interview-prep/ai-coach" },
+      { title: "Scheduler", url: "/dashboard/interview-prep/scheduler" },
+      { title: "Follow-Ups", url: "/dashboard/interview-prep/follow-ups" }
+    ]
+  },
+  {
+    title: "Referrals",
+    url: "/dashboard/referrals",
+    icon: Users
+  }
+];
 
-const bottomNavItems = [{
-  title: "Settings",
-  url: "/dashboard/settings",
-  icon: Settings
-}, {
-  title: "Profile",
-  url: "/dashboard/profile",
-  icon: User
-}, {
-  title: "Help & Support",
-  url: "/dashboard/help",
-  icon: HelpCircle
-}];
+const bottomNavItems: NavItem[] = [
+  {
+    title: "Settings",
+    url: "/dashboard/settings",
+    icon: Settings,
+    subItems: [
+      { title: "Account Security", url: "/dashboard/settings/security" },
+      { title: "Wallet & Billing", url: "/dashboard/settings/billing" },
+      { title: "Notifications", url: "/dashboard/settings/notifications" },
+      { title: "Integrations", url: "/dashboard/settings/integrations" }
+    ]
+  },
+  {
+    title: "Profile",
+    url: "/dashboard/profile",
+    icon: User
+  },
+  {
+    title: "Help",
+    url: "/dashboard/help",
+    icon: HelpCircle,
+    subItems: [
+      { title: "Docs/FAQ", url: "/dashboard/help/docs" },
+      { title: "Live Chat", url: "/dashboard/help/chat" }
+    ]
+  }
+];
 
-const DashboardSidebar = () => {
-  return (
-    <Sidebar collapsible="icon" className="border-r border-slate-200 dark:border-slate-700">
-      <SidebarHeader className="p-4">
-        <div className="flex items-center space-x-2">
-          <span className="font-semibold text-lg text-slate-900 dark:text-white">
-            ResumeHatch
-          </span>
-        </div>
-      </SidebarHeader>
-      
-      <SidebarContent className="px-2">
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {mainNavItems.map(item => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    asChild 
-                    tooltip={item.title}
-                    className="text-slate-700 dark:text-slate-300 hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-slate-800 dark:hover:text-blue-400"
-                  >
-                    <a href={item.url} className="flex items-center space-x-3">
-                      <item.icon className="h-5 w-5 flex-shrink-0" />
-                      <span className="truncate">{item.title}</span>
-                      {item.subItems && <ChevronRight className="ml-auto h-4 w-4 flex-shrink-0" />}
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-      
-      <SidebarFooter className="p-2">
-        <SidebarMenu>
-          {bottomNavItems.map(item => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton 
-                asChild 
-                tooltip={item.title}
-                className="text-slate-700 dark:text-slate-300 hover:bg-blue-50 hover:text-blue-700 dark:hover:bg-slate-800 dark:hover:text-blue-400"
-              >
-                <a href={item.url} className="flex items-center space-x-3">
-                  <item.icon className="h-5 w-5 flex-shrink-0" />
-                  <span className="truncate">{item.title}</span>
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
+interface DashboardSidebarProps {
+  isCollapsed: boolean;
+  isMobile: boolean;
+  onToggle: () => void;
+}
+
+const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ 
+  isCollapsed, 
+  isMobile, 
+  onToggle 
+}) => {
+  const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const [activeItem, setActiveItem] = useState("/dashboard");
+
+  const toggleExpanded = (title: string) => {
+    setExpandedItems(prev => 
+      prev.includes(title) 
+        ? prev.filter(item => item !== title)
+        : [...prev, title]
+    );
+  };
+
+  const isExpanded = (title: string) => expandedItems.includes(title);
+  const isActive = (url: string) => activeItem === url;
+
+  const renderNavItem = (item: NavItem, isBottom = false) => {
+    const hasSubItems = item.subItems && item.subItems.length > 0;
+    const expanded = isExpanded(item.title);
+    const active = isActive(item.url);
+
+    return (
+      <div key={item.title} className="w-full">
+        <button
+          onClick={() => {
+            if (hasSubItems) {
+              toggleExpanded(item.title);
+            } else {
+              setActiveItem(item.url);
+            }
+          }}
+          className={cn(
+            "w-full flex items-center px-3 py-2 rounded-lg transition-all duration-200 text-sm font-medium",
+            "hover:bg-accent hover:text-accent-foreground",
+            active && "sidebar-active",
+            isCollapsed && "justify-center px-2"
+          )}
+        >
+          <item.icon className={cn(
+            "h-5 w-5 flex-shrink-0",
+            isCollapsed ? "mx-auto" : "mr-3"
+          )} />
+          {!isCollapsed && (
+            <>
+              <span className="flex-1 text-left">{item.title}</span>
+              {hasSubItems && (
+                <ChevronRight className={cn(
+                  "h-4 w-4 transition-transform duration-200",
+                  expanded && "rotate-90"
+                )} />
+              )}
+            </>
+          )}
+        </button>
         
-        <div className="mt-4 px-2 py-1 text-xs text-slate-500 dark:text-slate-400 group-data-[collapsible=icon]:hidden">
-          Version 1.0.0
+        {hasSubItems && !isCollapsed && expanded && (
+          <div className="ml-6 mt-1 space-y-1">
+            {item.subItems!.map(subItem => (
+              <button
+                key={subItem.url}
+                onClick={() => setActiveItem(subItem.url)}
+                className={cn(
+                  "w-full flex items-center px-3 py-2 rounded-lg transition-all duration-200 text-sm",
+                  "hover:bg-accent/50 hover:text-accent-foreground",
+                  isActive(subItem.url) && "bg-accent/30 text-accent-foreground"
+                )}
+              >
+                <span className="flex-1 text-left">{subItem.title}</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const sidebarClasses = cn(
+    "fixed inset-y-0 left-0 z-50 flex flex-col bg-sidebar border-r border-sidebar-border transition-all duration-200",
+    "backdrop-blur-sm bg-sidebar/95",
+    isCollapsed ? "w-18" : "w-64",
+    isMobile && "w-72",
+    isMobile && !isCollapsed && "translate-x-0",
+    isMobile && isCollapsed && "-translate-x-full"
+  );
+
+  return (
+    <>
+      {/* Mobile Overlay */}
+      {isMobile && !isCollapsed && (
+        <div 
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+          onClick={onToggle}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside className={sidebarClasses}>
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
+          {!isCollapsed && (
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <span className="text-primary-foreground font-bold text-sm">RH</span>
+              </div>
+              <span className="font-bold text-lg text-sidebar-foreground">
+                ResumeHatch
+              </span>
+            </div>
+          )}
+          
+          <button
+            onClick={onToggle}
+            className={cn(
+              "p-2 rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors duration-200",
+              isCollapsed && "mx-auto"
+            )}
+          >
+            {isCollapsed ? <Menu className="h-5 w-5" /> : <X className="h-5 w-5" />}
+          </button>
         </div>
-      </SidebarFooter>
-    </Sidebar>
+
+        {/* Navigation Content */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="p-2 space-y-1">
+            {/* Main Navigation */}
+            <div className="space-y-1">
+              {mainNavItems.map(item => renderNavItem(item))}
+            </div>
+            
+            {/* Bottom Navigation */}
+            <div className="pt-4 mt-4 border-t border-sidebar-border space-y-1">
+              {bottomNavItems.map(item => renderNavItem(item, true))}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        {!isCollapsed && (
+          <div className="p-4 border-t border-sidebar-border">
+            <div className="text-xs text-muted-foreground text-center">
+              Version 1.0.0
+            </div>
+          </div>
+        )}
+      </aside>
+    </>
   );
 };
 

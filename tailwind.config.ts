@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
 
 export default {
 	darkMode: ["class"],
@@ -22,6 +23,9 @@ export default {
 			}
 		},
 		extend: {
+			spacing: {
+				'18': '4.5rem', // 72px for collapsed sidebar
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -66,20 +70,20 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				brand: {
-					blue: '#265BFF',
-					yellow: '#FFB703',
-					orange: '#F97316',
-					light: '#F8FAFC',
-					dark: '#0F172A'
-				},
 				status: {
-					success: '#10B981',
-					warning: '#F59E0B',
-					error: '#EF4444',
-					info: '#3B82F6',
-					interview: '#8B5CF6',
-					inactive: '#6B7280'
+					applied: 'hsl(var(--status-applied))',
+					interview: 'hsl(var(--status-interview))',
+					offer: 'hsl(var(--status-offer))',
+					rejected: 'hsl(var(--status-rejected))',
+					pending: 'hsl(var(--status-pending))',
+					draft: 'hsl(var(--muted-foreground))'
+				},
+				brand: {
+					blue: '#3B82F6',
+					yellow: '#FCD34D',
+					teal: '#10B981',
+					light: '#FFFFFF',
+					dark: '#0F172A'
 				}
 			},
 			borderRadius: {
@@ -158,10 +162,10 @@ export default {
 				},
 				'pulse-glow': {
 					'0%, 100%': { 
-						boxShadow: '0 0 5px rgba(38, 91, 255, 0.5)' 
+						boxShadow: '0 0 5px rgba(59, 130, 246, 0.5)' 
 					},
 					'50%': { 
-						boxShadow: '0 0 20px rgba(38, 91, 255, 0.8), 0 0 30px rgba(38, 91, 255, 0.6)' 
+						boxShadow: '0 0 20px rgba(59, 130, 246, 0.8), 0 0 30px rgba(59, 130, 246, 0.6)' 
 					}
 				},
 				'gradient-x': {
@@ -205,8 +209,15 @@ export default {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
 				'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
 				'shimmer': 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)'
+			},
+			screens: {
+				'sm': '640px',
+				'md': '768px',
+				'lg': '1024px',
+				'xl': '1280px',
+				'2xl': '1536px',
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [animate],
 } satisfies Config;

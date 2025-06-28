@@ -1,9 +1,4 @@
-
-import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import React, { useState } from 'react';
 import { 
   Briefcase, 
   FileText, 
@@ -13,220 +8,305 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
-  Plus
+  Plus,
+  ArrowUpRight,
+  ArrowDownRight,
+  Building2,
+  MapPin,
+  DollarSign,
+  Star
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-const DashboardOverview = () => {
+// KPI Card Component
+interface KPICardProps {
+  title: string;
+  value: string;
+  change: string;
+  changeType: 'positive' | 'negative' | 'neutral';
+  icon: React.ComponentType<{ className?: string }>;
+  iconColor: string;
+}
+
+const KPICard: React.FC<KPICardProps> = ({ title, value, change, changeType, icon: Icon, iconColor }) => {
   return (
-    <div className="space-y-6">
-      {/* Welcome Section */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-            Welcome back, John!
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400 mt-1">
-            Here's what's happening with your job applications today.
-          </p>
+    <div className="glass-card glass-card-hover p-6 rounded-lg">
+      <div className="flex items-center justify-between mb-4">
+        <div className={cn("p-3 rounded-lg", iconColor)}>
+          <Icon className="h-6 w-6 text-white" />
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-          <Plus className="mr-2 h-4 w-4" />
-          New Application
-        </Button>
+        <div className="flex items-center space-x-1">
+          {changeType === 'positive' && <ArrowUpRight className="h-4 w-4 text-status-offer" />}
+          {changeType === 'negative' && <ArrowDownRight className="h-4 w-4 text-status-rejected" />}
+          <span className={cn(
+            "text-xs font-medium",
+            changeType === 'positive' && "text-status-offer",
+            changeType === 'negative' && "text-status-rejected",
+            changeType === 'neutral' && "text-muted-foreground"
+          )}>
+            {change}
+          </span>
+        </div>
+      </div>
+      <div>
+        <p className="text-caption text-muted-foreground mb-1">{title}</p>
+        <p className="text-2xl font-bold text-foreground">{value}</p>
+      </div>
+    </div>
+  );
+};
+
+// Job Card Component
+interface JobCardProps {
+  company: string;
+  position: string;
+  location: string;
+  salary: string;
+  skills: string[];
+  status: 'applied' | 'interview' | 'offer' | 'rejected' | 'pending';
+  postedDate: string;
+}
+
+const JobCard: React.FC<JobCardProps> = ({ company, position, location, salary, skills, status, postedDate }) => {
+  const statusConfig = {
+    applied: { color: 'status-applied', label: 'Applied' },
+    interview: { color: 'status-interview', label: 'Interview' },
+    offer: { color: 'status-offer', label: 'Offer' },
+    rejected: { color: 'status-rejected', label: 'Rejected' },
+    pending: { color: 'status-pending', label: 'Pending' }
+  };
+
+  const statusInfo = statusConfig[status];
+
+  return (
+    <div className="glass-card glass-card-hover p-6 rounded-lg">
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center space-x-3">
+          <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+            <Building2 className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h3 className="text-card-title font-semibold text-foreground">{position}</h3>
+            <p className="text-body text-muted-foreground">{company}</p>
+          </div>
+        </div>
+        <div className={cn("px-3 py-1 rounded-full text-xs font-medium", statusInfo.color)}>
+          {statusInfo.label}
+        </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-slate-200 dark:border-slate-700 hover:shadow-lg transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">
-              Total Applications
-            </CardTitle>
-            <Briefcase className="h-4 w-4 text-blue-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-slate-900 dark:text-white">47</div>
-            <p className="text-xs text-green-600 dark:text-green-400">
-              +12% from last month
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-200 dark:border-slate-700 hover:shadow-lg transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">
-              Active Applications
-            </CardTitle>
-            <Clock className="h-4 w-4 text-yellow-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-slate-900 dark:text-white">23</div>
-            <p className="text-xs text-slate-600 dark:text-slate-400">
-              Awaiting response
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-200 dark:border-slate-700 hover:shadow-lg transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">
-              Interviews Scheduled
-            </CardTitle>
-            <Calendar className="h-4 w-4 text-purple-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-slate-900 dark:text-white">3</div>
-            <p className="text-xs text-purple-600 dark:text-purple-400">
-              This week
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-200 dark:border-slate-700 hover:shadow-lg transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">
-              Success Rate
-            </CardTitle>
-            <TrendingUp className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-slate-900 dark:text-white">18%</div>
-            <p className="text-xs text-green-600 dark:text-green-400">
-              Above average
-            </p>
-          </CardContent>
-        </Card>
+      <div className="flex items-center space-x-4 mb-4 text-caption text-muted-foreground">
+        <div className="flex items-center space-x-1">
+          <MapPin className="h-3 w-3" />
+          <span>{location}</span>
+        </div>
+        <div className="flex items-center space-x-1">
+          <DollarSign className="h-3 w-3" />
+          <span>{salary}</span>
+        </div>
       </div>
 
-      {/* Main Content Grid */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Recent Applications */}
-        <Card className="lg:col-span-2 border-slate-200 dark:border-slate-700">
-          <CardHeader>
-            <CardTitle className="text-slate-900 dark:text-white">Recent Applications</CardTitle>
-            <CardDescription>Your latest job application activity</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                {
-                  company: "Google",
-                  position: "Senior Frontend Developer",
-                  status: "Interview",
-                  statusColor: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-                  date: "2 days ago"
-                },
-                {
-                  company: "Meta",
-                  position: "React Developer",
-                  status: "Applied",
-                  statusColor: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-                  date: "1 week ago"
-                },
-                {
-                  company: "Apple",
-                  position: "UI/UX Developer",
-                  status: "Pending",
-                  statusColor: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-                  date: "2 weeks ago"
-                },
-                {
-                  company: "Netflix",
-                  position: "Full Stack Engineer",
-                  status: "Rejected",
-                  statusColor: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-                  date: "3 weeks ago"
-                }
-              ].map((app, index) => (
-                <div key={index} className="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-lg">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center">
-                      <Briefcase className="h-5 w-5 text-slate-600 dark:text-slate-400" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-slate-900 dark:text-white">{app.position}</p>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">{app.company}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Badge className={app.statusColor}>
-                      {app.status}
-                    </Badge>
-                    <span className="text-sm text-slate-500 dark:text-slate-400">{app.date}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          {skills.slice(0, 3).map((skill, index) => (
+            <span key={index} className="px-2 py-1 bg-muted rounded-md text-xs text-muted-foreground">
+              {skill}
+            </span>
+          ))}
+          {skills.length > 3 && (
+            <span className="px-2 py-1 bg-muted rounded-md text-xs text-muted-foreground">
+              +{skills.length - 3}
+            </span>
+          )}
+        </div>
+        <button className="btn-outline px-4 py-2 text-sm">
+          View Job
+        </button>
+      </div>
+    </div>
+  );
+};
 
-        {/* Quick Actions & Progress */}
-        <div className="space-y-6">
-          {/* Quick Actions */}
-          <Card className="border-slate-200 dark:border-slate-700">
-            <CardHeader>
-              <CardTitle className="text-slate-900 dark:text-white">Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button variant="outline" className="w-full justify-start">
-                <FileText className="mr-2 h-4 w-4" />
-                Parse New Job
-              </Button>
-              <Button variant="outline" className="w-full justify-start">
-                <Users className="mr-2 h-4 w-4" />
-                Find Referrals
-              </Button>
-              <Button variant="outline" className="w-full justify-start">
-                <Calendar className="mr-2 h-4 w-4" />
-                Schedule Interview
-              </Button>
-            </CardContent>
-          </Card>
+// Quick Action Card Component
+interface QuickActionCardProps {
+  title: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
+  iconColor: string;
+  action: string;
+}
 
-          {/* Application Progress */}
-          <Card className="border-slate-200 dark:border-slate-700">
-            <CardHeader>
-              <CardTitle className="text-slate-900 dark:text-white">Monthly Goal</CardTitle>
-              <CardDescription>Applications submitted this month</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-600 dark:text-slate-400">Progress</span>
-                <span className="text-sm font-medium text-slate-900 dark:text-white">12/20</span>
-              </div>
-              <Progress value={60} className="h-2" />
-              <p className="text-sm text-slate-600 dark:text-slate-400">
-                8 more applications to reach your monthly goal
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* Upcoming Interviews */}
-          <Card className="border-slate-200 dark:border-slate-700">
-            <CardHeader>
-              <CardTitle className="text-slate-900 dark:text-white">Upcoming Interviews</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
-                <div>
-                  <p className="text-sm font-medium text-slate-900 dark:text-white">Google - Technical</p>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">Tomorrow at 2:00 PM</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                <div>
-                  <p className="text-sm font-medium text-slate-900 dark:text-white">Meta - HR Round</p>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">Friday at 10:00 AM</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+const QuickActionCard: React.FC<QuickActionCardProps> = ({ title, description, icon: Icon, iconColor, action }) => {
+  return (
+    <div className="glass-card glass-card-hover p-6 rounded-lg">
+      <div className="flex items-start space-x-4">
+        <div className={cn("p-3 rounded-lg", iconColor)}>
+          <Icon className="h-6 w-6 text-white" />
+        </div>
+        <div className="flex-1">
+          <h3 className="text-card-title font-semibold text-foreground mb-1">{title}</h3>
+          <p className="text-caption text-muted-foreground mb-3">{description}</p>
+          <button className="btn-primary px-4 py-2 text-sm">
+            {action}
+          </button>
         </div>
       </div>
     </div>
   );
 };
 
-export default DashboardOverview;
+const DashboardOverview = () => {
+  const kpiData = [
+    {
+      title: "Total Applications",
+      value: "47",
+      change: "+12%",
+      changeType: "positive" as const,
+      icon: Briefcase,
+      iconColor: "bg-status-applied"
+    },
+    {
+      title: "Active Applications",
+      value: "23",
+      change: "Awaiting",
+      changeType: "neutral" as const,
+      icon: Clock,
+      iconColor: "bg-status-pending"
+    },
+    {
+      title: "Interviews Scheduled",
+      value: "3",
+      change: "This week",
+      changeType: "positive" as const,
+      icon: Calendar,
+      iconColor: "bg-status-interview"
+    },
+    {
+      title: "Success Rate",
+      value: "18%",
+      change: "+5%",
+      changeType: "positive" as const,
+      icon: TrendingUp,
+      iconColor: "bg-status-offer"
+    }
+  ];
+
+  const recentJobs = [
+    {
+      company: "Google",
+      position: "Senior Frontend Developer",
+      location: "Mountain View, CA",
+      salary: "$150k - $200k",
+      skills: ["React", "TypeScript", "Node.js"],
+      status: "interview" as const,
+      postedDate: "2 days ago"
+    },
+    {
+      company: "Meta",
+      position: "React Developer",
+      location: "Menlo Park, CA",
+      salary: "$130k - $180k",
+      skills: ["React", "JavaScript", "GraphQL"],
+      status: "applied" as const,
+      postedDate: "1 week ago"
+    },
+    {
+      company: "Apple",
+      position: "UI/UX Developer",
+      location: "Cupertino, CA",
+      salary: "$140k - $190k",
+      skills: ["Figma", "React", "Swift"],
+      status: "pending" as const,
+      postedDate: "2 weeks ago"
+    }
+  ];
+
+  const quickActions = [
+    {
+      title: "Parse New Job",
+      description: "Extract job details and create application",
+      icon: FileText,
+      iconColor: "bg-primary",
+      action: "Start Parsing"
+    },
+    {
+      title: "Find Referrals",
+      description: "Connect with people at target companies",
+      icon: Users,
+      iconColor: "bg-status-interview",
+      action: "Browse Network"
+    },
+    {
+      title: "Interview Prep",
+      description: "Practice with AI coach and schedule prep",
+      icon: Star,
+      iconColor: "bg-status-offer",
+      action: "Start Prep"
+    }
+  ];
+
+  const [showBanner, setShowBanner] = useState(true);
+
+  return (
+    <div className="space-y-8 animate-fade-in">
+      {/* Welcome Banner */}
+      {showBanner && (
+        <div className="relative flex items-center bg-yellow-50 border border-yellow-300 text-black rounded-2xl px-6 py-5" style={{ minHeight: 80 }}>
+          <div className="flex-1">
+            <div className="font-semibold text-xl mb-1 flex items-center">
+              Welcome to ResumeHatch! <span className="ml-2 text-xl">👋</span>
+            </div>
+            <div className="text-base text-black/90">
+              Get started by parsing your first job listing or uploading your resume. Need help? Check out our{' '}
+              <a href="#" className="text-blue-600 underline hover:text-blue-800">quick start guide</a>.
+            </div>
+          </div>
+          <button
+            className="absolute top-4 right-5 text-2xl text-black/70 hover:text-black focus:outline-none"
+            aria-label="Close banner"
+            onClick={() => setShowBanner(false)}
+          >
+            ×
+          </button>
+        </div>
+      )}
+
+      {/* KPI Cards */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {kpiData.map((kpi, index) => (
+          <KPICard key={index} {...kpi} />
+        ))}
+      </div>
+
+      {/* Main Content Grid */}
+      <div className="grid gap-8 lg:grid-cols-3">
+        {/* Recent Job Applications */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-section-header text-foreground">Recent Job Applications</h2>
+            <button className="btn-outline px-4 py-2 text-sm">
+              View All
+            </button>
+          </div>
+          <div className="space-y-4">
+            {recentJobs.map((job, index) => (
+              <JobCard key={index} {...job} />
+            ))}
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="space-y-6">
+          <h2 className="text-section-header text-foreground">Quick Actions</h2>
+          <div className="space-y-4">
+            {quickActions.map((action, index) => (
+              <QuickActionCard key={index} {...action} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DashboardOverview; 
