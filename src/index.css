@@ -29,12 +29,29 @@
     --accent: 160 84% 39%; /* Teal/Green for success */
     --accent-foreground: 0 0% 100%;
 
-    /* Status Colors */
-    --status-applied: 217 91% 60%; /* Blue #3B82F6 */
-    --status-interview: 262 83% 58%; /* Purple #8B5CF6 */
-    --status-offer: 160 84% 39%; /* Green #10B981 */
-    --status-rejected: 0 84% 60%; /* Red #EF4444 */
-    --status-pending: 43 96% 56%; /* Yellow #F59E0B */
+    /* Enhanced Status Colors with Psychology */
+    --status-applied: 217 91% 60%; /* Trust-building blue */
+    --status-interview: 262 83% 58%; /* Confident purple */
+    --status-offer: 142 76% 36%; /* Success green */
+    --status-rejected: 0 84% 60%; /* Attention red */
+    --status-pending: 43 96% 56%; /* Energetic yellow */
+
+    /* Emotional Color Palette */
+    --success-primary: 142 76% 36%;
+    --success-secondary: 142 69% 58%;
+    --success-light: 142 76% 94%;
+    
+    --warning-primary: 43 96% 56%;
+    --warning-secondary: 43 96% 70%;
+    --warning-light: 43 96% 95%;
+    
+    --error-primary: 0 84% 60%;
+    --error-secondary: 0 84% 74%;
+    --error-light: 0 84% 97%;
+    
+    --info-primary: 217 91% 60%;
+    --info-secondary: 217 91% 74%;
+    --info-light: 217 91% 97%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
@@ -53,7 +70,7 @@
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 48 96% 89%; /* Yellow for active states */
+    --sidebar-accent: 48 96% 89%;
     --sidebar-accent-foreground: 222.2 47.4% 11.2%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217 91% 60%;
@@ -61,7 +78,7 @@
 
   .dark {
     /* Dark Mode Colors */
-    --background: 222 47% 11%; /* Slate-900 #0F172A */
+    --background: 222 47% 11%;
     --foreground: 210 40% 98%;
 
     /* Glass Card Colors */
@@ -73,42 +90,59 @@
     --popover-foreground: 210 40% 98%;
 
     /* Primary Colors */
-    --primary: 217 91% 60%; /* Blue #3B82F6 */
+    --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary Colors */
-    --secondary: 48 96% 89%; /* Yellow #FCD34D */
+    --secondary: 48 96% 89%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     /* Accent Colors */
-    --accent: 160 84% 39%; /* Teal/Green for success */
+    --accent: 160 84% 39%;
     --accent-foreground: 0 0% 100%;
 
-    /* Status Colors */
-    --status-applied: 217 91% 60%; /* Blue #3B82F6 */
-    --status-interview: 262 83% 58%; /* Purple #8B5CF6 */
-    --status-offer: 160 84% 39%; /* Green #10B981 */
-    --status-rejected: 0 84% 60%; /* Red #EF4444 */
-    --status-pending: 43 96% 56%; /* Yellow #F59E0B */
+    /* Enhanced Status Colors for Dark Mode */
+    --status-applied: 217 91% 60%;
+    --status-interview: 262 83% 58%;
+    --status-offer: 142 76% 36%;
+    --status-rejected: 0 84% 60%;
+    --status-pending: 43 96% 56%;
 
-    --muted: 217 33% 17%; /* Slate-800 */
+    /* Dark Mode Emotional Colors */
+    --success-primary: 142 76% 36%;
+    --success-secondary: 142 69% 45%;
+    --success-light: 142 76% 15%;
+    
+    --warning-primary: 43 96% 56%;
+    --warning-secondary: 43 96% 45%;
+    --warning-light: 43 96% 15%;
+    
+    --error-primary: 0 84% 60%;
+    --error-secondary: 0 84% 50%;
+    --error-light: 0 84% 15%;
+    
+    --info-primary: 217 91% 60%;
+    --info-secondary: 217 91% 50%;
+    --info-light: 217 91% 15%;
+
+    --muted: 217 33% 17%;
     --muted-foreground: 215 20.2% 65.1%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217 33% 17%; /* Slate-800 */
+    --border: 217 33% 17%;
     --input: 217 33% 17%;
     --ring: 217 91% 60%;
 
     /* Sidebar Colors */
-    --sidebar-background: 222 47% 11%; /* Slate-900 */
+    --sidebar-background: 222 47% 11%;
     --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 30 95% 60%; /* Blue-900 background with yellow-200 text */
+    --sidebar-accent: 30 95% 60%;
     --sidebar-accent-foreground: 48 96% 89%;
-    --sidebar-border: 217 33% 17%; /* Slate-700 */
+    --sidebar-border: 217 33% 17%;
     --sidebar-ring: 217 91% 60%;
   }
 }
@@ -120,85 +154,173 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    font-variation-settings: normal;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
 @layer components {
-  /* Glass Morphism Effects */
+  /* Enhanced Glass Morphism Effects */
   .glass-card {
-    @apply bg-card/80 backdrop-blur-sm border border-border/50;
+    @apply bg-card/80 backdrop-blur-sm border border-border/50 shadow-lg;
+    background: linear-gradient(135deg, hsl(var(--card))/0.9, hsl(var(--card))/0.7);
   }
 
   .glass-card-hover {
-    @apply hover:bg-card/90 hover:shadow-lg hover:scale-[1.02] transition-all duration-200;
+    @apply hover:bg-card/90 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 ease-out;
+    transition-property: transform, box-shadow, background-color;
   }
 
-  /* Status Badges */
+  /* Enhanced Status Badges with Psychology */
   .status-applied {
-    @apply bg-[#3B82F6] text-white;
+    @apply bg-info-primary text-white shadow-lg;
+    background: linear-gradient(135deg, hsl(var(--info-primary)), hsl(var(--info-secondary)));
   }
 
   .status-interview {
-    @apply bg-[#8B5CF6] text-white;
+    @apply bg-[#8B5CF6] text-white shadow-lg;
+    background: linear-gradient(135deg, #8B5CF6, #A78BFA);
   }
 
   .status-offer {
-    @apply bg-[#10B981] text-white;
+    @apply bg-success-primary text-white shadow-lg;
+    background: linear-gradient(135deg, hsl(var(--success-primary)), hsl(var(--success-secondary)));
   }
 
   .status-rejected {
-    @apply bg-[#EF4444] text-white;
+    @apply bg-error-primary text-white shadow-lg;
+    background: linear-gradient(135deg, hsl(var(--error-primary)), hsl(var(--error-secondary)));
   }
 
   .status-pending {
-    @apply bg-[#F59E0B] text-white;
+    @apply bg-warning-primary text-white shadow-lg;
+    background: linear-gradient(135deg, hsl(var(--warning-primary)), hsl(var(--warning-secondary)));
   }
 
   .status-draft {
-    @apply bg-transparent border border-muted-foreground/30 text-muted-foreground;
+    @apply bg-transparent border border-muted-foreground/30 text-muted-foreground hover:bg-muted/50 transition-colors;
   }
 
-  /* Typography Scale */
+  /* Advanced Typography Scale */
+  .text-display-large {
+    @apply text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight;
+    letter-spacing: -0.02em;
+  }
+
+  .text-display-medium {
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight;
+    letter-spacing: -0.015em;
+  }
+
+  .text-display-small {
+    @apply text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight leading-tight;
+    letter-spacing: -0.01em;
+  }
+
+  .text-headline-large {
+    @apply text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight leading-snug;
+    letter-spacing: -0.005em;
+  }
+
+  .text-headline-medium {
+    @apply text-lg md:text-xl lg:text-2xl font-semibold tracking-tight leading-snug;
+  }
+
+  .text-headline-small {
+    @apply text-base md:text-lg lg:text-xl font-semibold tracking-tight leading-snug;
+  }
+
+  .text-title-large {
+    @apply text-sm md:text-base lg:text-lg font-medium tracking-tight leading-normal;
+  }
+
+  .text-title-medium {
+    @apply text-sm md:text-base font-medium tracking-tight leading-normal;
+  }
+
+  .text-title-small {
+    @apply text-xs md:text-sm font-medium tracking-tight leading-normal;
+  }
+
+  .text-body-large {
+    @apply text-sm md:text-base leading-relaxed;
+    line-height: 1.6;
+  }
+
+  .text-body-medium {
+    @apply text-sm leading-relaxed;
+    line-height: 1.5;
+  }
+
+  .text-body-small {
+    @apply text-xs leading-relaxed;
+    line-height: 1.4;
+  }
+
+  .text-label-large {
+    @apply text-sm font-medium tracking-wide leading-none;
+    letter-spacing: 0.01em;
+  }
+
+  .text-label-medium {
+    @apply text-xs font-medium tracking-wide leading-none;
+    letter-spacing: 0.015em;
+  }
+
+  .text-label-small {
+    @apply text-xs font-medium tracking-wider leading-none;
+    letter-spacing: 0.02em;
+  }
+
+  /* Legacy Typography (for backwards compatibility) */
   .text-page-title {
-    @apply text-lg font-bold tracking-tight;
+    @apply text-headline-medium;
   }
 
   .text-section-header {
-    @apply text-base font-semibold tracking-tight;
+    @apply text-title-large;
   }
 
   .text-card-title {
-    @apply text-sm font-medium;
+    @apply text-title-medium;
   }
 
   .text-body {
-    @apply text-sm font-medium;
+    @apply text-body-medium;
   }
 
   .text-caption {
-    @apply text-xs text-muted-foreground;
+    @apply text-label-small text-muted-foreground;
   }
 
-  /* Button Variants */
+  /* Enhanced Button Variants */
   .btn-primary {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200;
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-200 ease-out;
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary))/0.9);
   }
 
   .btn-outline {
-    @apply border border-border bg-transparent hover:bg-accent hover:text-accent-foreground transition-colors duration-200;
+    @apply border border-border bg-transparent hover:bg-accent hover:text-accent-foreground transition-all duration-200 ease-out hover:shadow-md;
   }
 
   .btn-ghost {
-    @apply bg-transparent hover:bg-accent hover:text-accent-foreground transition-colors duration-200;
+    @apply bg-transparent hover:bg-accent hover:text-accent-foreground transition-all duration-200 ease-out;
   }
 
   .btn-icon {
-    @apply p-2 rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors duration-200;
+    @apply p-2 rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-200 ease-out hover:scale-105;
   }
 
-  /* Loading States */
+  /* Enhanced Loading States */
   .skeleton {
     @apply animate-pulse bg-muted rounded;
+    background: linear-gradient(90deg, hsl(var(--muted)), hsl(var(--muted))/0.8, hsl(var(--muted)));
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
   }
 
   .shimmer {
@@ -207,23 +329,200 @@
 
   /* Sidebar Active States */
   .sidebar-active {
-    @apply bg-secondary text-secondary-foreground;
+    @apply bg-secondary text-secondary-foreground shadow-md;
+    background: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary))/0.9);
   }
 
   .dark .sidebar-active {
-    @apply bg-primary/20 text-primary;
+    @apply bg-primary/20 text-primary shadow-md;
   }
 
-  /* Responsive Utilities */
+  /* Enhanced Responsive Utilities */
   .sidebar-expanded {
-    @apply w-64;
+    @apply w-64 lg:w-72;
   }
 
   .sidebar-collapsed {
-    @apply w-18;
+    @apply w-16 lg:w-18;
   }
 
   .sidebar-mobile {
-    @apply w-72;
+    @apply w-80 sm:w-72;
+  }
+
+  /* Data Visualization Enhancements */
+  .kpi-card {
+    @apply glass-card glass-card-hover p-4 md:p-6 rounded-xl;
+    background: linear-gradient(135deg, hsl(var(--card))/0.95, hsl(var(--card))/0.85);
+  }
+
+  .kpi-value {
+    @apply text-display-small font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent;
+  }
+
+  .kpi-trend-positive {
+    @apply text-success-primary flex items-center space-x-1;
+  }
+
+  .kpi-trend-negative {
+    @apply text-error-primary flex items-center space-x-1;
+  }
+
+  .kpi-trend-neutral {
+    @apply text-muted-foreground flex items-center space-x-1;
+  }
+
+  /* Job Card Enhancements */
+  .job-card {
+    @apply glass-card glass-card-hover p-4 md:p-6 rounded-xl border-l-4;
+    transition: all 0.3s ease-out;
+  }
+
+  .job-card:hover {
+    @apply shadow-2xl scale-[1.01];
+    transform: translateY(-2px) scale(1.01);
+  }
+
+  .job-card-applied {
+    @apply border-l-info-primary;
+  }
+
+  .job-card-interview {
+    @apply border-l-[#8B5CF6];
+  }
+
+  .job-card-offer {
+    @apply border-l-success-primary;
+  }
+
+  .job-card-rejected {
+    @apply border-l-error-primary;
+  }
+
+  .job-card-pending {
+    @apply border-l-warning-primary;
+  }
+
+  /* Mobile-First Responsive Grid */
+  .responsive-grid {
+    @apply grid gap-4 md:gap-6;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .responsive-grid-2 {
+    @apply responsive-grid lg:grid-cols-2;
+  }
+
+  .responsive-grid-3 {
+    @apply responsive-grid lg:grid-cols-3;
+  }
+
+  .responsive-grid-4 {
+    @apply responsive-grid lg:grid-cols-4;
+  }
+
+  /* Touch-Optimized Elements */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+
+  .touch-friendly {
+    @apply p-3 md:p-2 rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-200;
+  }
+
+  /* Enhanced Animations */
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+
+  .animate-fade-in-left {
+    animation: fadeInLeft 0.6s ease-out forwards;
+  }
+
+  .animate-fade-in-right {
+    animation: fadeInRight 0.6s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.4s ease-out forwards;
+  }
+
+  .animate-bounce-gentle {
+    animation: bounceGentle 2s ease-in-out infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes fadeInRight {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes bounceGentle {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% {
+      box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.8), 0 0 30px rgba(59, 130, 246, 0.6);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
   }
 }

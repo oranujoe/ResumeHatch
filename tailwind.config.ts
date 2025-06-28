@@ -78,6 +78,27 @@ export default {
 					pending: 'hsl(var(--status-pending))',
 					draft: 'hsl(var(--muted-foreground))'
 				},
+				// Enhanced emotional color palette
+				success: {
+					primary: 'hsl(var(--success-primary))',
+					secondary: 'hsl(var(--success-secondary))',
+					light: 'hsl(var(--success-light))'
+				},
+				warning: {
+					primary: 'hsl(var(--warning-primary))',
+					secondary: 'hsl(var(--warning-secondary))',
+					light: 'hsl(var(--warning-light))'
+				},
+				error: {
+					primary: 'hsl(var(--error-primary))',
+					secondary: 'hsl(var(--error-secondary))',
+					light: 'hsl(var(--error-light))'
+				},
+				info: {
+					primary: 'hsl(var(--info-primary))',
+					secondary: 'hsl(var(--info-secondary))',
+					light: 'hsl(var(--info-light))'
+				},
 				brand: {
 					blue: '#3B82F6',
 					yellow: '#FCD34D',
@@ -203,7 +224,25 @@ export default {
 				'bounce-gentle': 'bounce-gentle 2s ease-in-out infinite'
 			},
 			fontFamily: {
-				sans: ['Inter', 'sans-serif'],
+				sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+			},
+			fontSize: {
+				// Enhanced fluid typography scale
+				'display-large': ['clamp(2.5rem, 5vw, 4rem)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
+				'display-medium': ['clamp(2rem, 4vw, 3rem)', { lineHeight: '1.2', letterSpacing: '-0.015em' }],
+				'display-small': ['clamp(1.5rem, 3vw, 2.5rem)', { lineHeight: '1.3', letterSpacing: '-0.01em' }],
+				'headline-large': ['clamp(1.25rem, 2.5vw, 2rem)', { lineHeight: '1.3', letterSpacing: '-0.005em' }],
+				'headline-medium': ['clamp(1.125rem, 2vw, 1.5rem)', { lineHeight: '1.4' }],
+				'headline-small': ['clamp(1rem, 1.5vw, 1.25rem)', { lineHeight: '1.4' }],
+				'title-large': ['clamp(0.875rem, 1.25vw, 1.125rem)', { lineHeight: '1.5' }],
+				'title-medium': ['clamp(0.875rem, 1vw, 1rem)', { lineHeight: '1.5' }],
+				'title-small': ['clamp(0.75rem, 0.875vw, 0.875rem)', { lineHeight: '1.5' }],
+				'body-large': ['clamp(0.875rem, 1vw, 1rem)', { lineHeight: '1.6' }],
+				'body-medium': ['0.875rem', { lineHeight: '1.5' }],
+				'body-small': ['0.75rem', { lineHeight: '1.4' }],
+				'label-large': ['0.875rem', { lineHeight: '1', letterSpacing: '0.01em' }],
+				'label-medium': ['0.75rem', { lineHeight: '1', letterSpacing: '0.015em' }],
+				'label-small': ['0.75rem', { lineHeight: '1', letterSpacing: '0.02em' }],
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
