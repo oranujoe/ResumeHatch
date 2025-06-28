@@ -12,10 +12,10 @@ const JobParser = () => {
     <DashboardLayout pageTitle="Job Parser">
       <JobParserLayout>
         <Routes>
-          <Route path="/" element={<ParseAndApplyPage />} />
-          <Route path="/parse" element={<ParseAndApplyPage />} />
-          <Route path="/chrome" element={<DropZonePage />} />
-          <Route path="/bulk" element={<BulkQueuePage />} />
+          <Route index element={<ParseAndApplyPage />} />
+          <Route path="parse" element={<ParseAndApplyPage />} />
+          <Route path="chrome" element={<DropZonePage />} />
+          <Route path="bulk" element={<BulkQueuePage />} />
         </Routes>
       </JobParserLayout>
     </DashboardLayout>

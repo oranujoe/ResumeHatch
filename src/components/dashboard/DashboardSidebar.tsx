@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { 
   Home, 
   FileText, 
@@ -132,8 +133,8 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
   isMobile, 
   onToggle 
 }) => {
+  const location = useLocation();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
-  const [activeItem, setActiveItem] = useState("/dashboard");
 
   const toggleExpanded = (title: string) => {
     setExpandedItems(prev => 
@@ -144,7 +145,12 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
   };
 
   const isExpanded = (title: string) => expandedItems.includes(title);
-  const isActive = (url: string) => activeItem === url;
+  const isActive = (url: string) => {
+    if (url === '/dashboard') {
+      return location.pathname === '/dashboard';
+    }
+    return location.pathname.startsWith(url);
+  };
 
   const renderNavItem = (item: NavItem, isBottom = false) => {
     const hasSubItems = item.subItems && item.subItems.length > 0;
@@ -153,44 +159,56 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 
     return (
       <div key={item.title} className="w-full">
-        <button
-          onClick={() => {
-            if (hasSubItems) {
-              toggleExpanded(item.title);
-            } else {
-              setActiveItem(item.url);
-            }
-          }}
-          className={cn(
-            "w-full flex items-center px-3 py-2 rounded-lg transition-all duration-200 text-sm font-medium",
-            "hover:bg-accent hover:text-accent-foreground",
-            active && "sidebar-active",
-            isCollapsed && "justify-center px-2"
-          )}
-        >
-          <item.icon className={cn(
-            "h-5 w-5 flex-shrink-0",
-            isCollapsed ? "mx-auto" : "mr-3"
-          )} />
-          {!isCollapsed && (
-            <>
-              <span className="flex-1 text-left">{item.title}</span>
-              {hasSubItems && (
+        {hasSubItems ? (
+          <button
+            onClick={() => toggleExpanded(item.title)}
+            className={cn(
+              "w-full flex items-center px-3 py-2 rounded-lg transition-all duration-200 text-sm font-medium",
+              "hover:bg-accent hover:text-accent-foreground",
+              active && "sidebar-active",
+              isCollapsed && "justify-center px-2"
+            )}
+          >
+            <item.icon className={cn(
+              "h-5 w-5 flex-shrink-0",
+              isCollapsed ? "mx-auto" : "mr-3"
+            )} />
+            {!isCollapsed && (
+              <>
+                <span className="flex-1 text-left">{item.title}</span>
                 <ChevronRight className={cn(
                   "h-4 w-4 transition-transform duration-200",
                   expanded && "rotate-90"
                 )} />
-              )}
-            </>
-          )}
-        </button>
+              </>
+            )}
+          </button>
+        ) : (
+          <Link
+            to={item.url}
+            className={cn(
+              "w-full flex items-center px-3 py-2 rounded-lg transition-all duration-200 text-sm font-medium",
+              "hover:bg-accent hover:text-accent-foreground",
+              active && "sidebar-active",
+              isCollapsed && "justify-center px-2"
+            )}
+          >
+            <item.icon className={cn(
+              "h-5 w-5 flex-shrink-0",
+              isCollapsed ? "mx-auto" : "mr-3"
+            )} />
+            {!isCollapsed && (
+              <span className="flex-1 text-left">{item.title}</span>
+            )}
+          </Link>
+        )}
         
         {hasSubItems && !isCollapsed && expanded && (
           <div className="ml-6 mt-1 space-y-1">
             {item.subItems!.map(subItem => (
-              <button
+              <Link
                 key={subItem.url}
-                onClick={() => setActiveItem(subItem.url)}
+                to={subItem.url}
                 className={cn(
                   "w-full flex items-center px-3 py-2 rounded-lg transition-all duration-200 text-sm",
                   "hover:bg-accent/50 hover:text-accent-foreground",
@@ -198,7 +216,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
                 )}
               >
                 <span className="flex-1 text-left">{subItem.title}</span>
-              </button>
+              </Link>
             ))}
           </div>
         )}
