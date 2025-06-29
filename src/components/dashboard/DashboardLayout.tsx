@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import DashboardSidebar from './DashboardSidebar';
 import DashboardTopbar from './DashboardTopbar';
+import DashboardSkeleton from './DashboardSkeleton';
+import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 
 interface DashboardLayoutProps {
@@ -13,8 +15,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   children, 
   pageTitle = "Dashboard" 
 }) => {
+  const { loading } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   // Handle responsive behavior
   useEffect(() => {
@@ -35,12 +39,31 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Set hydrated after auth loading is complete
+  useEffect(() => {
+    if (!loading) {
+      // Small delay to ensure smooth transition
+      const timer = setTimeout(() => {
+        setIsHydrated(true);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [loading]);
+
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
   };
 
+  // Show skeleton during loading or before hydration
+  if (loading || !isHydrated) {
+    return <DashboardSkeleton />;
+  }
+
   return (
-    <div className="min-h-screen flex bg-background">
+    <div className={cn(
+      "min-h-screen flex bg-background transition-opacity duration-300",
+      isHydrated ? "opacity-100" : "opacity-0"
+    )}>
       {/* Sidebar */}
       <DashboardSidebar 
         isCollapsed={isCollapsed}
