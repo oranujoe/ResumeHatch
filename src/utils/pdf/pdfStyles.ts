@@ -1,187 +1,51 @@
-import jsPDF from 'jspdf';
-import { resumeTemplates, ResumeTemplate } from '@/components/job-parser/ResumeTemplates';
-import { PDFSection, PDFDimensions, PDFSpacing } from './types';
+// src/utils/pdf/pdfStyles.ts
 
-export class PDFStyler {
-  private doc: jsPDF;
-  private template: ResumeTemplate;
-  private dimensions: PDFDimensions;
-  private spacing: PDFSpacing;
-  
-  constructor(doc: jsPDF, templateId: string) {
-    this.doc = doc;
-    this.template = resumeTemplates.find(t => t.id === templateId) || resumeTemplates[0];
-    
-    this.dimensions = {
-      pageWidth: doc.internal.pageSize.getWidth(),
-      pageHeight: doc.internal.pageSize.getHeight(),
-      margin: 40,
-      maxWidth: doc.internal.pageSize.getWidth() - 80
-    };
-    
-    this.spacing = {
-      lineHeight: 16,
-      headerHeight: 24,
-      subHeaderHeight: 20
-    };
-    
-    // Set default font
-    doc.setFont('helvetica');
-  }
-  
-  public setTemplateColor(colorType: 'primary' | 'secondary' | 'text'): void {
-    const color = colorType === 'primary' ? this.template.pdfStyles.primaryColor : 
-                 colorType === 'secondary' ? this.template.pdfStyles.secondaryColor : 
-                 this.template.pdfStyles.textColor;
-    this.doc.setTextColor(color[0], color[1], color[2]);
-  }
-  
-  public splitTextToLines(text: string, maxWidth: number, fontSize: number): string[] {
-    this.doc.setFontSize(fontSize);
-    return this.doc.splitTextToSize(text, maxWidth);
-  }
-  
-  public checkNewPage(neededHeight: number, yPosition: number): number {
-    if (yPosition + neededHeight > this.dimensions.pageHeight - this.dimensions.margin) {
-      this.doc.addPage();
-      return this.dimensions.margin + 20; // Start with some top margin
-    }
-    return yPosition;
-  }
-  
-  public applyHeaderStyle(section: PDFSection, yPosition: number): number {
-    const pdfStyles = this.template.pdfStyles;
-    const headerFontSize = section.level === 1 ? pdfStyles.headerFontSize : pdfStyles.sectionTitleFontSize;
-    
-    // Ensure adequate spacing before headers
-    const topSpacing = section.level === 1 ? 20 : 12;
-    yPosition += topSpacing;
-    
-    yPosition = this.checkNewPage(this.spacing.headerHeight + 10, yPosition);
-    
-    this.doc.setFontSize(headerFontSize);
-    this.doc.setFont('helvetica', 'bold');
-    
-    // Apply template-specific header styling
-    if (section.level === 1) {
-      this.setTemplateColor('primary');
-      
-      // Creative template gets background styling
-      if (pdfStyles.headerStyle === 'background') {
-        this.doc.setFillColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
-        this.doc.rect(this.dimensions.margin, yPosition - 6, this.dimensions.maxWidth, headerFontSize + 8, 'F');
-        this.doc.setTextColor(255, 255, 255);
-      }
-    } else {
-      this.setTemplateColor('primary');
-    }
-    
-    this.doc.text(section.content, this.dimensions.margin, yPosition);
-    yPosition += headerFontSize - 2; // Reduced spacing between text and underline
-    
-    // Add underlines with minimal spacing between text and line
-    if (section.level === 1 && pdfStyles.headerStyle === 'underline') {
-      this.doc.setDrawColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
-      this.doc.setLineWidth(1.5);
-      this.doc.line(this.dimensions.margin, yPosition, this.dimensions.margin + this.dimensions.maxWidth, yPosition);
-      yPosition += 8; // Space after the underline
-    } else if (section.level === 2 && pdfStyles.sectionTitleStyle === 'underline') {
-      this.doc.setDrawColor(pdfStyles.secondaryColor[0], pdfStyles.secondaryColor[1], pdfStyles.secondaryColor[2]);
-      this.doc.setLineWidth(0.5);
-      this.doc.line(this.dimensions.margin, yPosition, this.dimensions.margin + this.dimensions.maxWidth, yPosition);
-      yPosition += 6; // Space after the underline
-    } else {
-      // No underline, just add minimal spacing
-      yPosition += 4;
-    }
-    
-    return yPosition;
-  }
-  
-  public applyContactStyle(section: PDFSection, yPosition: number): number {
-    yPosition = this.checkNewPage(20, yPosition);
-    
-    this.doc.setFontSize(this.template.pdfStyles.bodyFontSize);
-    this.doc.setFont('helvetica', 'normal');
-    this.setTemplateColor('text');
-    
-    const contactLines = this.splitTextToLines(section.content, this.dimensions.maxWidth, this.template.pdfStyles.bodyFontSize);
-    
-    contactLines.forEach((line, index) => {
-      this.doc.text(line, this.dimensions.margin, yPosition + (index * this.spacing.lineHeight));
-    });
-    
-    return yPosition + (contactLines.length * this.spacing.lineHeight) + 8;
-  }
-  
-  public applySubheaderStyle(section: PDFSection, yPosition: number): number {
-    yPosition += 6; // Top spacing
-    yPosition = this.checkNewPage(this.spacing.subHeaderHeight + 10, yPosition);
-    
-    this.doc.setFontSize(this.template.pdfStyles.bodyFontSize + 1);
-    this.doc.setFont('helvetica', 'bold');
-    this.setTemplateColor('primary');
-    
-    this.doc.text(section.content, this.dimensions.margin, yPosition);
-    return yPosition + this.spacing.subHeaderHeight + 4;
-  }
-  
-  public applyTextStyle(section: PDFSection, yPosition: number): number {
-    const fontSize = this.template.pdfStyles.bodyFontSize;
-    const textLines = this.splitTextToLines(section.content, this.dimensions.maxWidth, fontSize);
-    const textBlockHeight = textLines.length * this.spacing.lineHeight;
-    
-    yPosition = this.checkNewPage(textBlockHeight + 10, yPosition);
-    
-    this.doc.setFontSize(fontSize);
-    this.doc.setFont('helvetica', 'normal');
-    this.setTemplateColor('text');
-    
-    textLines.forEach((line, index) => {
-      this.doc.text(line, this.dimensions.margin, yPosition + (index * this.spacing.lineHeight));
-    });
-    
-    return yPosition + textBlockHeight + 6;
-  }
-  
-  public applyListStyle(section: PDFSection, yPosition: number): number {
-    const fontSize = this.template.pdfStyles.bodyFontSize;
-    const bulletText = `• ${section.content}`;
-    const listLines = this.splitTextToLines(bulletText, this.dimensions.maxWidth - 10, fontSize);
-    const listBlockHeight = listLines.length * this.spacing.lineHeight;
-    
-    yPosition = this.checkNewPage(listBlockHeight + 8, yPosition);
-    
-    this.doc.setFontSize(fontSize);
-    this.doc.setFont('helvetica', 'normal');
-    this.setTemplateColor('text');
-    
-    // Render each line with proper indentation
-    listLines.forEach((line, index) => {
-      if (index === 0) {
-        // First line with bullet
-        this.doc.text(line, this.dimensions.margin, yPosition + (index * this.spacing.lineHeight));
-      } else {
-        // Subsequent lines indented
-        this.doc.text(line, this.dimensions.margin + 10, yPosition + (index * this.spacing.lineHeight));
-      }
-    });
-    
-    return yPosition + listBlockHeight + 4;
-  }
-  
-  public addFooter(): void {
-    const today = new Date().toLocaleDateString();
-    this.doc.setFontSize(8);
-    this.doc.setTextColor(150, 150, 150);
-    this.doc.text(`Generated on ${today} • Template: ${this.template.name}`, this.dimensions.margin, this.dimensions.pageHeight - 15);
-  }
-  
-  public getDimensions(): PDFDimensions {
-    return this.dimensions;
-  }
-  
-  public getSpacing(): PDFSpacing {
-    return this.spacing;
-  }
-}
+import { PdfStyle } from './types';
+
+// The styles object defines the appearance of different HTML elements in the PDF.
+// We are increasing the `marginBottom` values to add more vertical spacing
+// and make the exported PDF look more like the on-screen preview.
+const styles: { [key: string]: PdfStyle } = {
+  h1: { 
+    fontSize: 18, 
+    fontStyle: 'bold', 
+    marginBottom: 12 // Slightly increased for better header separation
+  },
+  h2: { 
+    fontSize: 14, 
+    fontStyle: 'bold', 
+    marginBottom: 8, // Increased from 5 to add more space after section titles
+    underline: true 
+  },
+  h3: { 
+    fontSize: 12, 
+    fontStyle: 'bold', 
+    marginBottom: 6  // Increased from 3 for better sub-header spacing
+  },
+  p: { 
+    fontSize: 10, 
+    fontStyle: 'normal', 
+    marginBottom: 7 // Increased from 5 for more paragraph spacing
+  },
+  li: { 
+    fontSize: 10, 
+    fontStyle: 'normal', 
+    marginBottom: 5, // Significantly increased from 2 to space out list items
+    bullet: true 
+  },
+  default: { 
+    fontSize: 10, 
+    fontStyle: 'normal', 
+    marginBottom: 3 
+  },
+};
+
+/**
+ * Retrieves the style for a given HTML tag.
+ * @param tag - The HTML tag name (e.g., 'h1', 'p').
+ * @returns The corresponding PdfStyle object.
+ */
+export const getStyleForTag = (tag: string): PdfStyle => {
+  return styles[tag.toLowerCase()] || styles.default;
+};
+
