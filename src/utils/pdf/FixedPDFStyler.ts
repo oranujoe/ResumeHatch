@@ -89,12 +89,12 @@ export class FixedPDFStyler {
     // Add underlines with tighter spacing and better bottom margin
     if (isMainHeader && pdfStyles.headerStyle === 'underline') {
       this.doc.setDrawColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
-      this.doc.setLineWidth(2);
+      this.doc.setLineWidth(2); // Keep main header line width the same
       this.doc.line(this.dimensions.margin, yPosition + 1, this.dimensions.margin + this.dimensions.maxWidth, yPosition + 1); // Reduced from +2 to +1
       yPosition += 18; // Increased from 16 to 18 for slightly more space below the line
     } else if (!isMainHeader && pdfStyles.sectionTitleStyle === 'underline') {
       this.doc.setDrawColor(pdfStyles.secondaryColor[0], pdfStyles.secondaryColor[1], pdfStyles.secondaryColor[2]);
-      this.doc.setLineWidth(1);
+      this.doc.setLineWidth(2); // Increased from 1 to 2 for thicker sub-section lines
       this.doc.line(this.dimensions.margin, yPosition + 1, this.dimensions.margin + this.dimensions.maxWidth, yPosition + 1); // Reduced from +2 to +1
       yPosition += 14; // Increased from 12 to 14 for slightly more space below the line
     } else {
