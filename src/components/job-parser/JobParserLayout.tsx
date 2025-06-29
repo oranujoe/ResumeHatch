@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FileText, Chrome, List } from 'lucide-react';
+import { FileText, Chrome, List, MapPin } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 
@@ -31,12 +31,19 @@ const JobParserLayout: React.FC<JobParserLayoutProps> = ({ children }) => {
       label: 'Bulk Queue',
       path: '/dashboard/job-parser/bulk',
       icon: List
+    },
+    {
+      id: 'zone',
+      label: 'Job Zone',
+      path: '/dashboard/job-parser/zone',
+      icon: MapPin
     }
   ];
 
   const getActiveTab = () => {
     if (currentPath.includes('/chrome')) return 'chrome';
     if (currentPath.includes('/bulk')) return 'bulk';
+    if (currentPath.includes('/zone')) return 'zone';
     return 'parse';
   };
 
@@ -45,7 +52,7 @@ const JobParserLayout: React.FC<JobParserLayoutProps> = ({ children }) => {
       {/* Navigation Tabs */}
       <div className="border-b border-border">
         <Tabs value={getActiveTab()} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-muted/20">
+          <TabsList className="grid w-full grid-cols-4 bg-muted/20">
             {tabs.map((tab) => (
               <Link key={tab.id} to={tab.path} className="w-full">
                 <TabsTrigger 
