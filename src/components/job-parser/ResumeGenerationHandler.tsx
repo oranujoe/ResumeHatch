@@ -32,15 +32,16 @@ export const useResumeGeneration = ({
     onGenerationStart();
     setProgress(0);
     
-    // Simulate progress updates
+    // Simulate progress updates with a local variable
+    let currentProgress = 0;
     const progressInterval = setInterval(() => {
-      setProgress((prev: number) => {
-        if (prev >= 90) {
-          clearInterval(progressInterval);
-          return 90;
-        }
-        return prev + 10;
-      });
+      currentProgress += 10;
+      if (currentProgress >= 90) {
+        setProgress(90);
+        clearInterval(progressInterval);
+      } else {
+        setProgress(currentProgress);
+      }
     }, 200);
     
     try {
