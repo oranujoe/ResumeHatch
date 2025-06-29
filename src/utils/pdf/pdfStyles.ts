@@ -77,19 +77,19 @@ export class PDFStyler {
     }
     
     this.doc.text(section.content, this.dimensions.margin, yPosition);
-    yPosition += headerFontSize + 2;
+    yPosition += headerFontSize - 2; // Reduced spacing between text and underline
     
-    // Add underlines with tighter spacing
+    // Add underlines with minimal spacing between text and line
     if (section.level === 1 && pdfStyles.headerStyle === 'underline') {
       this.doc.setDrawColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
       this.doc.setLineWidth(1.5);
       this.doc.line(this.dimensions.margin, yPosition, this.dimensions.margin + this.dimensions.maxWidth, yPosition);
-      yPosition += 8; // Reduced from 3 + 8 = 11 to just 8
+      yPosition += 8; // Space after the underline
     } else if (section.level === 2 && pdfStyles.sectionTitleStyle === 'underline') {
       this.doc.setDrawColor(pdfStyles.secondaryColor[0], pdfStyles.secondaryColor[1], pdfStyles.secondaryColor[2]);
       this.doc.setLineWidth(0.5);
       this.doc.line(this.dimensions.margin, yPosition, this.dimensions.margin + this.dimensions.maxWidth, yPosition);
-      yPosition += 6; // Reduced from 3 + 8 = 11 to just 6
+      yPosition += 6; // Space after the underline
     } else {
       // No underline, just add minimal spacing
       yPosition += 4;
