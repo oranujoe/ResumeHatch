@@ -84,19 +84,19 @@ export class FixedPDFStyler {
     }
     
     this.doc.text(section.content, this.dimensions.margin, yPosition);
-    yPosition += Math.ceil(headerFontSize * 0.8); // More precise spacing
+    yPosition += Math.ceil(headerFontSize * 0.6); // Reduced from 0.8 to bring underline closer
     
-    // Add underlines with consistent spacing
+    // Add underlines with tighter spacing
     if (isMainHeader && pdfStyles.headerStyle === 'underline') {
       this.doc.setDrawColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
       this.doc.setLineWidth(2);
-      this.doc.line(this.dimensions.margin, yPosition + 2, this.dimensions.margin + this.dimensions.maxWidth, yPosition + 2);
-      yPosition += 12;
+      this.doc.line(this.dimensions.margin, yPosition + 1, this.dimensions.margin + this.dimensions.maxWidth, yPosition + 1); // Reduced from +2 to +1
+      yPosition += 10; // Reduced from 12 to 10
     } else if (!isMainHeader && pdfStyles.sectionTitleStyle === 'underline') {
       this.doc.setDrawColor(pdfStyles.secondaryColor[0], pdfStyles.secondaryColor[1], pdfStyles.secondaryColor[2]);
       this.doc.setLineWidth(1);
-      this.doc.line(this.dimensions.margin, yPosition + 2, this.dimensions.margin + this.dimensions.maxWidth, yPosition + 2);
-      yPosition += 8;
+      this.doc.line(this.dimensions.margin, yPosition + 1, this.dimensions.margin + this.dimensions.maxWidth, yPosition + 1); // Reduced from +2 to +1
+      yPosition += 6; // Reduced from 8 to 6
     } else {
       yPosition += 6;
     }
