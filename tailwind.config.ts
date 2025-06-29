@@ -24,7 +24,7 @@ export default {
 		},
 		extend: {
 			spacing: {
-				'18': '4.5rem', // 72px for collapsed sidebar
+				'16': '4rem', // 64px for collapsed sidebar (reduced from 72px)
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -78,7 +78,6 @@ export default {
 					pending: 'hsl(var(--status-pending))',
 					draft: 'hsl(var(--muted-foreground))'
 				},
-				// Enhanced emotional color palette
 				success: {
 					primary: 'hsl(var(--success-primary))',
 					secondary: 'hsl(var(--success-secondary))',
@@ -227,22 +226,21 @@ export default {
 				sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
 			},
 			fontSize: {
-				// Enhanced fluid typography scale
-				'display-large': ['clamp(2.5rem, 5vw, 4rem)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
-				'display-medium': ['clamp(2rem, 4vw, 3rem)', { lineHeight: '1.2', letterSpacing: '-0.015em' }],
-				'display-small': ['clamp(1.5rem, 3vw, 2.5rem)', { lineHeight: '1.3', letterSpacing: '-0.01em' }],
-				'headline-large': ['clamp(1.25rem, 2.5vw, 2rem)', { lineHeight: '1.3', letterSpacing: '-0.005em' }],
-				'headline-medium': ['clamp(1.125rem, 2vw, 1.5rem)', { lineHeight: '1.4' }],
-				'headline-small': ['clamp(1rem, 1.5vw, 1.25rem)', { lineHeight: '1.4' }],
-				'title-large': ['clamp(0.875rem, 1.25vw, 1.125rem)', { lineHeight: '1.5' }],
-				'title-medium': ['clamp(0.875rem, 1vw, 1rem)', { lineHeight: '1.5' }],
-				'title-small': ['clamp(0.75rem, 0.875vw, 0.875rem)', { lineHeight: '1.5' }],
-				'body-large': ['clamp(0.875rem, 1vw, 1rem)', { lineHeight: '1.6' }],
-				'body-medium': ['0.875rem', { lineHeight: '1.5' }],
-				'body-small': ['0.75rem', { lineHeight: '1.4' }],
-				'label-large': ['0.875rem', { lineHeight: '1', letterSpacing: '0.01em' }],
-				'label-medium': ['0.75rem', { lineHeight: '1', letterSpacing: '0.015em' }],
-				'label-small': ['0.75rem', { lineHeight: '1', letterSpacing: '0.02em' }],
+				'display-large': ['clamp(2rem, 4vw, 3.2rem)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
+				'display-medium': ['clamp(1.6rem, 3.2vw, 2.4rem)', { lineHeight: '1.2', letterSpacing: '-0.015em' }],
+				'display-small': ['clamp(1.2rem, 2.4vw, 2rem)', { lineHeight: '1.3', letterSpacing: '-0.01em' }],
+				'headline-large': ['clamp(1rem, 2vw, 1.6rem)', { lineHeight: '1.3', letterSpacing: '-0.005em' }],
+				'headline-medium': ['clamp(0.9rem, 1.6vw, 1.2rem)', { lineHeight: '1.4' }],
+				'headline-small': ['clamp(0.8rem, 1.2vw, 1rem)', { lineHeight: '1.4' }],
+				'title-large': ['clamp(0.75rem, 1vw, 0.9rem)', { lineHeight: '1.5' }],
+				'title-medium': ['clamp(0.75rem, 0.8vw, 0.8rem)', { lineHeight: '1.5' }],
+				'title-small': ['clamp(0.625rem, 0.7vw, 0.75rem)', { lineHeight: '1.5' }],
+				'body-large': ['clamp(0.75rem, 0.8vw, 0.8rem)', { lineHeight: '1.6' }],
+				'body-medium': ['0.75rem', { lineHeight: '1.5' }],
+				'body-small': ['0.625rem', { lineHeight: '1.4' }],
+				'label-large': ['0.75rem', { lineHeight: '1', letterSpacing: '0.01em' }],
+				'label-medium': ['0.625rem', { lineHeight: '1', letterSpacing: '0.015em' }],
+				'label-small': ['0.625rem', { lineHeight: '1', letterSpacing: '0.02em' }],
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

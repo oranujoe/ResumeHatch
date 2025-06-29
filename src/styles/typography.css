@@ -1,53 +1,53 @@
 
 @layer components {
-  /* Advanced Typography Scale */
+  /* Advanced Typography Scale - Reduced by ~15-20% */
   .text-display-large {
-    @apply text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight;
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight;
     letter-spacing: -0.02em;
   }
 
   .text-display-medium {
-    @apply text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight;
+    @apply text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight leading-tight;
     letter-spacing: -0.015em;
   }
 
   .text-display-small {
-    @apply text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight leading-tight;
+    @apply text-xl md:text-2xl lg:text-3xl font-bold tracking-tight leading-tight;
     letter-spacing: -0.01em;
   }
 
   .text-headline-large {
-    @apply text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight leading-snug;
+    @apply text-lg md:text-xl lg:text-2xl font-semibold tracking-tight leading-snug;
     letter-spacing: -0.005em;
   }
 
   .text-headline-medium {
-    @apply text-lg md:text-xl lg:text-2xl font-semibold tracking-tight leading-snug;
-  }
-
-  .text-headline-small {
     @apply text-base md:text-lg lg:text-xl font-semibold tracking-tight leading-snug;
   }
 
+  .text-headline-small {
+    @apply text-sm md:text-base lg:text-lg font-semibold tracking-tight leading-snug;
+  }
+
   .text-title-large {
-    @apply text-sm md:text-base lg:text-lg font-medium tracking-tight leading-normal;
+    @apply text-xs md:text-sm lg:text-base font-medium tracking-tight leading-normal;
   }
 
   .text-title-medium {
-    @apply text-sm md:text-base font-medium tracking-tight leading-normal;
-  }
-
-  .text-title-small {
     @apply text-xs md:text-sm font-medium tracking-tight leading-normal;
   }
 
+  .text-title-small {
+    @apply text-xs font-medium tracking-tight leading-normal;
+  }
+
   .text-body-large {
-    @apply text-sm md:text-base leading-relaxed;
+    @apply text-xs md:text-sm leading-relaxed;
     line-height: 1.6;
   }
 
   .text-body-medium {
-    @apply text-sm leading-relaxed;
+    @apply text-xs leading-relaxed;
     line-height: 1.5;
   }
 
@@ -57,7 +57,7 @@
   }
 
   .text-label-large {
-    @apply text-sm font-medium tracking-wide leading-none;
+    @apply text-xs font-medium tracking-wide leading-none;
     letter-spacing: 0.01em;
   }
 

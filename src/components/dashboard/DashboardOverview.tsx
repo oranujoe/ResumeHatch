@@ -9,7 +9,7 @@ const DashboardOverview = () => {
   const [showBanner, setShowBanner] = useState(true);
 
   return (
-    <div className="space-y-6 md:space-y-8 animate-fade-in">
+    <div className="space-y-4 md:space-y-6 animate-fade-in">
       {/* Welcome Banner */}
       {showBanner && (
         <WelcomeBanner 
@@ -22,7 +22,7 @@ const DashboardOverview = () => {
       <KPISection />
 
       {/* Main Content Grid */}
-      <div className="grid gap-6 md:gap-8 lg:grid-cols-3 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+      <div className="grid gap-4 md:gap-6 lg:grid-cols-3 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
         {/* Recent Job Applications */}
         <RecentJobsSection />
 

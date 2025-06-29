@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -163,21 +164,21 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
           <button
             onClick={() => toggleExpanded(item.title)}
             className={cn(
-              "w-full flex items-center px-3 py-2 rounded-lg transition-all duration-200 text-sm font-medium",
+              "w-full flex items-center px-2 py-1.5 rounded-lg transition-all duration-200 text-xs font-medium",
               "hover:bg-accent hover:text-accent-foreground",
               active && "sidebar-active",
-              isCollapsed && "justify-center px-2"
+              isCollapsed && "justify-center px-1.5"
             )}
           >
             <item.icon className={cn(
-              "h-5 w-5 flex-shrink-0",
-              isCollapsed ? "mx-auto" : "mr-3"
+              "h-4 w-4 flex-shrink-0",
+              isCollapsed ? "mx-auto" : "mr-2"
             )} />
             {!isCollapsed && (
               <>
                 <span className="flex-1 text-left">{item.title}</span>
                 <ChevronRight className={cn(
-                  "h-4 w-4 transition-transform duration-200",
+                  "h-3 w-3 transition-transform duration-200",
                   expanded && "rotate-90"
                 )} />
               </>
@@ -187,15 +188,15 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
           <Link
             to={item.url}
             className={cn(
-              "w-full flex items-center px-3 py-2 rounded-lg transition-all duration-200 text-sm font-medium",
+              "w-full flex items-center px-2 py-1.5 rounded-lg transition-all duration-200 text-xs font-medium",
               "hover:bg-accent hover:text-accent-foreground",
               active && "sidebar-active",
-              isCollapsed && "justify-center px-2"
+              isCollapsed && "justify-center px-1.5"
             )}
           >
             <item.icon className={cn(
-              "h-5 w-5 flex-shrink-0",
-              isCollapsed ? "mx-auto" : "mr-3"
+              "h-4 w-4 flex-shrink-0",
+              isCollapsed ? "mx-auto" : "mr-2"
             )} />
             {!isCollapsed && (
               <span className="flex-1 text-left">{item.title}</span>
@@ -204,13 +205,13 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
         )}
         
         {hasSubItems && !isCollapsed && expanded && (
-          <div className="ml-6 mt-1 space-y-1">
+          <div className="ml-5 mt-1 space-y-1">
             {item.subItems!.map(subItem => (
               <Link
                 key={subItem.url}
                 to={subItem.url}
                 className={cn(
-                  "w-full flex items-center px-3 py-2 rounded-lg transition-all duration-200 text-sm",
+                  "w-full flex items-center px-2 py-1.5 rounded-lg transition-all duration-200 text-xs",
                   "hover:bg-accent/50 hover:text-accent-foreground",
                   isActive(subItem.url) && "bg-accent/30 text-accent-foreground"
                 )}
@@ -227,8 +228,8 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
   const sidebarClasses = cn(
     "fixed inset-y-0 left-0 z-50 flex flex-col bg-sidebar border-r border-sidebar-border transition-all duration-200",
     "backdrop-blur-sm bg-sidebar/95",
-    isCollapsed ? "w-18" : "w-64",
-    isMobile && "w-72",
+    isCollapsed ? "w-16" : "w-56",
+    isMobile && "w-64",
     isMobile && !isCollapsed && "translate-x-0",
     isMobile && isCollapsed && "-translate-x-full"
   );
@@ -246,13 +247,13 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
       {/* Sidebar */}
       <aside className={sidebarClasses}>
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
+        <div className="flex items-center justify-between p-3 border-b border-sidebar-border">
           {!isCollapsed && (
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-sm">RH</span>
+              <div className="w-6 h-6 bg-primary rounded-lg flex items-center justify-center">
+                <span className="text-primary-foreground font-bold text-xs">RH</span>
               </div>
-              <span className="font-bold text-lg text-sidebar-foreground">
+              <span className="font-bold text-base text-sidebar-foreground">
                 ResumeHatch
               </span>
             </div>
@@ -261,24 +262,24 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
           <button
             onClick={onToggle}
             className={cn(
-              "p-2 rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors duration-200",
+              "p-1.5 rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors duration-200",
               isCollapsed && "mx-auto"
             )}
           >
-            {isCollapsed ? <Menu className="h-5 w-5" /> : <X className="h-5 w-5" />}
+            {isCollapsed ? <Menu className="h-4 w-4" /> : <X className="h-4 w-4" />}
           </button>
         </div>
 
         {/* Navigation Content */}
         <div className="flex-1 overflow-y-auto">
-          <div className="p-2 space-y-1">
+          <div className="p-1.5 space-y-1">
             {/* Main Navigation */}
             <div className="space-y-1">
               {mainNavItems.map(item => renderNavItem(item))}
             </div>
             
             {/* Bottom Navigation */}
-            <div className="pt-4 mt-4 border-t border-sidebar-border space-y-1">
+            <div className="pt-3 mt-3 border-t border-sidebar-border space-y-1">
               {bottomNavItems.map(item => renderNavItem(item, true))}
             </div>
           </div>
@@ -286,7 +287,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
 
         {/* Footer */}
         {!isCollapsed && (
-          <div className="p-4 border-t border-sidebar-border">
+          <div className="p-3 border-t border-sidebar-border">
             <div className="text-xs text-muted-foreground text-center">
               Version 1.0.0
             </div>

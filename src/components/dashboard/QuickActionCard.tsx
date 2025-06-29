@@ -23,33 +23,33 @@ const QuickActionCard: React.FC<QuickActionCardProps> = ({
   onClick
 }) => {
   return (
-    <div className="glass-card glass-card-hover p-4 md:p-6 rounded-xl group cursor-pointer" onClick={onClick}>
-      <div className="flex items-start space-x-4">
-        <div className={cn("p-3 rounded-xl relative", iconColor)}>
-          <Icon className="h-5 w-5 md:h-6 md:w-6 text-white" />
+    <div className="glass-card glass-card-hover p-3 md:p-4 rounded-xl group cursor-pointer" onClick={onClick}>
+      <div className="flex items-start space-x-3">
+        <div className={cn("p-2.5 rounded-xl relative", iconColor)}>
+          <Icon className="h-4 w-4 md:h-5 md:w-5 text-white" />
           {isNew && (
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-warning-primary rounded-full animate-pulse-glow">
-              <Sparkles className="h-2 w-2 text-white absolute top-0.5 left-0.5" />
+            <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-warning-primary rounded-full animate-pulse-glow">
+              <Sparkles className="h-1.5 w-1.5 text-white absolute top-0.5 left-0.5" />
             </div>
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between mb-2">
+          <div className="flex items-start justify-between mb-1.5">
             <h3 className="text-title-medium font-semibold text-foreground">
               {title}
             </h3>
             {isNew && (
-              <span className="px-2 py-1 bg-warning-light text-warning-primary rounded-full text-label-small font-medium">
+              <span className="px-1.5 py-0.5 bg-warning-light text-warning-primary rounded-full text-label-small font-medium">
                 New
               </span>
             )}
           </div>
-          <p className="text-body-small text-muted-foreground mb-4 leading-relaxed">
+          <p className="text-body-small text-muted-foreground mb-3 leading-relaxed">
             {description}
           </p>
-          <button className="btn-primary px-4 py-2 text-label-medium group-hover:bg-primary/80 transition-all duration-200 flex items-center space-x-2">
+          <button className="btn-primary px-3 py-1.5 text-label-medium group-hover:bg-primary/80 transition-all duration-200 flex items-center space-x-1.5">
             <span>{action}</span>
-            <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
+            <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform duration-200" />
           </button>
         </div>
       </div>

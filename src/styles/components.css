@@ -56,7 +56,7 @@
   }
 
   .btn-icon {
-    @apply p-2 rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-200 ease-out hover:scale-105;
+    @apply p-1.5 rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-200 ease-out hover:scale-105;
   }
 
   /* Sidebar Active States - Flat Version */
@@ -71,7 +71,7 @@
 
   /* Data Visualization Enhancements - Flat Version */
   .kpi-card {
-    @apply glass-card glass-card-hover p-4 md:p-6 rounded-xl;
+    @apply glass-card glass-card-hover p-3 md:p-4 rounded-xl;
     background: linear-gradient(135deg, hsl(var(--card))/0.95, hsl(var(--card))/0.85);
   }
 
@@ -80,20 +80,20 @@
   }
 
   .kpi-trend-positive {
-    @apply text-success-primary flex items-center space-x-1;
+    @apply text-success-primary flex items-center space-x-0.5;
   }
 
   .kpi-trend-negative {
-    @apply text-error-primary flex items-center space-x-1;
+    @apply text-error-primary flex items-center space-x-0.5;
   }
 
   .kpi-trend-neutral {
-    @apply text-muted-foreground flex items-center space-x-1;
+    @apply text-muted-foreground flex items-center space-x-0.5;
   }
 
   /* Job Card Enhancements - Flat Version */
   .job-card {
-    @apply glass-card glass-card-hover p-4 md:p-6 rounded-xl border-l-4;
+    @apply glass-card glass-card-hover p-3 md:p-4 rounded-xl border-l-4;
     transition: all 0.3s ease-out;
   }
 

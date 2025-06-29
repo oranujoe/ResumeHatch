@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import DashboardSidebar from './DashboardSidebar';
 import DashboardTopbar from './DashboardTopbar';
@@ -50,7 +51,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       {/* Main Content Area */}
       <div className={cn(
         "flex-1 flex flex-col transition-all duration-200",
-        isCollapsed ? "pl-18" : "pl-64",
+        isCollapsed ? "pl-16" : "pl-56",
         isMobile && "pl-0"
       )}>
         {/* Topbar */}
@@ -62,7 +63,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         />
 
         {/* Main Content */}
-        <main className="flex-1 p-4 md:p-6 overflow-auto">
+        <main className="flex-1 p-3 md:p-4 overflow-auto">
           <div className="animate-fade-in">
             {children}
           </div>
