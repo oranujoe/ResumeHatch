@@ -1,4 +1,3 @@
-
 import jsPDF from 'jspdf';
 import { resumeTemplates, ResumeTemplate } from '@/components/job-parser/ResumeTemplates';
 import { PDFSection, PDFDimensions, PDFSpacing } from './types';
@@ -16,14 +15,14 @@ export class PDFStyler {
     this.dimensions = {
       pageWidth: doc.internal.pageSize.getWidth(),
       pageHeight: doc.internal.pageSize.getHeight(),
-      margin: 20,
-      maxWidth: doc.internal.pageSize.getWidth() - 40
+      margin: 40,
+      maxWidth: doc.internal.pageSize.getWidth() - 80
     };
     
     this.spacing = {
-      lineHeight: 12,
-      headerHeight: 20,
-      subHeaderHeight: 16
+      lineHeight: 16,
+      headerHeight: 24,
+      subHeaderHeight: 20
     };
     
     // Set default font
@@ -55,7 +54,7 @@ export class PDFStyler {
     const headerFontSize = section.level === 1 ? pdfStyles.headerFontSize : pdfStyles.sectionTitleFontSize;
     
     // Ensure adequate spacing before headers
-    const topSpacing = section.level === 1 ? 20 : 15;
+    const topSpacing = section.level === 1 ? 20 : 12;
     yPosition += topSpacing;
     
     yPosition = this.checkNewPage(this.spacing.headerHeight + 10, yPosition);
@@ -80,20 +79,23 @@ export class PDFStyler {
     this.doc.text(section.content, this.dimensions.margin, yPosition);
     yPosition += headerFontSize + 2;
     
-    // Add underlines with proper spacing
+    // Add underlines with tighter spacing
     if (section.level === 1 && pdfStyles.headerStyle === 'underline') {
       this.doc.setDrawColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
       this.doc.setLineWidth(1.5);
       this.doc.line(this.dimensions.margin, yPosition, this.dimensions.margin + this.dimensions.maxWidth, yPosition);
-      yPosition += 3;
+      yPosition += 8; // Reduced from 3 + 8 = 11 to just 8
     } else if (section.level === 2 && pdfStyles.sectionTitleStyle === 'underline') {
       this.doc.setDrawColor(pdfStyles.secondaryColor[0], pdfStyles.secondaryColor[1], pdfStyles.secondaryColor[2]);
       this.doc.setLineWidth(0.5);
       this.doc.line(this.dimensions.margin, yPosition, this.dimensions.margin + this.dimensions.maxWidth, yPosition);
-      yPosition += 3;
+      yPosition += 6; // Reduced from 3 + 8 = 11 to just 6
+    } else {
+      // No underline, just add minimal spacing
+      yPosition += 4;
     }
     
-    return yPosition + 8; // Bottom spacing after headers
+    return yPosition;
   }
   
   public applyContactStyle(section: PDFSection, yPosition: number): number {
