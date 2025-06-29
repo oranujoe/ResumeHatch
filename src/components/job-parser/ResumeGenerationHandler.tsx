@@ -34,7 +34,7 @@ export const useResumeGeneration = ({
     
     // Simulate progress updates
     const progressInterval = setInterval(() => {
-      setProgress((prev) => {
+      setProgress((prev: number) => {
         if (prev >= 90) {
           clearInterval(progressInterval);
           return 90;
