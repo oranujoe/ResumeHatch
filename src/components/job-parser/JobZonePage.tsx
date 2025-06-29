@@ -1,36 +1,17 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { FileDown, Loader2 } from 'lucide-react';
-
-// Import html2pdf for client-side PDF generation
-declare global {
-  interface Window {
-    html2pdf: any;
-  }
-}
+import { FileDown, Loader2, Copy } from 'lucide-react';
+import { parseHTMLToPDFSections, generatePDFFromSections } from '@/utils/pdfGenerator';
 
 const JobZonePage = () => {
   const [jobDescription, setJobDescription] = useState('');
   const [generatedResume, setGeneratedResume] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [showResume, setShowResume] = useState(false);
-
-  // Load html2pdf script dynamically
-  React.useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-    script.async = true;
-    document.head.appendChild(script);
-
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, []);
 
   const generateResume = async () => {
     if (!jobDescription.trim()) {
@@ -83,10 +64,10 @@ const JobZonePage = () => {
   const downloadPDF = async () => {
     const resumeElement = document.getElementById('resumeOutput');
     
-    if (!resumeElement || !window.html2pdf) {
+    if (!resumeElement) {
       toast({
         title: 'Error',
-        description: 'PDF library not loaded. Please refresh the page and try again.',
+        description: 'Resume content not found. Please generate a resume first.',
         variant: 'destructive',
       });
       return;
@@ -108,37 +89,15 @@ const JobZonePage = () => {
         description: 'Please wait while we create your PDF...',
       });
 
-      // Clone the element and ensure it has proper styling for PDF
-      const clonedElement = resumeElement.cloneNode(true) as HTMLElement;
-      clonedElement.style.width = '8.5in';
-      clonedElement.style.minHeight = '11in';
-      clonedElement.style.padding = '0.5in';
-      clonedElement.style.fontSize = '12px';
-      clonedElement.style.lineHeight = '1.4';
-      clonedElement.style.fontFamily = 'Arial, sans-serif';
-      clonedElement.style.color = '#000';
-      clonedElement.style.backgroundColor = '#fff';
+      // Parse HTML content to structured sections
+      const sections = parseHTMLToPDFSections(resumeElement.innerHTML);
+      
+      if (sections.length === 0) {
+        throw new Error('No content could be extracted from the resume');
+      }
 
-      const opt = {
-        margin: 0.5,
-        filename: 'resume.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { 
-          scale: 2,
-          useCORS: true,
-          letterRendering: true,
-          backgroundColor: '#ffffff'
-        },
-        jsPDF: { 
-          unit: 'in', 
-          format: 'letter', 
-          orientation: 'portrait',
-          compress: true
-        }
-      };
-
-      // Use the cloned element for PDF generation
-      await window.html2pdf().set(opt).from(clonedElement).save();
+      // Generate PDF using jsPDF
+      generatePDFFromSections(sections, 'resume.pdf');
       
       toast({
         title: 'Success',
@@ -148,7 +107,43 @@ const JobZonePage = () => {
       console.error('Error generating PDF:', error);
       toast({
         title: 'Error',
-        description: 'Failed to generate PDF. Please try again or try copying the content manually.',
+        description: 'Failed to generate PDF. Please try the copy option instead.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const copyToClipboard = async () => {
+    const resumeElement = document.getElementById('resumeOutput');
+    
+    if (!resumeElement) {
+      toast({
+        title: 'Error',
+        description: 'Resume content not found.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      // Extract plain text from HTML
+      const plainText = resumeElement.innerText || resumeElement.textContent || '';
+      
+      if (!plainText.trim()) {
+        throw new Error('No text content found');
+      }
+
+      await navigator.clipboard.writeText(plainText);
+      
+      toast({
+        title: 'Success',
+        description: 'Resume content copied to clipboard!',
+      });
+    } catch (error) {
+      console.error('Error copying to clipboard:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to copy content to clipboard.',
         variant: 'destructive',
       });
     }
@@ -223,16 +218,27 @@ const JobZonePage = () => {
             }}
           />
 
-          {/* Download Button */}
-          <Button
-            id="downloadBtn"
-            onClick={downloadPDF}
-            variant="outline"
-            className="w-full sm:w-auto"
-          >
-            <FileDown className="mr-2 h-4 w-4" />
-            Download PDF
-          </Button>
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button
+              id="downloadBtn"
+              onClick={downloadPDF}
+              variant="outline"
+              className="w-full sm:w-auto"
+            >
+              <FileDown className="mr-2 h-4 w-4" />
+              Download PDF
+            </Button>
+            
+            <Button
+              onClick={copyToClipboard}
+              variant="outline"
+              className="w-full sm:w-auto"
+            >
+              <Copy className="mr-2 h-4 w-4" />
+              Copy Text
+            </Button>
+          </div>
         </div>
       )}
     </div>
