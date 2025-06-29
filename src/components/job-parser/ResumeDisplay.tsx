@@ -1,10 +1,10 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { CheckCircle, Edit3 } from 'lucide-react';
 import GlassCard from '@/components/ui/glass-card';
 import { cleanResumeContent, validateResumeContent } from '@/utils/resumeContentCleaner';
-import { formatResumeWithTemplate, getTemplateCSS } from '@/utils/resumeFormatter';
-import { useResumeEditing } from '@/hooks/useResumeEditing';
+import { getTemplateCSS, getTemplateClassName, prepareResumeContent } from '@/utils/resumeFormatter';
+import { useStableEditing } from '@/hooks/useStableEditing';
 
 interface ResumeDisplayProps {
   generatedResume: string;
@@ -17,7 +17,9 @@ const ResumeDisplay: React.FC<ResumeDisplayProps> = ({
   selectedTemplate, 
   onResumeEdit 
 }) => {
-  // Clean, validate, and format the resume content with template
+  const [localContent, setLocalContent] = useState('');
+  
+  // Process and clean the resume content
   const processedResume = React.useMemo(() => {
     try {
       const cleaned = cleanResumeContent(generatedResume);
@@ -25,25 +27,44 @@ const ResumeDisplay: React.FC<ResumeDisplayProps> = ({
         console.warn('Resume content validation failed, but proceeding with display');
       }
       
-      // Apply template formatting
-      const formatted = formatResumeWithTemplate(cleaned, selectedTemplate);
-      return formatted;
+      return prepareResumeContent(cleaned, selectedTemplate);
     } catch (error) {
       console.error('Error processing resume content:', error);
-      return generatedResume; // Fallback to original content
+      return generatedResume;
     }
   }, [generatedResume, selectedTemplate]);
+
+  // Update local content when processed resume changes
+  useEffect(() => {
+    setLocalContent(processedResume);
+  }, [processedResume]);
 
   // Generate template-specific CSS
   const templateCSS = React.useMemo(() => {
     return getTemplateCSS(selectedTemplate);
   }, [selectedTemplate]);
 
-  // Use the custom editing hook
-  const { handleInput, handleFocus, handleKeyDown, isProcessing } = useResumeEditing({
+  // Use the stable editing hook
+  const { 
+    elementRef, 
+    handleBeforeInput, 
+    handleInput, 
+    handleKeyDown, 
+    updateContent,
+    isUpdating 
+  } = useStableEditing({
     onContentChange: onResumeEdit,
     debounceDelay: 300
   });
+
+  // Update the editor content when template changes
+  useEffect(() => {
+    if (elementRef.current && elementRef.current.innerHTML !== localContent) {
+      updateContent(localContent);
+    }
+  }, [localContent, updateContent]);
+
+  const templateClassName = getTemplateClassName(selectedTemplate);
 
   return (
     <div className="space-y-6 animate-fade-in-up">
@@ -62,7 +83,7 @@ const ResumeDisplay: React.FC<ResumeDisplayProps> = ({
           <div className="flex items-center space-x-2 text-label-small text-muted-foreground">
             <Edit3 className="h-3 w-3" />
             <span>Live editing enabled</span>
-            {isProcessing && <span className="text-blue-500">• Processing...</span>}
+            {isUpdating && <span className="text-blue-500">• Processing...</span>}
           </div>
         </div>
       </GlassCard>
@@ -71,15 +92,16 @@ const ResumeDisplay: React.FC<ResumeDisplayProps> = ({
       <GlassCard className="p-8">
         <style dangerouslySetInnerHTML={{ __html: templateCSS }} />
         <div
+          ref={elementRef}
           id="resumeOutput"
-          className="resume-container w-full max-w-4xl mx-auto min-h-[600px] focus:outline-none transition-all duration-200"
+          className={`resume-container ${templateClassName} w-full max-w-4xl mx-auto min-h-[600px] focus:outline-none transition-all duration-200`}
           contentEditable
           suppressContentEditableWarning
-          dangerouslySetInnerHTML={{ __html: processedResume }}
+          onBeforeInput={handleBeforeInput}
           onInput={handleInput}
-          onFocus={handleFocus}
           onKeyDown={handleKeyDown}
           style={{ userSelect: 'text' }}
+          dangerouslySetInnerHTML={{ __html: localContent }}
         />
       </GlassCard>
     </div>

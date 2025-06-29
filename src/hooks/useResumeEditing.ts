@@ -1,15 +1,15 @@
 
 import { useCallback, useRef } from 'react';
-import { saveCursorPosition, restoreCursorPosition, debounce, CursorPosition } from '@/utils/cursorUtils';
+import { debounce } from '@/utils/cursorUtils';
 
 interface UseResumeEditingProps {
   onContentChange: (content: string) => void;
   debounceDelay?: number;
 }
 
+// Legacy hook - kept for backward compatibility but simplified
 export const useResumeEditing = ({ onContentChange, debounceDelay = 300 }: UseResumeEditingProps) => {
   const isProcessingRef = useRef(false);
-  const cursorPositionRef = useRef<CursorPosition>({ node: null, offset: 0 });
   
   // Debounced content change handler
   const debouncedContentChange = useCallback(
@@ -22,36 +22,17 @@ export const useResumeEditing = ({ onContentChange, debounceDelay = 300 }: UseRe
   
   const handleInput = useCallback((event: React.FormEvent<HTMLDivElement>) => {
     const target = event.currentTarget;
-    
-    // Prevent processing if already processing
-    if (isProcessingRef.current) {
-      return;
-    }
-    
-    // Save cursor position before processing
-    cursorPositionRef.current = saveCursorPosition(target);
-    isProcessingRef.current = true;
-    
-    // Get the content and trigger debounced update
     const content = target.innerHTML;
+    isProcessingRef.current = true;
     debouncedContentChange(content);
   }, [debouncedContentChange]);
   
-  const handleFocus = useCallback((event: React.FocusEvent<HTMLDivElement>) => {
-    const target = event.currentTarget;
-    
-    // Restore cursor position if we have one saved
-    if (cursorPositionRef.current.node) {
-      setTimeout(() => {
-        restoreCursorPosition(target, cursorPositionRef.current);
-      }, 0);
-    }
+  const handleFocus = useCallback(() => {
+    // Simplified focus handler
   }, []);
   
-  const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
-    // Save cursor position on key interactions
-    const target = event.currentTarget;
-    cursorPositionRef.current = saveCursorPosition(target);
+  const handleKeyDown = useCallback(() => {
+    // Simplified keydown handler
   }, []);
   
   return {

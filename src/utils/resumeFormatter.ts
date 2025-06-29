@@ -1,54 +1,9 @@
 
 import { resumeTemplates, ResumeTemplate } from '@/components/job-parser/ResumeTemplates';
 
-export const formatResumeWithTemplate = (htmlContent: string, templateId: string): string => {
+export const getTemplateClassName = (templateId: string): string => {
   const template = resumeTemplates.find(t => t.id === templateId) || resumeTemplates[0];
-  
-  // Apply template wrapper class to the content without restructuring
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = htmlContent;
-  
-  // Add template-specific classes to existing elements without moving them
-  const formattedContent = applyTemplateClasses(tempDiv, template);
-  
-  return formattedContent.innerHTML;
-};
-
-const applyTemplateClasses = (element: HTMLElement, template: ResumeTemplate): HTMLElement => {
-  const processed = element.cloneNode(true) as HTMLElement;
-  
-  // Add template classes to existing elements without restructuring
-  const h1Elements = processed.querySelectorAll('h1');
-  h1Elements.forEach(h1 => {
-    h1.className = `resume-name ${template.id}`;
-  });
-  
-  const h2Elements = processed.querySelectorAll('h2');
-  h2Elements.forEach(h2 => {
-    h2.className = `resume-section-title ${template.id}`;
-  });
-  
-  const h3Elements = processed.querySelectorAll('h3');
-  h3Elements.forEach(h3 => {
-    h3.className = `resume-job-title ${template.id}`;
-  });
-  
-  const paragraphs = processed.querySelectorAll('p');
-  paragraphs.forEach(p => {
-    p.className = `resume-content ${template.id}`;
-  });
-  
-  const lists = processed.querySelectorAll('ul, ol');
-  lists.forEach(list => {
-    list.className = `resume-list ${template.id}`;
-  });
-  
-  const listItems = processed.querySelectorAll('li');
-  listItems.forEach(li => {
-    li.className = `resume-list-item ${template.id}`;
-  });
-  
-  return processed;
+  return `resume-template-${template.id}`;
 };
 
 export const getTemplateCSS = (templateId: string): string => {
@@ -68,8 +23,7 @@ export const getTemplateCSS = (templateId: string): string => {
       min-height: 600px;
     }
     
-    /* Template-specific styling */
-    .resume-name.${templateId} {
+    .resume-template-${templateId} h1 {
       font-size: 1.875rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
@@ -79,7 +33,7 @@ export const getTemplateCSS = (templateId: string): string => {
       ${templateId === 'classic' ? 'color: #1f2937; border-bottom: 2px solid #1f2937; padding-bottom: 0.5rem;' : ''}
     }
     
-    .resume-section-title.${templateId} {
+    .resume-template-${templateId} h2 {
       font-size: 1.125rem;
       font-weight: 600;
       margin-top: 1.5rem;
@@ -92,31 +46,32 @@ export const getTemplateCSS = (templateId: string): string => {
       ${templateId === 'minimal' ? 'color: #111827; font-weight: 600;' : ''}
     }
     
-    .resume-job-title.${templateId} {
+    .resume-template-${templateId} h3 {
       font-size: 1rem;
       font-weight: 600;
       margin-bottom: 0.5rem;
       color: #374151;
     }
     
-    .resume-content.${templateId} {
+    .resume-template-${templateId} p {
       margin-bottom: 0.75rem;
       line-height: 1.5;
       color: #374151;
     }
     
-    .resume-list.${templateId} {
+    .resume-template-${templateId} ul,
+    .resume-template-${templateId} ol {
       margin-bottom: 1rem;
       padding-left: 1rem;
     }
     
-    .resume-list-item.${templateId} {
+    .resume-template-${templateId} li {
       margin-bottom: 0.25rem;
       line-height: 1.4;
       color: #374151;
     }
     
-    .resume-list.${templateId} li::marker {
+    .resume-template-${templateId} ul li::marker {
       ${templateId === 'modern' ? 'color: #3b82f6;' : ''}
       ${templateId === 'creative' ? 'color: #8b5cf6;' : ''}
       ${templateId === 'classic' ? 'color: #1f2937;' : ''}
@@ -133,11 +88,11 @@ export const getTemplateCSS = (templateId: string): string => {
       cursor: text;
     }
     
-    .resume-container h1:hover,
-    .resume-container h2:hover,
-    .resume-container h3:hover,
-    .resume-container p:hover,
-    .resume-container li:hover {
+    .resume-container:hover h1,
+    .resume-container:hover h2,
+    .resume-container:hover h3,
+    .resume-container:hover p,
+    .resume-container:hover li {
       background-color: rgba(59, 130, 246, 0.05);
       border-radius: 2px;
     }
@@ -156,13 +111,20 @@ export const getTemplateCSS = (templateId: string): string => {
         font-size: 13px;
       }
       
-      .resume-name.${templateId} {
+      .resume-template-${templateId} h1 {
         font-size: 1.5rem;
       }
       
-      .resume-section-title.${templateId} {
+      .resume-template-${templateId} h2 {
         font-size: 1rem;
       }
     }
   `;
+};
+
+// Simple content preparation without DOM manipulation
+export const prepareResumeContent = (htmlContent: string, templateId: string): string => {
+  // Just clean the content without restructuring
+  const cleaned = htmlContent.trim();
+  return cleaned;
 };
