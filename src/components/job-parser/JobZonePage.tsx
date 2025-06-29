@@ -92,21 +92,53 @@ const JobZonePage = () => {
       return;
     }
 
+    // Check if there's actual content
+    if (!resumeElement.innerHTML.trim() || resumeElement.innerHTML.trim() === '') {
+      toast({
+        title: 'Error',
+        description: 'No resume content to generate PDF. Please generate a resume first.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     try {
       toast({
         title: 'Generating PDF',
         description: 'Please wait while we create your PDF...',
       });
 
+      // Clone the element and ensure it has proper styling for PDF
+      const clonedElement = resumeElement.cloneNode(true) as HTMLElement;
+      clonedElement.style.width = '8.5in';
+      clonedElement.style.minHeight = '11in';
+      clonedElement.style.padding = '0.5in';
+      clonedElement.style.fontSize = '12px';
+      clonedElement.style.lineHeight = '1.4';
+      clonedElement.style.fontFamily = 'Arial, sans-serif';
+      clonedElement.style.color = '#000';
+      clonedElement.style.backgroundColor = '#fff';
+
       const opt = {
-        margin: 1,
+        margin: 0.5,
         filename: 'resume.pdf',
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        html2canvas: { 
+          scale: 2,
+          useCORS: true,
+          letterRendering: true,
+          backgroundColor: '#ffffff'
+        },
+        jsPDF: { 
+          unit: 'in', 
+          format: 'letter', 
+          orientation: 'portrait',
+          compress: true
+        }
       };
 
-      await window.html2pdf().set(opt).from(resumeElement).save();
+      // Use the cloned element for PDF generation
+      await window.html2pdf().set(opt).from(clonedElement).save();
       
       toast({
         title: 'Success',
@@ -116,7 +148,7 @@ const JobZonePage = () => {
       console.error('Error generating PDF:', error);
       toast({
         title: 'Error',
-        description: 'Failed to generate PDF. Please try again.',
+        description: 'Failed to generate PDF. Please try again or try copying the content manually.',
         variant: 'destructive',
       });
     }
@@ -179,14 +211,15 @@ const JobZonePage = () => {
           
           <div
             id="resumeOutput"
-            className="resume-block w-full max-w-4xl mx-auto bg-white border border-gray-300 rounded-lg p-6 min-h-[600px] focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            className="resume-block w-full max-w-4xl mx-auto bg-white border border-gray-300 rounded-lg p-8 min-h-[600px] focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent print:border-0 print:shadow-none"
             contentEditable
             dangerouslySetInnerHTML={{ __html: generatedResume }}
             onInput={handleResumeEdit}
             style={{
-              fontFamily: 'system-ui, -apple-system, sans-serif',
-              lineHeight: '1.6',
+              fontFamily: 'Arial, Helvetica, sans-serif',
+              lineHeight: '1.5',
               color: '#000',
+              fontSize: '14px',
             }}
           />
 
