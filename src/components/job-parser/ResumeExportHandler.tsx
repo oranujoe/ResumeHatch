@@ -3,7 +3,7 @@ import React from 'react';
 import { toast } from '@/hooks/use-toast';
 import { parseHTMLToPDFSections, generatePDFFromSections } from '@/utils/pdfGenerator';
 
-export const useResumeExport = () => {
+export const useResumeExport = (selectedTemplate?: string) => {
   const downloadPDF = async () => {
     const resumeElement = document.getElementById('resumeOutput');
     
@@ -37,7 +37,8 @@ export const useResumeExport = () => {
         throw new Error('No content could be extracted from the resume');
       }
 
-      generatePDFFromSections(sections, 'resume.pdf');
+      // Pass the selected template to PDF generator
+      generatePDFFromSections(sections, 'resume.pdf', selectedTemplate || 'modern');
       
       toast({
         title: 'Success',

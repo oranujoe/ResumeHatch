@@ -39,7 +39,8 @@ const JobZonePage = () => {
     setProgress,
   });
 
-  const { downloadPDF, copyToClipboard } = useResumeExport();
+  // Pass selected template to the export hook
+  const { downloadPDF, copyToClipboard } = useResumeExport(selectedTemplate);
 
   const handleResumeEdit = (event: React.FormEvent<HTMLDivElement>) => {
     setGeneratedResume(event.currentTarget.innerHTML);

@@ -14,6 +14,16 @@ export interface ResumeTemplate {
     content: string;
     list: string;
   };
+  pdfStyles: {
+    primaryColor: [number, number, number];
+    secondaryColor: [number, number, number];
+    textColor: [number, number, number];
+    headerFontSize: number;
+    sectionTitleFontSize: number;
+    bodyFontSize: number;
+    headerStyle: 'plain' | 'underline' | 'background';
+    sectionTitleStyle: 'plain' | 'underline' | 'bold';
+  };
 }
 
 export const resumeTemplates: ResumeTemplate[] = [
@@ -29,6 +39,16 @@ export const resumeTemplates: ResumeTemplate[] = [
       title: 'text-xl font-bold text-blue-600 mb-3 uppercase tracking-wide border-b border-blue-200 pb-1',
       content: 'text-gray-700 mb-3',
       list: 'space-y-2 ml-4'
+    },
+    pdfStyles: {
+      primaryColor: [37, 99, 235], // Blue-600
+      secondaryColor: [147, 197, 253], // Blue-300
+      textColor: [55, 65, 81], // Gray-700
+      headerFontSize: 20,
+      sectionTitleFontSize: 14,
+      bodyFontSize: 10,
+      headerStyle: 'underline',
+      sectionTitleStyle: 'underline'
     }
   },
   {
@@ -43,6 +63,16 @@ export const resumeTemplates: ResumeTemplate[] = [
       title: 'text-xl font-bold text-gray-800 mb-3 uppercase tracking-wide',
       content: 'text-gray-700 mb-3',
       list: 'space-y-2 ml-4'
+    },
+    pdfStyles: {
+      primaryColor: [31, 41, 55], // Gray-800
+      secondaryColor: [107, 114, 128], // Gray-500
+      textColor: [55, 65, 81], // Gray-700
+      headerFontSize: 18,
+      sectionTitleFontSize: 13,
+      bodyFontSize: 10,
+      headerStyle: 'underline',
+      sectionTitleStyle: 'bold'
     }
   },
   {
@@ -57,6 +87,16 @@ export const resumeTemplates: ResumeTemplate[] = [
       title: 'text-xl font-bold text-purple-600 mb-3 uppercase tracking-wide border-b-2 border-purple-300 pb-1',
       content: 'text-gray-700 mb-3',
       list: 'space-y-2 ml-4'
+    },
+    pdfStyles: {
+      primaryColor: [147, 51, 234], // Purple-600
+      secondaryColor: [37, 99, 235], // Blue-600
+      textColor: [55, 65, 81], // Gray-700
+      headerFontSize: 20,
+      sectionTitleFontSize: 14,
+      bodyFontSize: 10,
+      headerStyle: 'background',
+      sectionTitleStyle: 'underline'
     }
   },
   {
@@ -71,6 +111,16 @@ export const resumeTemplates: ResumeTemplate[] = [
       title: 'text-lg font-semibold text-gray-900 mb-3 uppercase tracking-wide',
       content: 'text-gray-700 mb-3',
       list: 'space-y-2'
+    },
+    pdfStyles: {
+      primaryColor: [17, 24, 39], // Gray-900
+      secondaryColor: [75, 85, 99], // Gray-600
+      textColor: [55, 65, 81], // Gray-700
+      headerFontSize: 18,
+      sectionTitleFontSize: 12,
+      bodyFontSize: 10,
+      headerStyle: 'plain',
+      sectionTitleStyle: 'plain'
     }
   }
 ];

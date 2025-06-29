@@ -1,5 +1,6 @@
 
 import jsPDF from 'jspdf';
+import { resumeTemplates, ResumeTemplate } from '@/components/job-parser/ResumeTemplates';
 
 export interface PDFSection {
   type: 'header' | 'subheader' | 'text' | 'list' | 'contact';
@@ -93,7 +94,15 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
   return sections;
 };
 
-export const generatePDFFromSections = (sections: PDFSection[], filename: string = 'resume.pdf') => {
+export const generatePDFFromSections = (
+  sections: PDFSection[], 
+  filename: string = 'resume.pdf',
+  templateId: string = 'modern'
+) => {
+  // Get template configuration
+  const template = resumeTemplates.find(t => t.id === templateId) || resumeTemplates[0];
+  const pdfStyles = template.pdfStyles;
+  
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -102,8 +111,8 @@ export const generatePDFFromSections = (sections: PDFSection[], filename: string
   
   let yPosition = margin;
   const lineHeight = 6;
-  const headerHeight = 10;
-  const subHeaderHeight = 8;
+  const headerHeight = 12;
+  const subHeaderHeight = 10;
   
   // Set default font
   doc.setFont('helvetica');
@@ -122,80 +131,98 @@ export const generatePDFFromSections = (sections: PDFSection[], filename: string
     return doc.splitTextToSize(text, maxWidth);
   };
   
+  // Helper function to apply template colors
+  const setTemplateColor = (colorType: 'primary' | 'secondary' | 'text') => {
+    const color = colorType === 'primary' ? pdfStyles.primaryColor : 
+                 colorType === 'secondary' ? pdfStyles.secondaryColor : 
+                 pdfStyles.textColor;
+    doc.setTextColor(color[0], color[1], color[2]);
+  };
+  
   sections.forEach((section, index) => {
     switch (section.type) {
       case 'header':
-        const headerFontSize = section.level === 1 ? 18 : 16;
-        const spacing = section.level === 1 ? 6 : 4;
+        const headerFontSize = section.level === 1 ? pdfStyles.headerFontSize : pdfStyles.sectionTitleFontSize;
+        const spacing = section.level === 1 ? 8 : 6;
         
         checkNewPage(headerHeight + spacing);
         doc.setFontSize(headerFontSize);
         doc.setFont('helvetica', 'bold');
         
-        // Add some color for main header
+        // Apply template-specific header styling
         if (section.level === 1) {
-          doc.setTextColor(44, 82, 130); // Professional blue
+          setTemplateColor('primary');
+          
+          // Creative template gets background styling
+          if (pdfStyles.headerStyle === 'background') {
+            // Create a background rectangle
+            doc.setFillColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
+            doc.rect(margin - 5, yPosition - 8, maxWidth + 10, headerHeight + 4, 'F');
+            doc.setTextColor(255, 255, 255); // White text on colored background
+          }
         } else {
-          doc.setTextColor(60, 60, 60); // Dark gray
+          setTemplateColor('primary');
         }
         
         doc.text(section.content, margin, yPosition);
-        yPosition += headerHeight + spacing;
+        yPosition += headerHeight;
         
-        // Add underline for section headers
-        if (section.level === 2) {
-          doc.setDrawColor(44, 82, 130);
+        // Add styling based on template
+        if (section.level === 1 && pdfStyles.headerStyle === 'underline') {
+          doc.setDrawColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
+          doc.setLineWidth(1);
+          doc.line(margin, yPosition, margin + 80, yPosition);
+        } else if (section.level === 2 && pdfStyles.sectionTitleStyle === 'underline') {
+          doc.setDrawColor(pdfStyles.secondaryColor[0], pdfStyles.secondaryColor[1], pdfStyles.secondaryColor[2]);
           doc.setLineWidth(0.5);
-          doc.line(margin, yPosition - 2, margin + 60, yPosition - 2);
+          doc.line(margin, yPosition, margin + 60, yPosition);
         }
         
-        doc.setTextColor(0, 0, 0); // Reset to black
+        yPosition += spacing;
         break;
         
       case 'contact':
-        checkNewPage(subHeaderHeight + 2);
-        doc.setFontSize(11);
+        checkNewPage(subHeaderHeight + 3);
+        doc.setFontSize(pdfStyles.bodyFontSize + 1);
         doc.setFont('helvetica', 'normal');
-        doc.setTextColor(80, 80, 80);
+        setTemplateColor('text');
         
-        const contactLines = splitTextToLines(section.content, maxWidth, 11);
+        const contactLines = splitTextToLines(section.content, maxWidth, pdfStyles.bodyFontSize + 1);
         doc.text(contactLines, margin, yPosition);
         yPosition += contactLines.length * lineHeight + 4;
-        
-        doc.setTextColor(0, 0, 0); // Reset to black
         break;
         
       case 'subheader':
-        checkNewPage(subHeaderHeight + 2);
-        doc.setFontSize(12);
+        checkNewPage(subHeaderHeight + 3);
+        doc.setFontSize(pdfStyles.bodyFontSize + 2);
         doc.setFont('helvetica', 'bold');
-        doc.setTextColor(40, 40, 40);
+        setTemplateColor('primary');
         doc.text(section.content, margin, yPosition);
-        yPosition += subHeaderHeight + 2;
-        doc.setTextColor(0, 0, 0);
+        yPosition += subHeaderHeight + 3;
         break;
         
       case 'text':
-        const textLines = splitTextToLines(section.content, maxWidth, 10);
+        const textLines = splitTextToLines(section.content, maxWidth, pdfStyles.bodyFontSize);
         const textBlockHeight = textLines.length * lineHeight;
-        checkNewPage(textBlockHeight + 3);
-        doc.setFontSize(10);
+        checkNewPage(textBlockHeight + 4);
+        doc.setFontSize(pdfStyles.bodyFontSize);
         doc.setFont('helvetica', 'normal');
+        setTemplateColor('text');
         doc.text(textLines, margin, yPosition);
         yPosition += textBlockHeight + 4;
         break;
         
       case 'list':
-        const listLines = splitTextToLines(`• ${section.content}`, maxWidth - 10, 10);
+        const listLines = splitTextToLines(`• ${section.content}`, maxWidth - 10, pdfStyles.bodyFontSize);
         const listBlockHeight = listLines.length * lineHeight;
-        checkNewPage(listBlockHeight);
-        doc.setFontSize(10);
+        checkNewPage(listBlockHeight + 2);
+        doc.setFontSize(pdfStyles.bodyFontSize);
         doc.setFont('helvetica', 'normal');
         
-        // Make bullet points blue
-        doc.setTextColor(44, 82, 130);
+        // Make bullet points use template primary color
+        setTemplateColor('primary');
         doc.text('•', margin + 5, yPosition);
-        doc.setTextColor(0, 0, 0);
+        setTemplateColor('text');
         
         // Add the text
         const listText = listLines[0].substring(2); // Remove the bullet we added
@@ -211,11 +238,11 @@ export const generatePDFFromSections = (sections: PDFSection[], filename: string
     }
   });
   
-  // Add footer with generation date
+  // Add footer with generation date using template colors
   const today = new Date().toLocaleDateString();
   doc.setFontSize(8);
   doc.setTextColor(150, 150, 150);
-  doc.text(`Generated on ${today}`, margin, pageHeight - 10);
+  doc.text(`Generated on ${today} • Template: ${template.name}`, margin, pageHeight - 10);
   
   // Save the PDF
   doc.save(filename);
