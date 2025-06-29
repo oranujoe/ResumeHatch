@@ -3,26 +3,40 @@ import React from 'react';
 import { CheckCircle, Edit3 } from 'lucide-react';
 import GlassCard from '@/components/ui/glass-card';
 import { cleanResumeContent, validateResumeContent } from '@/utils/resumeContentCleaner';
+import { formatResumeWithTemplate, getTemplateCSS } from '@/utils/resumeFormatter';
 
 interface ResumeDisplayProps {
   generatedResume: string;
+  selectedTemplate: string;
   onResumeEdit: (event: React.FormEvent<HTMLDivElement>) => void;
 }
 
-const ResumeDisplay: React.FC<ResumeDisplayProps> = ({ generatedResume, onResumeEdit }) => {
-  // Clean and validate the resume content
+const ResumeDisplay: React.FC<ResumeDisplayProps> = ({ 
+  generatedResume, 
+  selectedTemplate, 
+  onResumeEdit 
+}) => {
+  // Clean, validate, and format the resume content with template
   const processedResume = React.useMemo(() => {
     try {
       const cleaned = cleanResumeContent(generatedResume);
       if (!validateResumeContent(cleaned)) {
         console.warn('Resume content validation failed, but proceeding with display');
       }
-      return cleaned;
+      
+      // Apply template formatting
+      const formatted = formatResumeWithTemplate(cleaned, selectedTemplate);
+      return formatted;
     } catch (error) {
       console.error('Error processing resume content:', error);
       return generatedResume; // Fallback to original content
     }
-  }, [generatedResume]);
+  }, [generatedResume, selectedTemplate]);
+
+  // Generate template-specific CSS
+  const templateCSS = React.useMemo(() => {
+    return getTemplateCSS(selectedTemplate);
+  }, [selectedTemplate]);
 
   return (
     <div className="space-y-6 animate-fade-in-up">
@@ -47,18 +61,13 @@ const ResumeDisplay: React.FC<ResumeDisplayProps> = ({ generatedResume, onResume
       
       {/* Resume Content */}
       <GlassCard className="p-8">
+        <style dangerouslySetInnerHTML={{ __html: templateCSS }} />
         <div
           id="resumeOutput"
-          className="w-full max-w-4xl mx-auto min-h-[600px] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-lg transition-all duration-200"
+          className="resume-container w-full max-w-4xl mx-auto min-h-[600px] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-lg transition-all duration-200"
           contentEditable
           dangerouslySetInnerHTML={{ __html: processedResume }}
           onInput={onResumeEdit}
-          style={{
-            fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
-            lineHeight: '1.6',
-            color: 'hsl(var(--foreground))',
-            fontSize: '14px',
-          }}
         />
       </GlassCard>
     </div>

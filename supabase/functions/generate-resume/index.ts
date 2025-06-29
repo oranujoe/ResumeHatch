@@ -1,3 +1,4 @@
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -61,27 +62,52 @@ serve(async (req) => {
       });
     }
 
-    const prompt = `Based on the following job description, generate an ATS-optimized resume in HTML format. The resume should be professional, well-structured, and tailored to match the job requirements. Include relevant sections like Professional Summary, Skills, Experience, Education, etc. Use proper HTML formatting with appropriate tags and bullet points.
+    const prompt = `You are an expert resume writer creating an ATS-optimized resume. Based on the job description below, generate a professional resume in clean HTML format.
 
-IMPORTANT INSTRUCTIONS:
-- Generate ONLY the HTML content that goes inside a div container
-- DO NOT include DOCTYPE, html, head, body, or any wrapper tags
-- DO NOT include any meta tags, title tags, or script tags
-- Start directly with resume content using semantic HTML tags like <h1>, <h2>, <p>, <ul>, etc.
-- Use clean, semantic HTML structure
-- Focus on content that would be inside a resume container
+CRITICAL FORMATTING REQUIREMENTS:
+- Generate ONLY clean HTML content (NO DOCTYPE, html, head, body tags)
+- Start directly with the candidate's name as <h1>
+- Use semantic HTML: <h1> for name, <h2> for sections, <p> for paragraphs, <ul>/<li> for lists
+- Structure sections in this exact order: Contact Info, Professional Summary, Core Skills, Professional Experience, Education, Additional Sections
+
+CONTENT STRUCTURE TEMPLATE:
+<h1>[Full Name]</h1>
+<p>[Email] | [Phone] | [City, State] | [LinkedIn URL]</p>
+
+<h2>Professional Summary</h2>
+<p>[3-4 sentences highlighting relevant experience and value proposition tailored to the job]</p>
+
+<h2>Core Skills</h2>
+<ul>
+<li>[Skill relevant to job description]</li>
+<li>[Technical skill matching requirements]</li>
+<li>[Industry-specific competency]</li>
+</ul>
+
+<h2>Professional Experience</h2>
+<h3>[Job Title] | [Company Name] | [Date Range]</h3>
+<ul>
+<li>[Achievement with quantifiable result using action verb]</li>
+<li>[Accomplishment demonstrating relevant skill]</li>
+<li>[Impact statement showing business value]</li>
+</ul>
+
+<h2>Education</h2>
+<p>[Degree] in [Field] | [Institution] | [Year]</p>
+
+CONTENT GUIDELINES:
+- Extract and incorporate relevant keywords from the job description naturally
+- Use strong action verbs (Led, Developed, Implemented, Achieved, Optimized)
+- Include quantifiable achievements where possible (percentages, dollar amounts, timeframes)
+- Tailor the professional summary specifically to the target role
+- Match skills section to job requirements
+- Create 3-4 bullet points per role focusing on achievements, not duties
+- Ensure content flows logically and professionally
 
 Job Description:
 ${jobDescription}
 
-Please provide a complete HTML resume that would be optimized for Applicant Tracking Systems (ATS). Focus on:
-1. Using relevant keywords from the job description
-2. Clear, professional formatting with proper HTML tags
-3. Quantifiable achievements where appropriate
-4. Skills that match the job requirements
-5. Professional structure starting with candidate name as <h1>
-
-Generate only clean HTML content without any wrapper tags or metadata.`;
+Generate a complete, professional resume that would score highly with ATS systems and impress hiring managers. Focus on relevance, impact, and professional presentation.`;
 
     console.log('Calling Gemini API...');
     

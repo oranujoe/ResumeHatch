@@ -8,10 +8,13 @@ import JobDescriptionInput from './JobDescriptionInput';
 import GenerationProgress from './GenerationProgress';
 import ResumeDisplay from './ResumeDisplay';
 import ResumeActions from './ResumeActions';
+import TemplateSelection from './ResumeTemplates';
+import GlassCard from '@/components/ui/glass-card';
 
 const JobZonePage = () => {
   const [jobDescription, setJobDescription] = useState('');
   const [generatedResume, setGeneratedResume] = useState('');
+  const [selectedTemplate, setSelectedTemplate] = useState('modern');
   const [isGenerating, setIsGenerating] = useState(false);
   const [showResume, setShowResume] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -197,8 +200,16 @@ const JobZonePage = () => {
 
       {showResume && (
         <>
+          <GlassCard className="p-6">
+            <TemplateSelection
+              selectedTemplate={selectedTemplate}
+              onTemplateChange={setSelectedTemplate}
+            />
+          </GlassCard>
+          
           <ResumeDisplay
             generatedResume={generatedResume}
+            selectedTemplate={selectedTemplate}
             onResumeEdit={handleResumeEdit}
           />
           
