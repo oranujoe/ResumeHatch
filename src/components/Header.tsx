@@ -9,8 +9,8 @@ const Header = () => {
   const { user, signOut } = useAuth();
 
   const handleSignOut = async () => {
+    console.log('Header: Sign out clicked');
     await signOut();
-    window.location.href = '/';
   };
 
   return (
