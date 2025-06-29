@@ -1,4 +1,3 @@
-
 import jsPDF from 'jspdf';
 import { resumeTemplates, ResumeTemplate } from '@/components/job-parser/ResumeTemplates';
 import { PDFSection, PDFDimensions, PDFSpacing } from './types';
@@ -74,7 +73,8 @@ export class FixedPDFStyler {
     if (isMainHeader) {
       this.setTemplateColor('primary');
       
-      if (pdfStyles.headerStyle === 'background') {
+      // Remove background for creative template but keep it for others
+      if (pdfStyles.headerStyle === 'background' && this.template.id !== 'creative') {
         this.doc.setFillColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
         this.doc.rect(this.dimensions.margin, yPosition - 8, this.dimensions.maxWidth, headerFontSize + 12, 'F');
         this.doc.setTextColor(255, 255, 255);
