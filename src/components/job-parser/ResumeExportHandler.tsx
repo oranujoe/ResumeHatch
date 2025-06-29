@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { toast } from '@/hooks/use-toast';
-import { parseHTMLToPDFSections, generatePDFFromSections } from '@/utils/pdfGenerator';
+import { generatePDFFromHTML } from '@/utils/pdfGeneratorHTML2Canvas';
 
-export const useResumeExport = (selectedTemplate?: string) => {
+export const useResumeExportFixed = (selectedTemplate?: string) => {
   const downloadPDF = async () => {
     const resumeElement = document.getElementById('resumeOutput');
     
@@ -16,7 +15,7 @@ export const useResumeExport = (selectedTemplate?: string) => {
       return;
     }
 
-    if (!resumeElement.innerHTML.trim() || resumeElement.innerHTML.trim() === '') {
+    if (!resumeElement.innerHTML.trim()) {
       toast({
         title: 'Error',
         description: 'No resume content to generate PDF. Please generate a resume first.',
@@ -31,14 +30,14 @@ export const useResumeExport = (selectedTemplate?: string) => {
         description: 'Please wait while we create your PDF...',
       });
 
-      const sections = parseHTMLToPDFSections(resumeElement.innerHTML);
-      
-      if (sections.length === 0) {
-        throw new Error('No content could be extracted from the resume');
-      }
-
-      // Pass the selected template to PDF generator
-      generatePDFFromSections(sections, 'resume.pdf', selectedTemplate || 'modern');
+      // Option 1: Use the new HTML2Canvas approach (recommended)
+      await generatePDFFromHTML('resumeOutput', {
+        filename: 'resume.pdf',
+        templateId: selectedTemplate || 'modern',
+        scale: 2,
+        quality: 0.95,
+        margin: 15
+      });
       
       toast({
         title: 'Success',
@@ -48,7 +47,7 @@ export const useResumeExport = (selectedTemplate?: string) => {
       console.error('Error generating PDF:', error);
       toast({
         title: 'Error',
-        description: 'Failed to generate PDF. Please try the copy option instead.',
+        description: 'Failed to generate PDF. Please try again.',
         variant: 'destructive',
       });
     }
