@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -40,7 +39,8 @@ const mainNavItems: NavItem[] = [
     subItems: [
       { title: "Parse & Apply", url: "/dashboard/job-parser/parse" },
       { title: "Drop-zone Chrome", url: "/dashboard/job-parser/chrome" },
-      { title: "Bulk Queue", url: "/dashboard/job-parser/bulk" }
+      { title: "Bulk Queue", url: "/dashboard/job-parser/bulk" },
+      { title: "Job Zone", url: "/dashboard/job-parser/zone" }
     ]
   },
   {
