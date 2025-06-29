@@ -1,8 +1,9 @@
+
 import React from 'react';
 import { toast } from '@/hooks/use-toast';
-import { generatePDFFromHTML } from '@/utils/pdfGeneratorHTML2Canvas';
+import { parseHTMLToPDFSections, generatePDFFromSections } from '@/utils/pdfGenerator';
 
-export const useResumeExportFixed = (selectedTemplate?: string) => {
+export const useResumeExport = (selectedTemplate?: string) => {
   const downloadPDF = async () => {
     const resumeElement = document.getElementById('resumeOutput');
     
@@ -15,7 +16,7 @@ export const useResumeExportFixed = (selectedTemplate?: string) => {
       return;
     }
 
-    if (!resumeElement.innerHTML.trim()) {
+    if (!resumeElement.innerHTML.trim() || resumeElement.innerHTML.trim() === '') {
       toast({
         title: 'Error',
         description: 'No resume content to generate PDF. Please generate a resume first.',
@@ -30,14 +31,14 @@ export const useResumeExportFixed = (selectedTemplate?: string) => {
         description: 'Please wait while we create your PDF...',
       });
 
-      // Option 1: Use the new HTML2Canvas approach (recommended)
-      await generatePDFFromHTML('resumeOutput', {
-        filename: 'resume.pdf',
-        templateId: selectedTemplate || 'modern',
-        scale: 2,
-        quality: 0.95,
-        margin: 15
-      });
+      const sections = parseHTMLToPDFSections(resumeElement.innerHTML);
+      
+      if (sections.length === 0) {
+        throw new Error('No content could be extracted from the resume');
+      }
+
+      // Pass the selected template to PDF generator
+      generatePDFFromSections(sections, 'resume.pdf', selectedTemplate || 'modern');
       
       toast({
         title: 'Success',
@@ -47,7 +48,7 @@ export const useResumeExportFixed = (selectedTemplate?: string) => {
       console.error('Error generating PDF:', error);
       toast({
         title: 'Error',
-        description: 'Failed to generate PDF. Please try again.',
+        description: 'Failed to generate PDF. Please try the copy option instead.',
         variant: 'destructive',
       });
     }
