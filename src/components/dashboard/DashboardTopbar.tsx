@@ -12,6 +12,7 @@ import {
   LogOut
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface DashboardTopbarProps {
   isCollapsed: boolean;
@@ -28,11 +29,25 @@ const DashboardTopbar: React.FC<DashboardTopbarProps> = ({
 }) => {
   const [isDark, setIsDark] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   const toggleTheme = () => {
     setIsDark(!isDark);
     document.documentElement.classList.toggle('dark');
   };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
+  // Get user display name and email
+  const userDisplayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
+  const userEmail = user?.email || '';
 
   return (
     <header className="sticky top-0 z-40 w-full h-14 bg-background/80 backdrop-blur-sm border-b border-border">
@@ -112,7 +127,7 @@ const DashboardTopbar: React.FC<DashboardTopbarProps> = ({
               </div>
               {!isMobile && (
                 <>
-                  <span className="text-xs font-medium">John Doe</span>
+                  <span className="text-xs font-medium">{userDisplayName}</span>
                   <ChevronDown className="h-3 w-3" />
                 </>
               )}
@@ -135,26 +150,41 @@ const DashboardTopbar: React.FC<DashboardTopbarProps> = ({
                         <User className="h-4 w-4 text-primary-foreground" />
                       </div>
                       <div>
-                        <p className="text-xs font-medium">John Doe</p>
-                        <p className="text-xs text-muted-foreground">john@example.com</p>
+                        <p className="text-xs font-medium">{userDisplayName}</p>
+                        <p className="text-xs text-muted-foreground">{userEmail}</p>
                       </div>
                     </div>
                   </div>
                   
                   <div className="p-1.5">
-                    <button className="w-full flex items-center space-x-2.5 px-2.5 py-1.5 rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors duration-200 text-xs">
+                    <button 
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        // Navigate to profile page when implemented
+                      }}
+                      className="w-full flex items-center space-x-2.5 px-2.5 py-1.5 rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors duration-200 text-xs"
+                    >
                       <User className="h-3.5 w-3.5" />
                       <span>Profile</span>
                     </button>
                     
-                    <button className="w-full flex items-center space-x-2.5 px-2.5 py-1.5 rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors duration-200 text-xs">
+                    <button 
+                      onClick={() => {
+                        setIsUserMenuOpen(false);
+                        // Navigate to settings page when implemented
+                      }}
+                      className="w-full flex items-center space-x-2.5 px-2.5 py-1.5 rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors duration-200 text-xs"
+                    >
                       <Settings className="h-3.5 w-3.5" />
                       <span>Settings</span>
                     </button>
                     
                     <div className="border-t border-border my-1.5" />
                     
-                    <button className="w-full flex items-center space-x-2.5 px-2.5 py-1.5 rounded-lg hover:bg-destructive hover:text-destructive-foreground transition-colors duration-200 text-xs">
+                    <button 
+                      onClick={handleSignOut}
+                      className="w-full flex items-center space-x-2.5 px-2.5 py-1.5 rounded-lg hover:bg-destructive hover:text-destructive-foreground transition-colors duration-200 text-xs"
+                    >
                       <LogOut className="h-3.5 w-3.5" />
                       <span>Sign out</span>
                     </button>
