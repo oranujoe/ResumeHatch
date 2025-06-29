@@ -1,26 +1,75 @@
 
-import React from 'react';
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import React, { useState, useEffect } from 'react';
 import DashboardSidebar from './DashboardSidebar';
 import DashboardTopbar from './DashboardTopbar';
+import { cn } from '@/lib/utils';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
+  pageTitle?: string;
 }
 
-const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+const DashboardLayout: React.FC<DashboardLayoutProps> = ({ 
+  children, 
+  pageTitle = "Dashboard" 
+}) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Handle responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 768);
+      
+      // Auto-collapse sidebar on mid-sized screens (768px-1024px)
+      if (width >= 768 && width < 1024) {
+        setIsCollapsed(true);
+      } else if (width >= 1024) {
+        setIsCollapsed(false);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-slate-50 dark:bg-slate-900">
-        <DashboardSidebar />
-        <SidebarInset>
-          <DashboardTopbar />
-          <main className="flex-1 p-6 overflow-auto">
+    <div className="min-h-screen flex bg-background">
+      {/* Sidebar */}
+      <DashboardSidebar 
+        isCollapsed={isCollapsed}
+        isMobile={isMobile}
+        onToggle={toggleSidebar}
+      />
+
+      {/* Main Content Area */}
+      <div className={cn(
+        "flex-1 flex flex-col transition-all duration-200",
+        isCollapsed ? "pl-16" : "pl-56",
+        isMobile && "pl-0"
+      )}>
+        {/* Topbar */}
+        <DashboardTopbar 
+          isCollapsed={isCollapsed}
+          isMobile={isMobile}
+          onToggleSidebar={toggleSidebar}
+          pageTitle={pageTitle}
+        />
+
+        {/* Main Content */}
+        <main className="flex-1 p-3 md:p-4 overflow-auto">
+          <div className="animate-fade-in">
             {children}
-          </main>
-        </SidebarInset>
+          </div>
+        </main>
       </div>
-    </SidebarProvider>
+    </div>
   );
 };
 

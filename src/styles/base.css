@@ -1,0 +1,162 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light Mode Colors */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    /* Glass Card Colors */
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --card-glass: 0 0% 100% / 0.8;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    /* Primary Colors */
+    --primary: 217 91% 60%; /* Blue #3B82F6 */
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary Colors */
+    --secondary: 48 96% 89%; /* Yellow #FCD34D */
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    /* Accent Colors */
+    --accent: 160 84% 39%; /* Teal/Green for success */
+    --accent-foreground: 0 0% 100%;
+
+    /* Enhanced Status Colors with Psychology */
+    --status-applied: 217 91% 60%; /* Trust-building blue */
+    --status-interview: 262 83% 58%; /* Confident purple */
+    --status-offer: 142 76% 36%; /* Success green */
+    --status-rejected: 0 84% 60%; /* Attention red */
+    --status-pending: 43 96% 56%; /* Energetic yellow */
+
+    /* Emotional Color Palette */
+    --success-primary: 142 76% 36%;
+    --success-secondary: 142 69% 58%;
+    --success-light: 142 76% 94%;
+    
+    --warning-primary: 43 96% 56%;
+    --warning-secondary: 43 96% 70%;
+    --warning-light: 43 96% 95%;
+    
+    --error-primary: 0 84% 60%;
+    --error-secondary: 0 84% 74%;
+    --error-light: 0 84% 97%;
+    
+    --info-primary: 217 91% 60%;
+    --info-secondary: 217 91% 74%;
+    --info-light: 217 91% 97%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 217 91% 60%;
+
+    --radius: 0.5rem;
+
+    /* Sidebar Colors */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 48 96% 89%;
+    --sidebar-accent-foreground: 222.2 47.4% 11.2%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217 91% 60%;
+  }
+
+  .dark {
+    /* Dark Mode Colors */
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+
+    /* Glass Card Colors */
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
+    --card-glass: 222 47% 11% / 0.8;
+
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+
+    /* Primary Colors */
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary Colors */
+    --secondary: 48 96% 89%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    /* Accent Colors */
+    --accent: 160 84% 39%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Enhanced Status Colors for Dark Mode */
+    --status-applied: 217 91% 60%;
+    --status-interview: 262 83% 58%;
+    --status-offer: 142 76% 36%;
+    --status-rejected: 0 84% 60%;
+    --status-pending: 43 96% 56%;
+
+    /* Dark Mode Emotional Colors */
+    --success-primary: 142 76% 36%;
+    --success-secondary: 142 69% 45%;
+    --success-light: 142 76% 15%;
+    
+    --warning-primary: 43 96% 56%;
+    --warning-secondary: 43 96% 45%;
+    --warning-light: 43 96% 15%;
+    
+    --error-primary: 0 84% 60%;
+    --error-secondary: 0 84% 50%;
+    --error-light: 0 84% 15%;
+    
+    --info-primary: 217 91% 60%;
+    --info-secondary: 217 91% 50%;
+    --info-light: 217 91% 15%;
+
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 217 91% 60%;
+
+    /* Sidebar Colors */
+    --sidebar-background: 222 47% 11%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 30 95% 60%;
+    --sidebar-accent-foreground: 48 96% 89%;
+    --sidebar-border: 217 33% 17%;
+    --sidebar-ring: 217 91% 60%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    font-variation-settings: normal;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}

@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
 
 export default {
 	darkMode: ["class"],
@@ -22,6 +23,9 @@ export default {
 			}
 		},
 		extend: {
+			spacing: {
+				'16': '4rem', // 64px for collapsed sidebar (reduced from 72px)
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -66,20 +70,40 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				brand: {
-					blue: '#265BFF',
-					yellow: '#FFB703',
-					orange: '#F97316',
-					light: '#F8FAFC',
-					dark: '#0F172A'
-				},
 				status: {
-					success: '#10B981',
-					warning: '#F59E0B',
-					error: '#EF4444',
-					info: '#3B82F6',
-					interview: '#8B5CF6',
-					inactive: '#6B7280'
+					applied: 'hsl(var(--status-applied))',
+					interview: 'hsl(var(--status-interview))',
+					offer: 'hsl(var(--status-offer))',
+					rejected: 'hsl(var(--status-rejected))',
+					pending: 'hsl(var(--status-pending))',
+					draft: 'hsl(var(--muted-foreground))'
+				},
+				success: {
+					primary: 'hsl(var(--success-primary))',
+					secondary: 'hsl(var(--success-secondary))',
+					light: 'hsl(var(--success-light))'
+				},
+				warning: {
+					primary: 'hsl(var(--warning-primary))',
+					secondary: 'hsl(var(--warning-secondary))',
+					light: 'hsl(var(--warning-light))'
+				},
+				error: {
+					primary: 'hsl(var(--error-primary))',
+					secondary: 'hsl(var(--error-secondary))',
+					light: 'hsl(var(--error-light))'
+				},
+				info: {
+					primary: 'hsl(var(--info-primary))',
+					secondary: 'hsl(var(--info-secondary))',
+					light: 'hsl(var(--info-light))'
+				},
+				brand: {
+					blue: '#3B82F6',
+					yellow: '#FCD34D',
+					teal: '#10B981',
+					light: '#FFFFFF',
+					dark: '#0F172A'
 				}
 			},
 			borderRadius: {
@@ -158,10 +182,10 @@ export default {
 				},
 				'pulse-glow': {
 					'0%, 100%': { 
-						boxShadow: '0 0 5px rgba(38, 91, 255, 0.5)' 
+						boxShadow: '0 0 5px rgba(59, 130, 246, 0.5)' 
 					},
 					'50%': { 
-						boxShadow: '0 0 20px rgba(38, 91, 255, 0.8), 0 0 30px rgba(38, 91, 255, 0.6)' 
+						boxShadow: '0 0 20px rgba(59, 130, 246, 0.8), 0 0 30px rgba(59, 130, 246, 0.6)' 
 					}
 				},
 				'gradient-x': {
@@ -199,14 +223,38 @@ export default {
 				'bounce-gentle': 'bounce-gentle 2s ease-in-out infinite'
 			},
 			fontFamily: {
-				sans: ['Inter', 'sans-serif'],
+				sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+			},
+			fontSize: {
+				'display-large': ['clamp(2rem, 4vw, 3.2rem)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
+				'display-medium': ['clamp(1.6rem, 3.2vw, 2.4rem)', { lineHeight: '1.2', letterSpacing: '-0.015em' }],
+				'display-small': ['clamp(1.2rem, 2.4vw, 2rem)', { lineHeight: '1.3', letterSpacing: '-0.01em' }],
+				'headline-large': ['clamp(1rem, 2vw, 1.6rem)', { lineHeight: '1.3', letterSpacing: '-0.005em' }],
+				'headline-medium': ['clamp(0.9rem, 1.6vw, 1.2rem)', { lineHeight: '1.4' }],
+				'headline-small': ['clamp(0.8rem, 1.2vw, 1rem)', { lineHeight: '1.4' }],
+				'title-large': ['clamp(0.75rem, 1vw, 0.9rem)', { lineHeight: '1.5' }],
+				'title-medium': ['clamp(0.75rem, 0.8vw, 0.8rem)', { lineHeight: '1.5' }],
+				'title-small': ['clamp(0.625rem, 0.7vw, 0.75rem)', { lineHeight: '1.5' }],
+				'body-large': ['clamp(0.75rem, 0.8vw, 0.8rem)', { lineHeight: '1.6' }],
+				'body-medium': ['0.75rem', { lineHeight: '1.5' }],
+				'body-small': ['0.625rem', { lineHeight: '1.4' }],
+				'label-large': ['0.75rem', { lineHeight: '1', letterSpacing: '0.01em' }],
+				'label-medium': ['0.625rem', { lineHeight: '1', letterSpacing: '0.015em' }],
+				'label-small': ['0.625rem', { lineHeight: '1', letterSpacing: '0.02em' }],
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
 				'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
 				'shimmer': 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)'
+			},
+			screens: {
+				'sm': '640px',
+				'md': '768px',
+				'lg': '1024px',
+				'xl': '1280px',
+				'2xl': '1536px',
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [animate],
 } satisfies Config;

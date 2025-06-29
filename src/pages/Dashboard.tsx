@@ -1,24 +1,93 @@
 
 import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
 import DashboardOverview from '../components/dashboard/DashboardOverview';
-import { useAuth } from '@/contexts/AuthContext';
+
+// Create placeholder components for other dashboard sections
+const ApplicationsPage = () => (
+  <div className="space-y-6">
+    <h2 className="text-2xl font-bold">Applications</h2>
+    <p className="text-muted-foreground">Manage your job applications here.</p>
+  </div>
+);
+
+const DocumentsPage = () => (
+  <div className="space-y-6">
+    <h2 className="text-2xl font-bold">Documents</h2>
+    <p className="text-muted-foreground">Manage your documents and templates here.</p>
+  </div>
+);
+
+const KnowledgePage = () => (
+  <div className="space-y-6">
+    <h2 className="text-2xl font-bold">Knowledge Base</h2>
+    <p className="text-muted-foreground">Manage your profile data and skills here.</p>
+  </div>
+);
+
+const JobFeedPage = () => (
+  <div className="space-y-6">
+    <h2 className="text-2xl font-bold">Job Feed</h2>
+    <p className="text-muted-foreground">Browse job opportunities here.</p>
+  </div>
+);
+
+const InterviewPrepPage = () => (
+  <div className="space-y-6">
+    <h2 className="text-2xl font-bold">Interview Prep</h2>
+    <p className="text-muted-foreground">Prepare for interviews with AI coaching.</p>
+  </div>
+);
+
+const ReferralsPage = () => (
+  <div className="space-y-6">
+    <h2 className="text-2xl font-bold">Referrals</h2>
+    <p className="text-muted-foreground">Manage your referral network here.</p>
+  </div>
+);
+
+const SettingsPage = () => (
+  <div className="space-y-6">
+    <h2 className="text-2xl font-bold">Settings</h2>
+    <p className="text-muted-foreground">Configure your account settings here.</p>
+  </div>
+);
+
+const ProfilePage = () => (
+  <div className="space-y-6">
+    <h2 className="text-2xl font-bold">Profile</h2>
+    <p className="text-muted-foreground">Manage your profile information here.</p>
+  </div>
+);
+
+const HelpPage = () => (
+  <div className="space-y-6">
+    <h2 className="text-2xl font-bold">Help</h2>
+    <p className="text-muted-foreground">Get help and support here.</p>
+  </div>
+);
 
 const Dashboard = () => {
-  const { user } = useAuth();
-
   return (
-    <DashboardLayout>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">
-          Welcome back, {user?.email}!
-        </h1>
-        <p className="text-gray-600">
-          Here's your dashboard overview
-        </p>
-      </div>
-      <DashboardOverview />
-    </DashboardLayout>
+    <Routes>
+      <Route path="/*" element={
+        <DashboardLayout pageTitle="Dashboard">
+          <Routes>
+            <Route index element={<DashboardOverview />} />
+            <Route path="applications/*" element={<ApplicationsPage />} />
+            <Route path="documents/*" element={<DocumentsPage />} />
+            <Route path="knowledge/*" element={<KnowledgePage />} />
+            <Route path="job-feed" element={<JobFeedPage />} />
+            <Route path="interview-prep/*" element={<InterviewPrepPage />} />
+            <Route path="referrals" element={<ReferralsPage />} />
+            <Route path="settings/*" element={<SettingsPage />} />
+            <Route path="profile" element={<ProfilePage />} />
+            <Route path="help/*" element={<HelpPage />} />
+          </Routes>
+        </DashboardLayout>
+      } />
+    </Routes>
   );
 };
 
