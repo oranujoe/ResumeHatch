@@ -14,8 +14,7 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
       /@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/, // Email
       /\(\d{3}\)\s*\d{3}-\d{4}/, // Phone (XXX) XXX-XXXX
       /\d{3}-\d{3}-\d{4}/, // Phone XXX-XXX-XXXX
-      /\|\s*/, // Pipe separator often used in contact lines
-      /•\s*/, // Bullet separator
+      /\+\d{3}\s*\d{3}\s*\d{3}\s*\d{4}/, // International phone
       /linkedin\.com/, // LinkedIn
       /github\.com/, // GitHub
     ];
@@ -24,32 +23,25 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
   
   // Function to determine if element is styled as a section header
   const isSectionHeader = (element: Element): boolean => {
-    const computedStyle = window.getComputedStyle(element);
     const text = element.textContent?.trim().toUpperCase() || '';
     
     // Check for common section titles
     const sectionTitles = [
       'PROFESSIONAL SUMMARY', 'SUMMARY', 'PROFILE',
-      'WORK EXPERIENCE', 'EXPERIENCE', 'EMPLOYMENT',
-      'EDUCATION', 'SKILLS', 'TECHNICAL SKILLS',
-      'CERTIFICATIONS', 'PROJECTS', 'ACHIEVEMENTS',
-      'CONTACT', 'CONTACT INFORMATION'
+      'WORK EXPERIENCE', 'EXPERIENCE', 'EMPLOYMENT', 'PROFESSIONAL EXPERIENCE',
+      'EDUCATION', 'SKILLS', 'TECHNICAL SKILLS', 'CORE SKILLS',
+      'CERTIFICATIONS', 'PROJECTS', 'ACHIEVEMENTS'
     ];
     
-    const hasCommonTitle = sectionTitles.some(title => text.includes(title));
-    const isBold = computedStyle.fontWeight === 'bold' || parseInt(computedStyle.fontWeight) >= 600;
-    const hasUnderline = computedStyle.textDecoration.includes('underline') || 
-                        computedStyle.borderBottom !== 'none';
-    
-    return hasCommonTitle || (isBold && (hasUnderline || text.length < 30));
+    return sectionTitles.some(title => text.includes(title)) && text.length < 50;
   };
   
-  // Function to process each element with better context awareness
-  const processElement = (element: Element, depth: number = 0) => {
+  // Function to process each element
+  const processElement = (element: Element) => {
     const tagName = element.tagName.toLowerCase();
     const textContent = element.textContent?.trim() || '';
     
-    if (!textContent) return;
+    if (!textContent || textContent.length < 3) return;
     
     switch (tagName) {
       case 'h1':
@@ -74,12 +66,10 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
         break;
         
       case 'p':
-        if (textContent.length > 0) {
-          // Enhanced contact information detection
+        if (textContent.length > 5) {
           if (isContactInfo(textContent)) {
             sections.push({ type: 'contact', content: textContent });
           } else if (isSectionHeader(element)) {
-            // Paragraphs styled as section headers
             sections.push({ type: 'header', content: textContent, level: 2 });
           } else {
             sections.push({ type: 'text', content: textContent });
@@ -92,7 +82,7 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
         const listItems = element.querySelectorAll('li');
         listItems.forEach(li => {
           const itemText = li.textContent?.trim();
-          if (itemText) {
+          if (itemText && itemText.length > 3) {
             sections.push({ type: 'list', content: itemText });
           }
         });
@@ -100,7 +90,7 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
         
       case 'li':
         // Handle standalone list items
-        if (!element.closest('ul, ol')) {
+        if (!element.closest('ul, ol') && textContent.length > 3) {
           sections.push({ type: 'list', content: textContent });
         }
         break;
@@ -112,22 +102,12 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
           sections.push({ type: 'header', content: textContent, level: 2 });
         } else {
           // Process children of div/section elements
-          Array.from(element.children).forEach(child => processElement(child, depth + 1));
-        }
-        break;
-        
-      case 'strong':
-      case 'b':
-        // Bold text might be section headers if they're standalone
-        if (!element.closest('p, li') && textContent.length < 50 && isSectionHeader(element)) {
-          sections.push({ type: 'header', content: textContent, level: 2 });
-        } else if (textContent.length > 10) {
-          sections.push({ type: 'text', content: textContent });
+          Array.from(element.children).forEach(child => processElement(child));
         }
         break;
         
       default:
-        // For other elements, check if they might be section headers
+        // For other elements, check if they might be section headers or text
         if (isSectionHeader(element) && textContent.length < 50) {
           sections.push({ type: 'header', content: textContent, level: 2 });
         } else if (textContent.length > 10) {
@@ -144,7 +124,7 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
     const allText = tempDiv.textContent?.trim() || '';
     if (allText) {
       // Split by double line breaks to create paragraphs
-      const paragraphs = allText.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+      const paragraphs = allText.split(/\n\s*\n/).filter(p => p.trim().length > 5);
       paragraphs.forEach(paragraph => {
         const trimmed = paragraph.trim();
         if (isContactInfo(trimmed)) {
@@ -156,7 +136,7 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
     }
   }
   
-  // Post-process to merge adjacent similar sections and improve structure
+  // Clean up and merge similar adjacent sections
   const processedSections: PDFSection[] = [];
   let lastSection: PDFSection | null = null;
   
@@ -165,7 +145,7 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
     if (lastSection && 
         lastSection.type === section.type && 
         section.type === 'text' && 
-        lastSection.content.length + section.content.length < 500) {
+        lastSection.content.length + section.content.length < 400) {
       // Merge similar text sections if they're not too long
       lastSection.content += ' ' + section.content;
     } else {
@@ -180,5 +160,6 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
     processedSections.push(lastSection);
   }
   
+  console.log('Parsed PDF sections:', processedSections.length, 'sections');
   return processedSections;
 };

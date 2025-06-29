@@ -16,14 +16,14 @@ export class PDFStyler {
     this.dimensions = {
       pageWidth: doc.internal.pageSize.getWidth(),
       pageHeight: doc.internal.pageSize.getHeight(),
-      margin: 20,
-      maxWidth: doc.internal.pageSize.getWidth() - 40
+      margin: 30,
+      maxWidth: doc.internal.pageSize.getWidth() - 60 // Proper content width
     };
     
     this.spacing = {
-      lineHeight: 6,
-      headerHeight: 12,
-      subHeaderHeight: 10
+      lineHeight: 14,
+      headerHeight: 18,
+      subHeaderHeight: 16
     };
     
     // Set default font
@@ -53,7 +53,7 @@ export class PDFStyler {
   public applyHeaderStyle(section: PDFSection, yPosition: number): number {
     const pdfStyles = this.template.pdfStyles;
     const headerFontSize = section.level === 1 ? pdfStyles.headerFontSize : pdfStyles.sectionTitleFontSize;
-    const spacing = section.level === 1 ? 8 : 6;
+    const spacing = section.level === 1 ? 12 : 8;
     
     yPosition = this.checkNewPage(this.spacing.headerHeight + spacing, yPosition);
     this.doc.setFontSize(headerFontSize);
@@ -65,9 +65,9 @@ export class PDFStyler {
       
       // Creative template gets background styling
       if (pdfStyles.headerStyle === 'background') {
-        // Create a full-width background rectangle
+        // Create a proper background rectangle within page bounds
         this.doc.setFillColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
-        this.doc.rect(this.dimensions.margin - 5, yPosition - 8, this.dimensions.maxWidth + 10, this.spacing.headerHeight + 4, 'F');
+        this.doc.rect(this.dimensions.margin, yPosition - 8, this.dimensions.maxWidth, this.spacing.headerHeight + 4, 'F');
         this.doc.setTextColor(255, 255, 255); // White text on colored background
       }
     } else {
@@ -77,16 +77,16 @@ export class PDFStyler {
     this.doc.text(section.content, this.dimensions.margin, yPosition);
     yPosition += this.spacing.headerHeight;
     
-    // Add full-width styling based on template
+    // Add proper width lines based on template
     if (section.level === 1 && pdfStyles.headerStyle === 'underline') {
       this.doc.setDrawColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
       this.doc.setLineWidth(2);
-      // Use full width for main headers
+      // Use proper content width, not beyond page boundaries
       this.doc.line(this.dimensions.margin, yPosition, this.dimensions.margin + this.dimensions.maxWidth, yPosition);
     } else if (section.level === 2 && pdfStyles.sectionTitleStyle === 'underline') {
       this.doc.setDrawColor(pdfStyles.secondaryColor[0], pdfStyles.secondaryColor[1], pdfStyles.secondaryColor[2]);
       this.doc.setLineWidth(1);
-      // Use full width for section headers too
+      // Use proper content width for section headers
       this.doc.line(this.dimensions.margin, yPosition, this.dimensions.margin + this.dimensions.maxWidth, yPosition);
     }
     
@@ -94,40 +94,40 @@ export class PDFStyler {
   }
   
   public applyContactStyle(section: PDFSection, yPosition: number): number {
-    yPosition = this.checkNewPage(this.spacing.subHeaderHeight + 3, yPosition);
+    yPosition = this.checkNewPage(this.spacing.subHeaderHeight + 6, yPosition);
     this.doc.setFontSize(this.template.pdfStyles.bodyFontSize + 1);
     this.doc.setFont('helvetica', 'normal');
     this.setTemplateColor('text');
     
     const contactLines = this.splitTextToLines(section.content, this.dimensions.maxWidth, this.template.pdfStyles.bodyFontSize + 1);
     this.doc.text(contactLines, this.dimensions.margin, yPosition);
-    return yPosition + contactLines.length * this.spacing.lineHeight + 4;
+    return yPosition + contactLines.length * (this.spacing.lineHeight - 2) + 8;
   }
   
   public applySubheaderStyle(section: PDFSection, yPosition: number): number {
-    yPosition = this.checkNewPage(this.spacing.subHeaderHeight + 3, yPosition);
+    yPosition = this.checkNewPage(this.spacing.subHeaderHeight + 6, yPosition);
     this.doc.setFontSize(this.template.pdfStyles.bodyFontSize + 2);
     this.doc.setFont('helvetica', 'bold');
     this.setTemplateColor('primary');
     this.doc.text(section.content, this.dimensions.margin, yPosition);
-    return yPosition + this.spacing.subHeaderHeight + 3;
+    return yPosition + this.spacing.subHeaderHeight + 6;
   }
   
   public applyTextStyle(section: PDFSection, yPosition: number): number {
     const textLines = this.splitTextToLines(section.content, this.dimensions.maxWidth, this.template.pdfStyles.bodyFontSize);
-    const textBlockHeight = textLines.length * this.spacing.lineHeight;
-    yPosition = this.checkNewPage(textBlockHeight + 4, yPosition);
+    const textBlockHeight = textLines.length * (this.spacing.lineHeight - 2);
+    yPosition = this.checkNewPage(textBlockHeight + 8, yPosition);
     this.doc.setFontSize(this.template.pdfStyles.bodyFontSize);
     this.doc.setFont('helvetica', 'normal');
     this.setTemplateColor('text');
     this.doc.text(textLines, this.dimensions.margin, yPosition);
-    return yPosition + textBlockHeight + 4;
+    return yPosition + textBlockHeight + 8;
   }
   
   public applyListStyle(section: PDFSection, yPosition: number): number {
-    const listLines = this.splitTextToLines(`• ${section.content}`, this.dimensions.maxWidth - 10, this.template.pdfStyles.bodyFontSize);
-    const listBlockHeight = listLines.length * this.spacing.lineHeight;
-    yPosition = this.checkNewPage(listBlockHeight + 2, yPosition);
+    const listLines = this.splitTextToLines(`• ${section.content}`, this.dimensions.maxWidth - 15, this.template.pdfStyles.bodyFontSize);
+    const listBlockHeight = listLines.length * (this.spacing.lineHeight - 2);
+    yPosition = this.checkNewPage(listBlockHeight + 4, yPosition);
     this.doc.setFontSize(this.template.pdfStyles.bodyFontSize);
     this.doc.setFont('helvetica', 'normal');
     
@@ -136,23 +136,23 @@ export class PDFStyler {
     this.doc.text('•', this.dimensions.margin + 5, yPosition);
     this.setTemplateColor('text');
     
-    // Add the text
+    // Add the text with proper indentation
     const listText = listLines[0].substring(2); // Remove the bullet we added
     const restOfText = listLines.slice(1);
-    this.doc.text(listText, this.dimensions.margin + 12, yPosition);
+    this.doc.text(listText, this.dimensions.margin + 15, yPosition);
     
     if (restOfText.length > 0) {
-      this.doc.text(restOfText, this.dimensions.margin + 12, yPosition + this.spacing.lineHeight);
+      this.doc.text(restOfText, this.dimensions.margin + 15, yPosition + (this.spacing.lineHeight - 2));
     }
     
-    return yPosition + listBlockHeight + 2;
+    return yPosition + listBlockHeight + 4;
   }
   
   public addFooter(): void {
     const today = new Date().toLocaleDateString();
     this.doc.setFontSize(8);
     this.doc.setTextColor(150, 150, 150);
-    this.doc.text(`Generated on ${today} • Template: ${this.template.name}`, this.dimensions.margin, this.dimensions.pageHeight - 10);
+    this.doc.text(`Generated on ${today} • Template: ${this.template.name}`, this.dimensions.margin, this.dimensions.pageHeight - 15);
   }
   
   public getDimensions(): PDFDimensions {
