@@ -1,8 +1,8 @@
-
 import React, { useState } from 'react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { parseHTMLToPDFSections, generatePDFFromSections } from '@/utils/pdfGenerator';
+import { cleanResumeContent } from '@/utils/resumeContentCleaner';
 import JobZoneHeader from './JobZoneHeader';
 import JobDescriptionInput from './JobDescriptionInput';
 import GenerationProgress from './GenerationProgress';
@@ -58,7 +58,15 @@ const JobZonePage = () => {
 
       setProgress(100);
       setTimeout(() => {
-        setGeneratedResume(data.resume);
+        // Additional frontend cleanup as safety net
+        try {
+          const cleanedResume = cleanResumeContent(data.resume);
+          setGeneratedResume(cleanedResume);
+        } catch (cleanupError) {
+          console.warn('Frontend cleanup failed, using original content:', cleanupError);
+          setGeneratedResume(data.resume);
+        }
+        
         setShowResume(true);
         
         toast({

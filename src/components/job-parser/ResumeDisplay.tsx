@@ -2,6 +2,7 @@
 import React from 'react';
 import { CheckCircle, Edit3 } from 'lucide-react';
 import GlassCard from '@/components/ui/glass-card';
+import { cleanResumeContent, validateResumeContent } from '@/utils/resumeContentCleaner';
 
 interface ResumeDisplayProps {
   generatedResume: string;
@@ -9,6 +10,20 @@ interface ResumeDisplayProps {
 }
 
 const ResumeDisplay: React.FC<ResumeDisplayProps> = ({ generatedResume, onResumeEdit }) => {
+  // Clean and validate the resume content
+  const processedResume = React.useMemo(() => {
+    try {
+      const cleaned = cleanResumeContent(generatedResume);
+      if (!validateResumeContent(cleaned)) {
+        console.warn('Resume content validation failed, but proceeding with display');
+      }
+      return cleaned;
+    } catch (error) {
+      console.error('Error processing resume content:', error);
+      return generatedResume; // Fallback to original content
+    }
+  }, [generatedResume]);
+
   return (
     <div className="space-y-6 animate-fade-in-up">
       {/* Resume Header Card */}
@@ -36,7 +51,7 @@ const ResumeDisplay: React.FC<ResumeDisplayProps> = ({ generatedResume, onResume
           id="resumeOutput"
           className="w-full max-w-4xl mx-auto min-h-[600px] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-lg transition-all duration-200"
           contentEditable
-          dangerouslySetInnerHTML={{ __html: generatedResume }}
+          dangerouslySetInnerHTML={{ __html: processedResume }}
           onInput={onResumeEdit}
           style={{
             fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
