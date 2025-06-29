@@ -1,7 +1,7 @@
 
 import jsPDF from 'jspdf';
 import { PDFSection, PDFGenerationOptions } from './types';
-import { PDFStyler } from './pdfStyles';
+import { FixedPDFStyler } from './FixedPDFStyler';
 
 export const generatePDFFromSections = (
   sections: PDFSection[], 
@@ -17,7 +17,7 @@ export const generatePDFFromSections = (
     format: 'a4'
   });
   
-  const styler = new PDFStyler(doc, templateId);
+  const styler = new FixedPDFStyler(doc, templateId);
   const dimensions = styler.getDimensions();
   
   let yPosition = dimensions.margin + 20; // Start with proper top margin

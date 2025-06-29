@@ -22,3 +22,11 @@ export interface PDFSpacing {
   headerHeight: number;
   subHeaderHeight: number;
 }
+
+export interface PdfStyle {
+  fontSize: number;
+  fontStyle: 'normal' | 'bold' | 'italic';
+  marginBottom: number;
+  underline?: boolean;
+  bullet?: boolean;
+}
