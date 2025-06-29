@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -31,6 +32,7 @@ const JobZonePage = () => {
 
     setIsGenerating(true);
     setProgress(0);
+    setShowResume(false); // Reset resume display state
     
     // Simulate progress updates
     const progressInterval = setInterval(() => {
@@ -60,21 +62,28 @@ const JobZonePage = () => {
       }
 
       setProgress(100);
+      
+      // Process resume content with error handling
+      let processedResume = data.resume;
+      try {
+        processedResume = cleanResumeContent(data.resume);
+        console.log('Resume content cleaned successfully');
+      } catch (cleanupError) {
+        console.warn('Frontend cleanup failed, using original content:', cleanupError);
+        processedResume = data.resume;
+      }
+      
+      // Set resume content and show template selection
+      setGeneratedResume(processedResume);
+      
+      // Force template selection to appear after a short delay
       setTimeout(() => {
-        // Additional frontend cleanup as safety net
-        try {
-          const cleanedResume = cleanResumeContent(data.resume);
-          setGeneratedResume(cleanedResume);
-        } catch (cleanupError) {
-          console.warn('Frontend cleanup failed, using original content:', cleanupError);
-          setGeneratedResume(data.resume);
-        }
-        
         setShowResume(true);
+        console.log('Resume display state set to true');
         
         toast({
           title: 'Success',
-          description: 'Resume generated successfully! You can now edit it and download as PDF.',
+          description: 'Resume generated successfully! Choose a template and edit as needed.',
         });
       }, 300);
 
@@ -182,6 +191,15 @@ const JobZonePage = () => {
     setGeneratedResume(event.currentTarget.innerHTML);
   };
 
+  // Debug logging
+  React.useEffect(() => {
+    console.log('JobZonePage state:', { 
+      showResume, 
+      hasGeneratedResume: !!generatedResume, 
+      selectedTemplate 
+    });
+  }, [showResume, generatedResume, selectedTemplate]);
+
   return (
     <div className="space-y-8 animate-fade-in-up">
       <JobZoneHeader />
@@ -198,13 +216,17 @@ const JobZonePage = () => {
         progress={progress}
       />
 
-      {showResume && (
+      {showResume && generatedResume && (
         <>
           <GlassCard className="p-6">
             <TemplateSelection
               selectedTemplate={selectedTemplate}
               onTemplateChange={setSelectedTemplate}
             />
+            <div className="mt-4 text-sm text-muted-foreground">
+              <p>✅ Template selection loaded successfully</p>
+              <p>Current template: <strong>{selectedTemplate}</strong></p>
+            </div>
           </GlassCard>
           
           <ResumeDisplay
@@ -218,6 +240,15 @@ const JobZonePage = () => {
             onCopyToClipboard={copyToClipboard}
           />
         </>
+      )}
+
+      {/* Debug info for troubleshooting */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="fixed bottom-4 right-4 bg-black text-white p-2 rounded text-xs">
+          <div>Show Resume: {showResume ? 'Yes' : 'No'}</div>
+          <div>Has Content: {generatedResume ? 'Yes' : 'No'}</div>
+          <div>Template: {selectedTemplate}</div>
+        </div>
       )}
     </div>
   );

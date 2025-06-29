@@ -82,17 +82,25 @@ interface TemplatePreviewProps {
 }
 
 const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template, isSelected, onSelect }) => {
+  const handleClick = () => {
+    console.log('Template selected:', template.id);
+    onSelect(template.id);
+  };
+
   return (
     <div
       className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 ${
-        isSelected ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'
+        isSelected ? 'border-primary bg-primary/5 ring-2 ring-primary/20' : 'border-border hover:border-primary/50'
       }`}
-      onClick={() => onSelect(template.id)}
+      onClick={handleClick}
     >
       <div className="text-center">
         <div className="text-2xl mb-2">{template.preview}</div>
         <h3 className="font-semibold text-sm mb-1">{template.name}</h3>
         <p className="text-xs text-muted-foreground">{template.description}</p>
+        {isSelected && (
+          <div className="mt-2 text-xs text-primary font-medium">✓ Selected</div>
+        )}
       </div>
     </div>
   );
@@ -104,16 +112,31 @@ interface TemplateSelectionProps {
 }
 
 const TemplateSelection: React.FC<TemplateSelectionProps> = ({ selectedTemplate, onTemplateChange }) => {
+  // Debug logging
+  React.useEffect(() => {
+    console.log('TemplateSelection rendered with:', { selectedTemplate });
+  }, [selectedTemplate]);
+
+  const handleTemplateChange = (templateId: string) => {
+    console.log('Template change requested:', templateId);
+    onTemplateChange(templateId);
+  };
+
   return (
     <div className="mb-6">
-      <h3 className="text-title-large font-medium mb-4">Choose Resume Template</h3>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-title-large font-medium">Choose Resume Template</h3>
+        <div className="text-sm text-muted-foreground">
+          Click any template to apply it instantly
+        </div>
+      </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {resumeTemplates.map((template) => (
           <TemplatePreview
             key={template.id}
             template={template}
             isSelected={selectedTemplate === template.id}
-            onSelect={onTemplateChange}
+            onSelect={handleTemplateChange}
           />
         ))}
       </div>
