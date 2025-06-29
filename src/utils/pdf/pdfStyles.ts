@@ -65,7 +65,7 @@ export class PDFStyler {
       
       // Creative template gets background styling
       if (pdfStyles.headerStyle === 'background') {
-        // Create a background rectangle
+        // Create a full-width background rectangle
         this.doc.setFillColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
         this.doc.rect(this.dimensions.margin - 5, yPosition - 8, this.dimensions.maxWidth + 10, this.spacing.headerHeight + 4, 'F');
         this.doc.setTextColor(255, 255, 255); // White text on colored background
@@ -77,15 +77,17 @@ export class PDFStyler {
     this.doc.text(section.content, this.dimensions.margin, yPosition);
     yPosition += this.spacing.headerHeight;
     
-    // Add styling based on template
+    // Add full-width styling based on template
     if (section.level === 1 && pdfStyles.headerStyle === 'underline') {
       this.doc.setDrawColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
-      this.doc.setLineWidth(1);
-      this.doc.line(this.dimensions.margin, yPosition, this.dimensions.margin + 80, yPosition);
+      this.doc.setLineWidth(2);
+      // Use full width for main headers
+      this.doc.line(this.dimensions.margin, yPosition, this.dimensions.margin + this.dimensions.maxWidth, yPosition);
     } else if (section.level === 2 && pdfStyles.sectionTitleStyle === 'underline') {
       this.doc.setDrawColor(pdfStyles.secondaryColor[0], pdfStyles.secondaryColor[1], pdfStyles.secondaryColor[2]);
-      this.doc.setLineWidth(0.5);
-      this.doc.line(this.dimensions.margin, yPosition, this.dimensions.margin + 60, yPosition);
+      this.doc.setLineWidth(1);
+      // Use full width for section headers too
+      this.doc.line(this.dimensions.margin, yPosition, this.dimensions.margin + this.dimensions.maxWidth, yPosition);
     }
     
     return yPosition + spacing;

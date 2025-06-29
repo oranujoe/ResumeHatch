@@ -8,13 +8,23 @@ export const generatePDFFromSections = (
   filename: string = 'resume.pdf',
   templateId: string = 'modern'
 ) => {
-  const doc = new jsPDF();
+  console.log('Generating PDF with template:', templateId);
+  console.log('Sections to process:', sections.length);
+  
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'pt',
+    format: 'a4'
+  });
+  
   const styler = new PDFStyler(doc, templateId);
   const dimensions = styler.getDimensions();
   
   let yPosition = dimensions.margin;
   
-  sections.forEach((section) => {
+  sections.forEach((section, index) => {
+    console.log(`Processing section ${index + 1}:`, section.type, section.content.substring(0, 50) + '...');
+    
     switch (section.type) {
       case 'header':
         yPosition = styler.applyHeaderStyle(section, yPosition);
@@ -35,11 +45,18 @@ export const generatePDFFromSections = (
       case 'list':
         yPosition = styler.applyListStyle(section, yPosition);
         break;
+        
+      default:
+        console.warn('Unknown section type:', section.type);
+        // Treat unknown types as text
+        yPosition = styler.applyTextStyle(section, yPosition);
     }
   });
   
-  // Add footer
+  // Add footer with template information
   styler.addFooter();
+  
+  console.log('PDF generation complete, saving as:', filename);
   
   // Save the PDF
   doc.save(filename);
