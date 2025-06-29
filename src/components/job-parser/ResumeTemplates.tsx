@@ -24,11 +24,11 @@ export const resumeTemplates: ResumeTemplate[] = [
     preview: '📄',
     styles: {
       container: 'max-w-4xl mx-auto bg-white text-gray-900 leading-relaxed',
-      header: 'border-b-4 border-blue-600 pb-6 mb-8',
-      section: 'mb-8',
-      title: 'text-2xl font-bold text-blue-600 mb-4 uppercase tracking-wide border-l-4 border-blue-600 pl-4',
+      header: 'border-b-2 border-blue-600 pb-4 mb-6',
+      section: 'mb-6',
+      title: 'text-xl font-bold text-blue-600 mb-3 uppercase tracking-wide border-b border-blue-200 pb-1',
       content: 'text-gray-700 mb-3',
-      list: 'space-y-2 ml-6'
+      list: 'space-y-2 ml-4'
     }
   },
   {
@@ -38,9 +38,9 @@ export const resumeTemplates: ResumeTemplate[] = [
     preview: '📋',
     styles: {
       container: 'max-w-4xl mx-auto bg-white text-gray-900 leading-relaxed',
-      header: 'border-b-2 border-gray-800 pb-6 mb-8',
-      section: 'mb-8',
-      title: 'text-xl font-bold text-gray-800 mb-4 uppercase tracking-wide',
+      header: 'border-b-2 border-gray-800 pb-4 mb-6',
+      section: 'mb-6',
+      title: 'text-xl font-bold text-gray-800 mb-3 uppercase tracking-wide',
       content: 'text-gray-700 mb-3',
       list: 'space-y-2 ml-4'
     }
@@ -52,11 +52,11 @@ export const resumeTemplates: ResumeTemplate[] = [
     preview: '🎨',
     styles: {
       container: 'max-w-4xl mx-auto bg-white text-gray-900 leading-relaxed',
-      header: 'bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6 mb-8 rounded-lg',
-      section: 'mb-8',
-      title: 'text-2xl font-bold text-purple-600 mb-4 uppercase tracking-wide relative before:content-[""] before:absolute before:left-0 before:-bottom-2 before:w-12 before:h-1 before:bg-purple-600',
+      header: 'bg-gradient-to-r from-purple-600 to-blue-600 text-white p-4 mb-6 rounded-lg',
+      section: 'mb-6',
+      title: 'text-xl font-bold text-purple-600 mb-3 uppercase tracking-wide border-b-2 border-purple-300 pb-1',
       content: 'text-gray-700 mb-3',
-      list: 'space-y-2 ml-6'
+      list: 'space-y-2 ml-4'
     }
   },
   {
@@ -66,9 +66,9 @@ export const resumeTemplates: ResumeTemplate[] = [
     preview: '⚪',
     styles: {
       container: 'max-w-4xl mx-auto bg-white text-gray-900 leading-relaxed',
-      header: 'pb-6 mb-8',
-      section: 'mb-8',
-      title: 'text-xl font-semibold text-gray-900 mb-4 uppercase tracking-wide',
+      header: 'pb-4 mb-6',
+      section: 'mb-6',
+      title: 'text-lg font-semibold text-gray-900 mb-3 uppercase tracking-wide',
       content: 'text-gray-700 mb-3',
       list: 'space-y-2'
     }
