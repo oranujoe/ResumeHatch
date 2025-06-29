@@ -16,13 +16,13 @@ export class PDFStyler {
     this.dimensions = {
       pageWidth: doc.internal.pageSize.getWidth(),
       pageHeight: doc.internal.pageSize.getHeight(),
-      margin: 30,
-      maxWidth: doc.internal.pageSize.getWidth() - 60 // Proper content width
+      margin: 20,
+      maxWidth: doc.internal.pageSize.getWidth() - 40
     };
     
     this.spacing = {
-      lineHeight: 14,
-      headerHeight: 18,
+      lineHeight: 12,
+      headerHeight: 20,
       subHeaderHeight: 16
     };
     
@@ -45,7 +45,7 @@ export class PDFStyler {
   public checkNewPage(neededHeight: number, yPosition: number): number {
     if (yPosition + neededHeight > this.dimensions.pageHeight - this.dimensions.margin) {
       this.doc.addPage();
-      return this.dimensions.margin;
+      return this.dimensions.margin + 20; // Start with some top margin
     }
     return yPosition;
   }
@@ -53,9 +53,13 @@ export class PDFStyler {
   public applyHeaderStyle(section: PDFSection, yPosition: number): number {
     const pdfStyles = this.template.pdfStyles;
     const headerFontSize = section.level === 1 ? pdfStyles.headerFontSize : pdfStyles.sectionTitleFontSize;
-    const spacing = section.level === 1 ? 12 : 8;
     
-    yPosition = this.checkNewPage(this.spacing.headerHeight + spacing, yPosition);
+    // Ensure adequate spacing before headers
+    const topSpacing = section.level === 1 ? 20 : 15;
+    yPosition += topSpacing;
+    
+    yPosition = this.checkNewPage(this.spacing.headerHeight + 10, yPosition);
+    
     this.doc.setFontSize(headerFontSize);
     this.doc.setFont('helvetica', 'bold');
     
@@ -65,85 +69,101 @@ export class PDFStyler {
       
       // Creative template gets background styling
       if (pdfStyles.headerStyle === 'background') {
-        // Create a proper background rectangle within page bounds
         this.doc.setFillColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
-        this.doc.rect(this.dimensions.margin, yPosition - 8, this.dimensions.maxWidth, this.spacing.headerHeight + 4, 'F');
-        this.doc.setTextColor(255, 255, 255); // White text on colored background
+        this.doc.rect(this.dimensions.margin, yPosition - 6, this.dimensions.maxWidth, headerFontSize + 8, 'F');
+        this.doc.setTextColor(255, 255, 255);
       }
     } else {
       this.setTemplateColor('primary');
     }
     
     this.doc.text(section.content, this.dimensions.margin, yPosition);
-    yPosition += this.spacing.headerHeight;
+    yPosition += headerFontSize + 2;
     
-    // Add proper width lines based on template
+    // Add underlines with proper spacing
     if (section.level === 1 && pdfStyles.headerStyle === 'underline') {
       this.doc.setDrawColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
-      this.doc.setLineWidth(2);
-      // Use proper content width, not beyond page boundaries
+      this.doc.setLineWidth(1.5);
       this.doc.line(this.dimensions.margin, yPosition, this.dimensions.margin + this.dimensions.maxWidth, yPosition);
+      yPosition += 3;
     } else if (section.level === 2 && pdfStyles.sectionTitleStyle === 'underline') {
       this.doc.setDrawColor(pdfStyles.secondaryColor[0], pdfStyles.secondaryColor[1], pdfStyles.secondaryColor[2]);
-      this.doc.setLineWidth(1);
-      // Use proper content width for section headers
+      this.doc.setLineWidth(0.5);
       this.doc.line(this.dimensions.margin, yPosition, this.dimensions.margin + this.dimensions.maxWidth, yPosition);
+      yPosition += 3;
     }
     
-    return yPosition + spacing;
+    return yPosition + 8; // Bottom spacing after headers
   }
   
   public applyContactStyle(section: PDFSection, yPosition: number): number {
-    yPosition = this.checkNewPage(this.spacing.subHeaderHeight + 6, yPosition);
-    this.doc.setFontSize(this.template.pdfStyles.bodyFontSize + 1);
+    yPosition = this.checkNewPage(20, yPosition);
+    
+    this.doc.setFontSize(this.template.pdfStyles.bodyFontSize);
     this.doc.setFont('helvetica', 'normal');
     this.setTemplateColor('text');
     
-    const contactLines = this.splitTextToLines(section.content, this.dimensions.maxWidth, this.template.pdfStyles.bodyFontSize + 1);
-    this.doc.text(contactLines, this.dimensions.margin, yPosition);
-    return yPosition + contactLines.length * (this.spacing.lineHeight - 2) + 8;
+    const contactLines = this.splitTextToLines(section.content, this.dimensions.maxWidth, this.template.pdfStyles.bodyFontSize);
+    
+    contactLines.forEach((line, index) => {
+      this.doc.text(line, this.dimensions.margin, yPosition + (index * this.spacing.lineHeight));
+    });
+    
+    return yPosition + (contactLines.length * this.spacing.lineHeight) + 8;
   }
   
   public applySubheaderStyle(section: PDFSection, yPosition: number): number {
-    yPosition = this.checkNewPage(this.spacing.subHeaderHeight + 6, yPosition);
-    this.doc.setFontSize(this.template.pdfStyles.bodyFontSize + 2);
+    yPosition += 6; // Top spacing
+    yPosition = this.checkNewPage(this.spacing.subHeaderHeight + 10, yPosition);
+    
+    this.doc.setFontSize(this.template.pdfStyles.bodyFontSize + 1);
     this.doc.setFont('helvetica', 'bold');
     this.setTemplateColor('primary');
+    
     this.doc.text(section.content, this.dimensions.margin, yPosition);
-    return yPosition + this.spacing.subHeaderHeight + 6;
+    return yPosition + this.spacing.subHeaderHeight + 4;
   }
   
   public applyTextStyle(section: PDFSection, yPosition: number): number {
-    const textLines = this.splitTextToLines(section.content, this.dimensions.maxWidth, this.template.pdfStyles.bodyFontSize);
-    const textBlockHeight = textLines.length * (this.spacing.lineHeight - 2);
-    yPosition = this.checkNewPage(textBlockHeight + 8, yPosition);
-    this.doc.setFontSize(this.template.pdfStyles.bodyFontSize);
+    const fontSize = this.template.pdfStyles.bodyFontSize;
+    const textLines = this.splitTextToLines(section.content, this.dimensions.maxWidth, fontSize);
+    const textBlockHeight = textLines.length * this.spacing.lineHeight;
+    
+    yPosition = this.checkNewPage(textBlockHeight + 10, yPosition);
+    
+    this.doc.setFontSize(fontSize);
     this.doc.setFont('helvetica', 'normal');
     this.setTemplateColor('text');
-    this.doc.text(textLines, this.dimensions.margin, yPosition);
-    return yPosition + textBlockHeight + 8;
+    
+    textLines.forEach((line, index) => {
+      this.doc.text(line, this.dimensions.margin, yPosition + (index * this.spacing.lineHeight));
+    });
+    
+    return yPosition + textBlockHeight + 6;
   }
   
   public applyListStyle(section: PDFSection, yPosition: number): number {
-    const listLines = this.splitTextToLines(`• ${section.content}`, this.dimensions.maxWidth - 15, this.template.pdfStyles.bodyFontSize);
-    const listBlockHeight = listLines.length * (this.spacing.lineHeight - 2);
-    yPosition = this.checkNewPage(listBlockHeight + 4, yPosition);
-    this.doc.setFontSize(this.template.pdfStyles.bodyFontSize);
-    this.doc.setFont('helvetica', 'normal');
+    const fontSize = this.template.pdfStyles.bodyFontSize;
+    const bulletText = `• ${section.content}`;
+    const listLines = this.splitTextToLines(bulletText, this.dimensions.maxWidth - 10, fontSize);
+    const listBlockHeight = listLines.length * this.spacing.lineHeight;
     
-    // Make bullet points use template primary color
-    this.setTemplateColor('primary');
-    this.doc.text('•', this.dimensions.margin + 5, yPosition);
+    yPosition = this.checkNewPage(listBlockHeight + 8, yPosition);
+    
+    this.doc.setFontSize(fontSize);
+    this.doc.setFont('helvetica', 'normal');
     this.setTemplateColor('text');
     
-    // Add the text with proper indentation
-    const listText = listLines[0].substring(2); // Remove the bullet we added
-    const restOfText = listLines.slice(1);
-    this.doc.text(listText, this.dimensions.margin + 15, yPosition);
-    
-    if (restOfText.length > 0) {
-      this.doc.text(restOfText, this.dimensions.margin + 15, yPosition + (this.spacing.lineHeight - 2));
-    }
+    // Render each line with proper indentation
+    listLines.forEach((line, index) => {
+      if (index === 0) {
+        // First line with bullet
+        this.doc.text(line, this.dimensions.margin, yPosition + (index * this.spacing.lineHeight));
+      } else {
+        // Subsequent lines indented
+        this.doc.text(line, this.dimensions.margin + 10, yPosition + (index * this.spacing.lineHeight));
+      }
+    });
     
     return yPosition + listBlockHeight + 4;
   }
