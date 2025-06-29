@@ -9,7 +9,7 @@ interface ResumeWorkspaceProps {
   generatedResume: string;
   selectedTemplate: string;
   onTemplateChange: (templateId: string) => void;
-  onResumeEdit: (event: React.FormEvent<HTMLDivElement>) => void;
+  onResumeEdit: (content: string) => void;
   onDownloadPDF: () => void;
   onCopyToClipboard: () => void;
 }

@@ -4,110 +4,56 @@ import { resumeTemplates, ResumeTemplate } from '@/components/job-parser/ResumeT
 export const formatResumeWithTemplate = (htmlContent: string, templateId: string): string => {
   const template = resumeTemplates.find(t => t.id === templateId) || resumeTemplates[0];
   
-  // Create a temporary DOM element to parse and modify the HTML
+  // Apply template wrapper class to the content without restructuring
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = htmlContent;
   
-  // Apply template styles to the resume content
-  const formattedContent = applyTemplateStyles(tempDiv, template);
+  // Add template-specific classes to existing elements without moving them
+  const formattedContent = applyTemplateClasses(tempDiv, template);
   
   return formattedContent.innerHTML;
 };
 
-const applyTemplateStyles = (element: HTMLElement, template: ResumeTemplate): HTMLElement => {
-  // Create wrapper with template container styles
-  const wrapper = document.createElement('div');
-  wrapper.className = template.styles.container;
-  
-  // Process and style each element
-  const processedContent = processResumeElements(element, template);
-  wrapper.appendChild(processedContent);
-  
-  return wrapper;
-};
-
-const processResumeElements = (element: HTMLElement, template: ResumeTemplate): HTMLElement => {
+const applyTemplateClasses = (element: HTMLElement, template: ResumeTemplate): HTMLElement => {
   const processed = element.cloneNode(true) as HTMLElement;
   
-  // Style name/header (h1)
+  // Add template classes to existing elements without restructuring
   const h1Elements = processed.querySelectorAll('h1');
   h1Elements.forEach(h1 => {
-    h1.className = `text-2xl md:text-3xl font-bold mb-2 ${template.id === 'creative' ? 'text-white' : 'text-gray-900'}`;
-    
-    // Create header section
-    const headerDiv = document.createElement('div');
-    headerDiv.className = template.styles.header;
-    
-    // Move h1 and contact info into header
-    const nextElements: Node[] = [];
-    let nextSibling = h1.nextSibling;
-    while (nextSibling && nextSibling.nodeName !== 'H2') {
-      nextElements.push(nextSibling);
-      nextSibling = nextSibling.nextSibling;
-    }
-    
-    h1.parentNode?.insertBefore(headerDiv, h1);
-    headerDiv.appendChild(h1);
-    
-    // Add contact info to header
-    nextElements.forEach(node => {
-      if (node.nodeType === Node.ELEMENT_NODE || (node.nodeType === Node.TEXT_NODE && node.textContent?.trim())) {
-        headerDiv.appendChild(node);
-      }
-    });
+    h1.className = `resume-name ${template.id}`;
   });
   
-  // Style section headers (h2)
   const h2Elements = processed.querySelectorAll('h2');
   h2Elements.forEach(h2 => {
-    h2.className = template.styles.title;
-    
-    // Create section wrapper
-    const sectionDiv = document.createElement('div');
-    sectionDiv.className = template.styles.section;
-    
-    h2.parentNode?.insertBefore(sectionDiv, h2);
-    sectionDiv.appendChild(h2);
-    
-    // Move following content into section
-    let nextSibling = sectionDiv.nextSibling;
-    while (nextSibling && nextSibling.nodeName !== 'H2') {
-      const current = nextSibling;
-      nextSibling = nextSibling.nextSibling;
-      if (current.nodeType === Node.ELEMENT_NODE || (current.nodeType === Node.TEXT_NODE && current.textContent?.trim())) {
-        sectionDiv.appendChild(current);
-      }
-    }
+    h2.className = `resume-section-title ${template.id}`;
   });
   
-  // Style paragraphs
-  const paragraphs = processed.querySelectorAll('p');
-  paragraphs.forEach(p => {
-    p.className = template.styles.content;
-  });
-  
-  // Style job titles (h3)
   const h3Elements = processed.querySelectorAll('h3');
   h3Elements.forEach(h3 => {
-    h3.className = 'font-semibold text-gray-900 mb-2';
+    h3.className = `resume-job-title ${template.id}`;
   });
   
-  // Style lists
+  const paragraphs = processed.querySelectorAll('p');
+  paragraphs.forEach(p => {
+    p.className = `resume-content ${template.id}`;
+  });
+  
   const lists = processed.querySelectorAll('ul, ol');
   lists.forEach(list => {
-    list.className = template.styles.list;
-    
-    // Style list items
-    const listItems = list.querySelectorAll('li');
-    listItems.forEach(li => {
-      li.className = 'text-gray-700 mb-1';
-    });
+    list.className = `resume-list ${template.id}`;
+  });
+  
+  const listItems = processed.querySelectorAll('li');
+  listItems.forEach(li => {
+    li.className = `resume-list-item ${template.id}`;
   });
   
   return processed;
 };
 
 export const getTemplateCSS = (templateId: string): string => {
+  const template = resumeTemplates.find(t => t.id === templateId) || resumeTemplates[0];
+  
   return `
     .resume-container {
       font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -119,47 +65,81 @@ export const getTemplateCSS = (templateId: string): string => {
       box-shadow: 0 0 20px rgba(0,0,0,0.1);
       max-width: 210mm;
       margin: 0 auto;
+      min-height: 600px;
     }
     
-    .resume-container h1 {
+    /* Template-specific styling */
+    .resume-name.${templateId} {
       font-size: 1.875rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
       line-height: 1.2;
+      ${templateId === 'creative' ? 'color: #8b5cf6;' : ''}
+      ${templateId === 'modern' ? 'color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 0.5rem;' : ''}
+      ${templateId === 'classic' ? 'color: #1f2937; border-bottom: 2px solid #1f2937; padding-bottom: 0.5rem;' : ''}
     }
     
-    .resume-container h2 {
+    .resume-section-title.${templateId} {
       font-size: 1.125rem;
       font-weight: 600;
       margin-top: 1.5rem;
       margin-bottom: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      ${templateId === 'modern' ? 'color: #2563eb; border-bottom: 1px solid #93c5fd; padding-bottom: 0.25rem;' : ''}
+      ${templateId === 'creative' ? 'color: #8b5cf6; border-bottom: 2px solid #c4b5fd; padding-bottom: 0.25rem;' : ''}
+      ${templateId === 'classic' ? 'color: #1f2937; font-weight: 700;' : ''}
+      ${templateId === 'minimal' ? 'color: #111827; font-weight: 600;' : ''}
     }
     
-    .resume-container h3 {
+    .resume-job-title.${templateId} {
       font-size: 1rem;
       font-weight: 600;
       margin-bottom: 0.5rem;
+      color: #374151;
     }
     
-    .resume-container p {
+    .resume-content.${templateId} {
       margin-bottom: 0.75rem;
       line-height: 1.5;
+      color: #374151;
     }
     
-    .resume-container ul, .resume-container ol {
+    .resume-list.${templateId} {
       margin-bottom: 1rem;
       padding-left: 1rem;
     }
     
-    .resume-container li {
+    .resume-list-item.${templateId} {
       margin-bottom: 0.25rem;
       line-height: 1.4;
+      color: #374151;
     }
     
-    .resume-container ul li::marker {
-      color: #3b82f6;
+    .resume-list.${templateId} li::marker {
+      ${templateId === 'modern' ? 'color: #3b82f6;' : ''}
+      ${templateId === 'creative' ? 'color: #8b5cf6;' : ''}
+      ${templateId === 'classic' ? 'color: #1f2937;' : ''}
+      ${templateId === 'minimal' ? 'color: #6b7280;' : ''}
+    }
+    
+    /* Editing-specific styles for better UX */
+    .resume-container:focus {
+      outline: 2px solid #3b82f6;
+      outline-offset: 2px;
+    }
+    
+    .resume-container * {
+      cursor: text;
+    }
+    
+    .resume-container h1:hover,
+    .resume-container h2:hover,
+    .resume-container h3:hover,
+    .resume-container p:hover,
+    .resume-container li:hover {
+      background-color: rgba(59, 130, 246, 0.05);
+      border-radius: 2px;
     }
     
     @media print {
@@ -176,11 +156,11 @@ export const getTemplateCSS = (templateId: string): string => {
         font-size: 13px;
       }
       
-      .resume-container h1 {
+      .resume-name.${templateId} {
         font-size: 1.5rem;
       }
       
-      .resume-container h2 {
+      .resume-section-title.${templateId} {
         font-size: 1rem;
       }
     }

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import JobZoneHeader from './JobZoneHeader';
 import JobDescriptionInput from './JobDescriptionInput';
@@ -42,8 +41,8 @@ const JobZonePage = () => {
   // Pass selected template to the export hook
   const { downloadPDF, copyToClipboard } = useResumeExport(selectedTemplate);
 
-  const handleResumeEdit = (event: React.FormEvent<HTMLDivElement>) => {
-    setGeneratedResume(event.currentTarget.innerHTML);
+  const handleResumeEdit = (content: string) => {
+    setGeneratedResume(content);
   };
 
   // Debug logging

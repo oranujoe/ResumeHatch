@@ -4,11 +4,12 @@ import { CheckCircle, Edit3 } from 'lucide-react';
 import GlassCard from '@/components/ui/glass-card';
 import { cleanResumeContent, validateResumeContent } from '@/utils/resumeContentCleaner';
 import { formatResumeWithTemplate, getTemplateCSS } from '@/utils/resumeFormatter';
+import { useResumeEditing } from '@/hooks/useResumeEditing';
 
 interface ResumeDisplayProps {
   generatedResume: string;
   selectedTemplate: string;
-  onResumeEdit: (event: React.FormEvent<HTMLDivElement>) => void;
+  onResumeEdit: (content: string) => void;
 }
 
 const ResumeDisplay: React.FC<ResumeDisplayProps> = ({ 
@@ -38,6 +39,12 @@ const ResumeDisplay: React.FC<ResumeDisplayProps> = ({
     return getTemplateCSS(selectedTemplate);
   }, [selectedTemplate]);
 
+  // Use the custom editing hook
+  const { handleInput, handleFocus, handleKeyDown, isProcessing } = useResumeEditing({
+    onContentChange: onResumeEdit,
+    debounceDelay: 300
+  });
+
   return (
     <div className="space-y-6 animate-fade-in-up">
       {/* Resume Header Card */}
@@ -55,6 +62,7 @@ const ResumeDisplay: React.FC<ResumeDisplayProps> = ({
           <div className="flex items-center space-x-2 text-label-small text-muted-foreground">
             <Edit3 className="h-3 w-3" />
             <span>Live editing enabled</span>
+            {isProcessing && <span className="text-blue-500">• Processing...</span>}
           </div>
         </div>
       </GlassCard>
@@ -64,10 +72,14 @@ const ResumeDisplay: React.FC<ResumeDisplayProps> = ({
         <style dangerouslySetInnerHTML={{ __html: templateCSS }} />
         <div
           id="resumeOutput"
-          className="resume-container w-full max-w-4xl mx-auto min-h-[600px] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-lg transition-all duration-200"
+          className="resume-container w-full max-w-4xl mx-auto min-h-[600px] focus:outline-none transition-all duration-200"
           contentEditable
+          suppressContentEditableWarning
           dangerouslySetInnerHTML={{ __html: processedResume }}
-          onInput={onResumeEdit}
+          onInput={handleInput}
+          onFocus={handleFocus}
+          onKeyDown={handleKeyDown}
+          style={{ userSelect: 'text' }}
         />
       </GlassCard>
     </div>
