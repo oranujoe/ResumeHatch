@@ -17,7 +17,7 @@ const ResumeDisplay: React.FC<ResumeDisplayProps> = ({
   selectedTemplate, 
   onResumeEdit 
 }) => {
-  const [localContent, setLocalContent] = useState('');
+  const [isInitialized, setIsInitialized] = useState(false);
   
   // Process and clean the resume content
   const processedResume = React.useMemo(() => {
@@ -33,11 +33,6 @@ const ResumeDisplay: React.FC<ResumeDisplayProps> = ({
       return generatedResume;
     }
   }, [generatedResume, selectedTemplate]);
-
-  // Update local content when processed resume changes
-  useEffect(() => {
-    setLocalContent(processedResume);
-  }, [processedResume]);
 
   // Generate template-specific CSS
   const templateCSS = React.useMemo(() => {
@@ -57,12 +52,38 @@ const ResumeDisplay: React.FC<ResumeDisplayProps> = ({
     debounceDelay: 300
   });
 
-  // Update the editor content when template changes
+  // Initialize content only once when component mounts or resume changes
   useEffect(() => {
-    if (elementRef.current && elementRef.current.innerHTML !== localContent) {
-      updateContent(localContent);
+    if (elementRef.current && processedResume && !isInitialized) {
+      elementRef.current.innerHTML = processedResume;
+      setIsInitialized(true);
+      console.log('Initial content set');
     }
-  }, [localContent, updateContent]);
+  }, [processedResume, isInitialized]);
+
+  // Handle template changes by updating CSS class only
+  useEffect(() => {
+    if (elementRef.current && isInitialized) {
+      const templateClassName = getTemplateClassName(selectedTemplate);
+      elementRef.current.className = `resume-container ${templateClassName} w-full max-w-4xl mx-auto min-h-[600px] focus:outline-none transition-all duration-200`;
+      console.log('Template class updated to:', templateClassName);
+    }
+  }, [selectedTemplate, isInitialized]);
+
+  // Reset initialization when generatedResume changes significantly
+  useEffect(() => {
+    if (elementRef.current && generatedResume) {
+      const currentContent = elementRef.current.innerHTML;
+      const newProcessedContent = processedResume;
+      
+      // Only reinitialize if content is significantly different (not just minor edits)
+      if (currentContent.length === 0 || Math.abs(currentContent.length - newProcessedContent.length) > 100) {
+        elementRef.current.innerHTML = newProcessedContent;
+        setIsInitialized(true);
+        console.log('Content reinitialized due to significant change');
+      }
+    }
+  }, [generatedResume, processedResume]);
 
   const templateClassName = getTemplateClassName(selectedTemplate);
 
@@ -101,7 +122,6 @@ const ResumeDisplay: React.FC<ResumeDisplayProps> = ({
           onInput={handleInput}
           onKeyDown={handleKeyDown}
           style={{ userSelect: 'text' }}
-          dangerouslySetInnerHTML={{ __html: localContent }}
         />
       </GlassCard>
     </div>

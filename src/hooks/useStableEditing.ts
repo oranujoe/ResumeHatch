@@ -1,5 +1,5 @@
 
-import { useCallback, useRef, useEffect } from 'react';
+import { useCallback, useRef } from 'react';
 import { saveCursorPosition, restoreCursorPosition, debounce, CursorPosition } from '@/utils/cursorUtils';
 
 interface UseStableEditingProps {
@@ -10,24 +10,22 @@ interface UseStableEditingProps {
 export const useStableEditing = ({ onContentChange, debounceDelay = 500 }: UseStableEditingProps) => {
   const elementRef = useRef<HTMLDivElement>(null);
   const isUpdatingRef = useRef(false);
-  const cursorPositionRef = useRef<CursorPosition>({ textOffset: 0, containerPath: [] });
+  const lastCursorPositionRef = useRef<CursorPosition>({ textOffset: 0, containerPath: [] });
   
   // Debounced content change handler
   const debouncedContentChange = useCallback(
     debounce((content: string) => {
       onContentChange(content);
+      isUpdatingRef.current = false;
     }, debounceDelay),
     [onContentChange, debounceDelay]
   );
   
   const handleBeforeInput = useCallback((event: React.FormEvent<HTMLDivElement>) => {
-    if (isUpdatingRef.current) {
-      event.preventDefault();
-      return;
-    }
-    
+    // Don't prevent input - just save cursor position
     const target = event.currentTarget;
-    cursorPositionRef.current = saveCursorPosition(target);
+    lastCursorPositionRef.current = saveCursorPosition(target);
+    console.log('Cursor position saved before input:', lastCursorPositionRef.current);
   }, []);
   
   const handleInput = useCallback((event: React.FormEvent<HTMLDivElement>) => {
@@ -36,29 +34,38 @@ export const useStableEditing = ({ onContentChange, debounceDelay = 500 }: UseSt
     const target = event.currentTarget;
     const content = target.innerHTML;
     
-    // Update content without causing re-render
+    console.log('Input event - content length:', content.length);
+    
+    // Mark as updating to prevent re-entry
+    isUpdatingRef.current = true;
+    
+    // Trigger debounced content change
     debouncedContentChange(content);
   }, [debouncedContentChange]);
   
   const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (isUpdatingRef.current) {
-      event.preventDefault();
-      return;
-    }
-    
+    // Save cursor position on keydown for better tracking
     const target = event.currentTarget;
-    cursorPositionRef.current = saveCursorPosition(target);
+    lastCursorPositionRef.current = saveCursorPosition(target);
   }, []);
   
   const updateContent = useCallback((newContent: string) => {
     if (!elementRef.current) return;
     
+    console.log('UpdateContent called - this should rarely happen during editing');
+    
+    // Only update if content is significantly different
+    const currentContent = elementRef.current.innerHTML;
+    if (currentContent === newContent) {
+      return;
+    }
+    
     isUpdatingRef.current = true;
     
-    // Save cursor position before update
+    // Save current cursor position
     const savedPosition = saveCursorPosition(elementRef.current);
     
-    // Update content directly
+    // Update content
     elementRef.current.innerHTML = newContent;
     
     // Restore cursor position after a brief delay
