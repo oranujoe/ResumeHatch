@@ -1,13 +1,13 @@
 
-import { resumeTemplates, ResumeTemplate } from '@/components/job-parser/ResumeTemplates';
+import { getTemplateById, getDefaultTemplate } from '@/data/templateRegistry';
 
 export const getTemplateClassName = (templateId: string): string => {
-  const template = resumeTemplates.find(t => t.id === templateId) || resumeTemplates[0];
+  const template = getTemplateById(templateId) || getDefaultTemplate();
   return `resume-template-${template.id}`;
 };
 
 export const getTemplateCSS = (templateId: string): string => {
-  const template = resumeTemplates.find(t => t.id === templateId) || resumeTemplates[0];
+  const template = getTemplateById(templateId) || getDefaultTemplate();
   
   return `
     .resume-container {
