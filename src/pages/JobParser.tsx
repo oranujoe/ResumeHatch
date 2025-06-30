@@ -6,6 +6,7 @@ import JobParserLayout from '../components/job-parser/JobParserLayout';
 import ParseAndApplyPage from '../components/job-parser/ParseAndApplyPage';
 import DropZonePage from '../components/job-parser/DropZonePage';
 import BulkQueuePage from '../components/job-parser/BulkQueuePage';
+import JobZonePage from '../components/job-parser/JobZonePage';
 
 const JobParser = () => {
   return (
@@ -16,6 +17,7 @@ const JobParser = () => {
           <Route path="parse" element={<ParseAndApplyPage />} />
           <Route path="chrome" element={<DropZonePage />} />
           <Route path="bulk" element={<BulkQueuePage />} />
+          <Route path="zone" element={<JobZonePage />} />
         </Routes>
       </JobParserLayout>
     </DashboardLayout>

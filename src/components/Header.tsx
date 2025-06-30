@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import WaitlistDialog from './WaitlistDialog';
@@ -9,8 +8,8 @@ const Header = () => {
   const { user, signOut } = useAuth();
 
   const handleSignOut = async () => {
+    console.log('Header: Sign out clicked');
     await signOut();
-    window.location.href = '/';
   };
 
   return (

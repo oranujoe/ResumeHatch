@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Menu, 
@@ -37,12 +36,8 @@ const DashboardTopbar: React.FC<DashboardTopbarProps> = ({
   };
 
   const handleSignOut = async () => {
-    try {
-      await signOut();
-      window.location.href = '/';
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
+    console.log('DashboardTopbar: Sign out clicked');
+    await signOut();
   };
 
   // Get user display name and email
