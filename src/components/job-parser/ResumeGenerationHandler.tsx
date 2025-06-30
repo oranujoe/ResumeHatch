@@ -6,6 +6,7 @@ import { cleanResumeContent } from '@/utils/resumeContentCleaner';
 
 interface ResumeGenerationHandlerProps {
   jobDescription: string;
+  selectedTemplate: string;
   onGenerationStart: () => void;
   onGenerationComplete: (resume: string) => void;
   onGenerationError: () => void;
@@ -14,6 +15,7 @@ interface ResumeGenerationHandlerProps {
 
 export const useResumeGeneration = ({
   jobDescription,
+  selectedTemplate,
   onGenerationStart,
   onGenerationComplete,
   onGenerationError,
@@ -32,7 +34,6 @@ export const useResumeGeneration = ({
     onGenerationStart();
     setProgress(0);
     
-    // Simulate progress updates with a local variable
     let currentProgress = 0;
     const progressInterval = setInterval(() => {
       currentProgress += 10;
@@ -45,10 +46,13 @@ export const useResumeGeneration = ({
     }, 200);
     
     try {
-      console.log('Generating resume...');
+      console.log(`Generating resume with template: ${selectedTemplate}`);
       
       const { data, error } = await supabase.functions.invoke('generate-resume', {
-        body: { jobDescription: jobDescription.trim() }
+        body: { 
+          jobDescription: jobDescription.trim(),
+          templateId: selectedTemplate 
+        }
       });
 
       if (error) {
@@ -62,7 +66,6 @@ export const useResumeGeneration = ({
 
       setProgress(100);
       
-      // Process resume content with error handling
       let processedResume = data.resume;
       try {
         processedResume = cleanResumeContent(data.resume);
@@ -72,14 +75,13 @@ export const useResumeGeneration = ({
         processedResume = data.resume;
       }
       
-      // Complete generation and show template selection
       setTimeout(() => {
         onGenerationComplete(processedResume);
-        console.log('Resume generation completed successfully');
+        console.log(`Resume generation completed successfully with ${selectedTemplate} template`);
         
         toast({
           title: 'Success',
-          description: 'Resume generated successfully! Choose a template and edit as needed.',
+          description: `Resume generated with ${selectedTemplate} template tone! You can edit the content or try a different template.`,
         });
       }, 300);
 

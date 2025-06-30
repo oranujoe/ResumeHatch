@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import JobZoneHeader from './JobZoneHeader';
 import JobDescriptionInput from './JobDescriptionInput';
@@ -32,20 +33,29 @@ const JobZonePage = () => {
 
   const { generateResume } = useResumeGeneration({
     jobDescription,
+    selectedTemplate,
     onGenerationStart: handleGenerationStart,
     onGenerationComplete: handleGenerationComplete,
     onGenerationError: handleGenerationError,
     setProgress,
   });
 
-  // Pass selected template to the export hook
   const { downloadPDF, copyToClipboard } = useResumeExport(selectedTemplate);
 
   const handleResumeEdit = (content: string) => {
     setGeneratedResume(content);
   };
 
-  // Debug logging
+  const handleTemplateChange = (templateId: string) => {
+    setSelectedTemplate(templateId);
+    
+    // If we have a generated resume, regenerate it with the new template tone
+    if (generatedResume && jobDescription) {
+      console.log(`Template changed to ${templateId}, regenerating resume...`);
+      generateResume();
+    }
+  };
+
   React.useEffect(() => {
     console.log('JobZonePage state:', { 
       showResume, 
@@ -74,7 +84,7 @@ const JobZonePage = () => {
         <ResumeWorkspace
           generatedResume={generatedResume}
           selectedTemplate={selectedTemplate}
-          onTemplateChange={setSelectedTemplate}
+          onTemplateChange={handleTemplateChange}
           onResumeEdit={handleResumeEdit}
           onDownloadPDF={downloadPDF}
           onCopyToClipboard={copyToClipboard}

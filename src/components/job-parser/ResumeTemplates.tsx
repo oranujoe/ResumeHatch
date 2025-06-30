@@ -1,11 +1,20 @@
 
 import React from 'react';
 
+export interface ToneProfile {
+  writingStyle: 'professional' | 'creative' | 'executive' | 'technical';
+  toneKeywords: string[];
+  industryFocus: string[];
+  personalityTraits: string[];
+  actionVerbStyle: 'quantitative' | 'collaborative' | 'strategic' | 'innovative';
+}
+
 export interface ResumeTemplate {
   id: string;
   name: string;
   description: string;
   preview: string;
+  toneProfile: ToneProfile;
   styles: {
     container: string;
     header: string;
@@ -30,8 +39,15 @@ export const resumeTemplates: ResumeTemplate[] = [
   {
     id: 'modern',
     name: 'Modern Professional',
-    description: 'Clean, modern design with accent colors',
+    description: 'Clean, modern design with confident, results-driven tone',
     preview: '📄',
+    toneProfile: {
+      writingStyle: 'professional',
+      toneKeywords: ['optimized', 'streamlined', 'enhanced', 'delivered', 'achieved'],
+      industryFocus: ['technology', 'consulting', 'finance', 'marketing'],
+      personalityTraits: ['results-driven', 'analytical', 'tech-savvy', 'efficient'],
+      actionVerbStyle: 'quantitative'
+    },
     styles: {
       container: 'max-w-4xl mx-auto bg-white text-gray-900 leading-relaxed',
       header: 'border-b-2 border-blue-600 pb-4 mb-6',
@@ -41,9 +57,9 @@ export const resumeTemplates: ResumeTemplate[] = [
       list: 'space-y-2 ml-4'
     },
     pdfStyles: {
-      primaryColor: [37, 99, 235], // Blue-600
-      secondaryColor: [147, 197, 253], // Blue-300
-      textColor: [55, 65, 81], // Gray-700
+      primaryColor: [37, 99, 235],
+      secondaryColor: [147, 197, 253],
+      textColor: [55, 65, 81],
       headerFontSize: 20,
       sectionTitleFontSize: 14,
       bodyFontSize: 10,
@@ -54,8 +70,15 @@ export const resumeTemplates: ResumeTemplate[] = [
   {
     id: 'classic',
     name: 'Classic Executive',
-    description: 'Traditional, professional format',
+    description: 'Traditional format with authoritative, strategic tone',
     preview: '📋',
+    toneProfile: {
+      writingStyle: 'executive',
+      toneKeywords: ['spearheaded', 'orchestrated', 'championed', 'executed', 'directed'],
+      industryFocus: ['executive', 'management', 'corporate', 'operations'],
+      personalityTraits: ['strategic', 'authoritative', 'experienced', 'decisive'],
+      actionVerbStyle: 'strategic'
+    },
     styles: {
       container: 'max-w-4xl mx-auto bg-white text-gray-900 leading-relaxed',
       header: 'border-b-2 border-gray-800 pb-4 mb-6',
@@ -65,9 +88,9 @@ export const resumeTemplates: ResumeTemplate[] = [
       list: 'space-y-2 ml-4'
     },
     pdfStyles: {
-      primaryColor: [31, 41, 55], // Gray-800
-      secondaryColor: [107, 114, 128], // Gray-500
-      textColor: [55, 65, 81], // Gray-700
+      primaryColor: [31, 41, 55],
+      secondaryColor: [107, 114, 128],
+      textColor: [55, 65, 81],
       headerFontSize: 18,
       sectionTitleFontSize: 13,
       bodyFontSize: 10,
@@ -78,8 +101,15 @@ export const resumeTemplates: ResumeTemplate[] = [
   {
     id: 'creative',
     name: 'Creative Edge',
-    description: 'Bold design for creative professionals',
+    description: 'Bold design with innovative, collaborative tone',
     preview: '🎨',
+    toneProfile: {
+      writingStyle: 'creative',
+      toneKeywords: ['innovated', 'collaborated', 'conceptualized', 'designed', 'transformed'],
+      industryFocus: ['design', 'marketing', 'media', 'startups', 'agencies'],
+      personalityTraits: ['innovative', 'collaborative', 'dynamic', 'creative'],
+      actionVerbStyle: 'innovative'
+    },
     styles: {
       container: 'max-w-4xl mx-auto bg-white text-gray-900 leading-relaxed',
       header: 'bg-gradient-to-r from-purple-600 to-blue-600 text-white p-4 mb-6 rounded-lg',
@@ -89,9 +119,9 @@ export const resumeTemplates: ResumeTemplate[] = [
       list: 'space-y-2 ml-4'
     },
     pdfStyles: {
-      primaryColor: [147, 51, 234], // Purple-600
-      secondaryColor: [37, 99, 235], // Blue-600
-      textColor: [55, 65, 81], // Gray-700
+      primaryColor: [147, 51, 234],
+      secondaryColor: [37, 99, 235],
+      textColor: [55, 65, 81],
       headerFontSize: 20,
       sectionTitleFontSize: 14,
       bodyFontSize: 10,
@@ -102,8 +132,15 @@ export const resumeTemplates: ResumeTemplate[] = [
   {
     id: 'minimal',
     name: 'Minimal Clean',
-    description: 'Simple, ATS-friendly design',
+    description: 'Simple, ATS-friendly with straightforward, skill-focused tone',
     preview: '⚪',
+    toneProfile: {
+      writingStyle: 'technical',
+      toneKeywords: ['implemented', 'developed', 'maintained', 'configured', 'automated'],
+      industryFocus: ['engineering', 'IT', 'technical', 'healthcare', 'research'],
+      personalityTraits: ['precise', 'methodical', 'skilled', 'reliable'],
+      actionVerbStyle: 'quantitative'
+    },
     styles: {
       container: 'max-w-4xl mx-auto bg-white text-gray-900 leading-relaxed',
       header: 'pb-4 mb-6',
@@ -113,9 +150,9 @@ export const resumeTemplates: ResumeTemplate[] = [
       list: 'space-y-2'
     },
     pdfStyles: {
-      primaryColor: [17, 24, 39], // Gray-900
-      secondaryColor: [75, 85, 99], // Gray-600
-      textColor: [55, 65, 81], // Gray-700
+      primaryColor: [17, 24, 39],
+      secondaryColor: [75, 85, 99],
+      textColor: [55, 65, 81],
       headerFontSize: 18,
       sectionTitleFontSize: 12,
       bodyFontSize: 10,
@@ -147,7 +184,13 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template, isSelected,
       <div className="text-center">
         <div className="text-2xl mb-2">{template.preview}</div>
         <h3 className="font-semibold text-sm mb-1">{template.name}</h3>
-        <p className="text-xs text-muted-foreground">{template.description}</p>
+        <p className="text-xs text-muted-foreground mb-2">{template.description}</p>
+        <div className="text-xs text-muted-foreground">
+          <div className="font-medium">Style: {template.toneProfile.writingStyle}</div>
+          <div className="mt-1">
+            {template.toneProfile.personalityTraits.slice(0, 2).join(', ')}
+          </div>
+        </div>
         {isSelected && (
           <div className="mt-2 text-xs text-primary font-medium">✓ Selected</div>
         )}
@@ -162,7 +205,6 @@ interface TemplateSelectionProps {
 }
 
 const TemplateSelection: React.FC<TemplateSelectionProps> = ({ selectedTemplate, onTemplateChange }) => {
-  // Debug logging
   React.useEffect(() => {
     console.log('TemplateSelection rendered with:', { selectedTemplate });
   }, [selectedTemplate]);
@@ -175,7 +217,12 @@ const TemplateSelection: React.FC<TemplateSelectionProps> = ({ selectedTemplate,
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-title-large font-medium">Choose Resume Template</h3>
+        <div>
+          <h3 className="text-title-large font-medium mb-1">Choose Resume Template & Tone</h3>
+          <p className="text-sm text-muted-foreground">
+            Each template applies a unique writing style and tone to match different industries and roles
+          </p>
+        </div>
         <div className="text-sm text-muted-foreground">
           Click any template to apply it instantly
         </div>
