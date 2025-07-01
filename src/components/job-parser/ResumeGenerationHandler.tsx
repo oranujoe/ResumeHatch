@@ -2,6 +2,7 @@
 import React from 'react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { cleanResumeContent } from '@/utils/resumeContentCleaner';
 
 interface ResumeGenerationHandlerProps {
@@ -21,11 +22,22 @@ export const useResumeGeneration = ({
   onGenerationError,
   setProgress,
 }: ResumeGenerationHandlerProps) => {
+  const { user } = useAuth();
+
   const generateResume = async () => {
     if (!jobDescription.trim()) {
       toast({
         title: 'Error',
         description: 'Please enter a job description first.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!user) {
+      toast({
+        title: 'Error',
+        description: 'You must be logged in to generate a resume.',
         variant: 'destructive',
       });
       return;
@@ -46,12 +58,13 @@ export const useResumeGeneration = ({
     }, 200);
     
     try {
-      console.log(`Generating resume with template: ${selectedTemplate}`);
+      console.log(`Generating resume with template: ${selectedTemplate} for user: ${user.id}`);
       
       const { data, error } = await supabase.functions.invoke('generate-resume', {
         body: { 
           jobDescription: jobDescription.trim(),
-          templateId: selectedTemplate 
+          templateId: selectedTemplate,
+          userId: user.id
         }
       });
 
@@ -77,11 +90,11 @@ export const useResumeGeneration = ({
       
       setTimeout(() => {
         onGenerationComplete(processedResume);
-        console.log(`Resume generation completed successfully with ${selectedTemplate} template`);
+        console.log(`Resume generation completed successfully with ${selectedTemplate} template and user profile data`);
         
         toast({
           title: 'Success',
-          description: `Resume generated with ${selectedTemplate} template tone! You can edit the content or try a different template.`,
+          description: `Resume generated with ${selectedTemplate} template using your profile data! You can edit the content or try a different template.`,
         });
       }, 300);
 
