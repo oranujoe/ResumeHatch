@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { Json } from '@/integrations/supabase/types';
 
 export interface UserProfile {
   id?: string;
@@ -93,6 +94,21 @@ export interface CompleteProfile {
   projects: Project[];
 }
 
+// Helper function to convert Json to string array
+const jsonToStringArray = (jsonValue: Json | null): string[] => {
+  if (!jsonValue) return [];
+  if (Array.isArray(jsonValue)) {
+    return jsonValue.filter((item): item is string => typeof item === 'string');
+  }
+  return [];
+};
+
+// Helper function to validate proficiency level
+const validateProficiencyLevel = (level: string): 'beginner' | 'intermediate' | 'advanced' | 'expert' => {
+  const validLevels = ['beginner', 'intermediate', 'advanced', 'expert'] as const;
+  return validLevels.includes(level as any) ? level as any : 'intermediate';
+};
+
 export const useProfile = () => {
   const [profile, setProfile] = useState<CompleteProfile>({
     profile: null,
@@ -141,13 +157,29 @@ export const useProfile = () => {
       if (certificationsResult.error) throw certificationsResult.error;
       if (projectsResult.error) throw projectsResult.error;
 
+      // Transform data to match our interfaces
+      const transformedWorkExperiences: WorkExperience[] = (workResult.data || []).map(work => ({
+        ...work,
+        achievements: jsonToStringArray(work.achievements)
+      }));
+
+      const transformedSkills: Skill[] = (skillsResult.data || []).map(skill => ({
+        ...skill,
+        proficiency_level: validateProficiencyLevel(skill.proficiency_level)
+      }));
+
+      const transformedProjects: Project[] = (projectsResult.data || []).map(project => ({
+        ...project,
+        achievements: jsonToStringArray(project.achievements)
+      }));
+
       setProfile({
         profile: profileResult.data,
-        workExperiences: workResult.data || [],
+        workExperiences: transformedWorkExperiences,
         education: educationResult.data || [],
-        skills: skillsResult.data || [],
+        skills: transformedSkills,
         certifications: certificationsResult.data || [],
-        projects: projectsResult.data || []
+        projects: transformedProjects
       });
 
     } catch (err) {

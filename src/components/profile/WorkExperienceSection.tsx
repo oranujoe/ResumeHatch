@@ -11,6 +11,7 @@ import { Plus, X, Building, Calendar } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { Json } from '@/integrations/supabase/types';
 
 interface WorkExperience {
   id?: string;
@@ -30,6 +31,15 @@ interface WorkExperienceSectionProps {
   initialData?: any[];
 }
 
+// Helper function to convert Json to string array
+const jsonToStringArray = (jsonValue: Json | null): string[] => {
+  if (!jsonValue) return [];
+  if (Array.isArray(jsonValue)) {
+    return jsonValue.filter((item): item is string => typeof item === 'string');
+  }
+  return [];
+};
+
 const WorkExperienceSection: React.FC<WorkExperienceSectionProps> = ({ initialData }) => {
   const [experiences, setExperiences] = useState<WorkExperience[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +56,7 @@ const WorkExperienceSection: React.FC<WorkExperienceSectionProps> = ({ initialDa
         is_current: exp.is_current || false,
         location: exp.location || '',
         employment_type: exp.employment_type || 'Full-time',
-        achievements: exp.achievements || [],
+        achievements: jsonToStringArray(exp.achievements),
         technologies_used: exp.technologies_used || [],
         skills_demonstrated: exp.skills_demonstrated || []
       }));
@@ -68,7 +78,20 @@ const WorkExperienceSection: React.FC<WorkExperienceSectionProps> = ({ initialDa
 
       if (error) throw error;
 
-      setExperiences(data || []);
+      const formattedExperiences = (data || []).map(exp => ({
+        company_name: exp.company_name || '',
+        job_title: exp.job_title || '',
+        start_date: exp.start_date || '',
+        end_date: exp.end_date || '',
+        is_current: exp.is_current || false,
+        location: exp.location || '',
+        employment_type: exp.employment_type || 'Full-time',
+        achievements: jsonToStringArray(exp.achievements),
+        technologies_used: exp.technologies_used || [],
+        skills_demonstrated: exp.skills_demonstrated || []
+      }));
+
+      setExperiences(formattedExperiences);
     } catch (error) {
       console.error('Error loading experiences:', error);
     }

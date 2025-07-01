@@ -25,6 +25,12 @@ interface SkillsSectionProps {
   initialData?: any[];
 }
 
+// Helper function to validate proficiency level
+const validateProficiencyLevel = (level: string): 'beginner' | 'intermediate' | 'advanced' | 'expert' => {
+  const validLevels = ['beginner', 'intermediate', 'advanced', 'expert'] as const;
+  return validLevels.includes(level as any) ? level as any : 'intermediate';
+};
+
 const SkillsSection: React.FC<SkillsSectionProps> = ({ initialData }) => {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [newSkill, setNewSkill] = useState({
@@ -63,7 +69,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ initialData }) => {
       const formattedSkills = initialData.map(skill => ({
         skill_name: skill.skill_name || '',
         category: skill.category || 'Technical',
-        proficiency_level: skill.proficiency_level || 'intermediate',
+        proficiency_level: validateProficiencyLevel(skill.proficiency_level),
         years_experience: skill.years_experience || null,
         is_featured: skill.is_featured || false
       }));
@@ -86,7 +92,15 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ initialData }) => {
 
       if (error) throw error;
 
-      setSkills(data || []);
+      const formattedSkills = (data || []).map(skill => ({
+        skill_name: skill.skill_name || '',
+        category: skill.category || 'Technical',
+        proficiency_level: validateProficiencyLevel(skill.proficiency_level),
+        years_experience: skill.years_experience || null,
+        is_featured: skill.is_featured || false
+      }));
+
+      setSkills(formattedSkills);
     } catch (error) {
       console.error('Error loading skills:', error);
     }

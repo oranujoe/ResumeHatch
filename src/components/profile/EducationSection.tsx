@@ -17,7 +17,7 @@ interface Education {
   degree_type: string;
   field_of_study: string;
   graduation_date: string;
-  gpa: string;
+  gpa: number | null;
   honors: string;
   relevant_coursework: string[];
   location: string;
@@ -41,7 +41,7 @@ const EducationSection: React.FC<EducationSectionProps> = ({ initialData }) => {
         degree_type: edu.degree_type || '',
         field_of_study: edu.field_of_study || '',
         graduation_date: edu.graduation_date || '',
-        gpa: edu.gpa?.toString() || '',
+        gpa: edu.gpa || null,
         honors: edu.honors || '',
         relevant_coursework: edu.relevant_coursework || [],
         location: edu.location || '',
@@ -65,7 +65,19 @@ const EducationSection: React.FC<EducationSectionProps> = ({ initialData }) => {
 
       if (error) throw error;
 
-      setEducations(data || []);
+      const formattedEducations = (data || []).map(edu => ({
+        institution_name: edu.institution_name || '',
+        degree_type: edu.degree_type || '',
+        field_of_study: edu.field_of_study || '',
+        graduation_date: edu.graduation_date || '',
+        gpa: edu.gpa || null,
+        honors: edu.honors || '',
+        relevant_coursework: edu.relevant_coursework || [],
+        location: edu.location || '',
+        is_current: edu.is_current || false
+      }));
+
+      setEducations(formattedEducations);
     } catch (error) {
       console.error('Error loading education:', error);
     }
@@ -77,7 +89,7 @@ const EducationSection: React.FC<EducationSectionProps> = ({ initialData }) => {
       degree_type: '',
       field_of_study: '',
       graduation_date: '',
-      gpa: '',
+      gpa: null,
       honors: '',
       relevant_coursework: [],
       location: '',
@@ -132,8 +144,7 @@ const EducationSection: React.FC<EducationSectionProps> = ({ initialData }) => {
           .from('education_records')
           .insert(educations.map(edu => ({
             ...edu,
-            user_id: user.id,
-            gpa: edu.gpa ? parseFloat(edu.gpa) : null
+            user_id: user.id
           })));
 
         if (error) throw error;
@@ -246,8 +257,8 @@ const EducationSection: React.FC<EducationSectionProps> = ({ initialData }) => {
                   step="0.01"
                   min="0"
                   max="4"
-                  value={edu.gpa}
-                  onChange={(e) => updateEducation(index, 'gpa', e.target.value)}
+                  value={edu.gpa || ''}
+                  onChange={(e) => updateEducation(index, 'gpa', e.target.value ? parseFloat(e.target.value) : null)}
                   placeholder="3.8"
                 />
               </div>
