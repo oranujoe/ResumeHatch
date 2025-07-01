@@ -32,11 +32,21 @@ const validateProficiencyLevel = (level: string): 'beginner' | 'intermediate' | 
   return validLevels.includes(level as any) ? level as any : 'intermediate';
 };
 
-async function fetchUserProfile(userId: string) {
+export interface UserProfileData {
+  profile: any;
+  workExperiences: any[];
+  education: any[];
+  skills: any[];
+  certifications: any[];
+  projects: any[];
+}
+
+async function fetchUserProfile(userId: string): Promise<UserProfileData | null> {
   try {
     // Load all profile data in parallel
     const [
       profileResult,
+      profilesResult,
       workResult,
       educationResult,
       skillsResult,
@@ -44,12 +54,31 @@ async function fetchUserProfile(userId: string) {
       projectsResult
     ] = await Promise.all([
       supabase.from('user_profiles').select('*').eq('user_id', userId).maybeSingle(),
+      supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
       supabase.from('work_experiences').select('*').eq('user_id', userId).order('start_date', { ascending: false }),
       supabase.from('education_records').select('*').eq('user_id', userId).order('graduation_date', { ascending: false }),
       supabase.from('skills_inventory').select('*').eq('user_id', userId).order('is_featured', { ascending: false }),
       supabase.from('certifications').select('*').eq('user_id', userId).order('issue_date', { ascending: false }),
       supabase.from('projects_portfolio').select('*').eq('user_id', userId).order('start_date', { ascending: false })
     ]);
+
+    // Merge profile data with fallback logic
+    let mergedProfile = profileResult.data;
+    if (!mergedProfile && profilesResult.data) {
+      // Fallback to profiles table if user_profiles is empty
+      mergedProfile = {
+        full_name: profilesResult.data.full_name,
+        professional_title: profilesResult.data.full_name,
+        professional_summary: 'Experienced professional seeking new opportunities.',
+        phone: null,
+        location: null,
+        linkedin_url: null,
+        portfolio_url: null
+      };
+    } else if (mergedProfile && !mergedProfile.full_name && profilesResult.data?.full_name) {
+      // Enhance user_profiles with name from profiles table
+      mergedProfile.full_name = profilesResult.data.full_name;
+    }
 
     // Transform data to match our interfaces
     const transformedWorkExperiences = (workResult.data || []).map(work => ({
@@ -68,7 +97,7 @@ async function fetchUserProfile(userId: string) {
     }));
 
     return {
-      profile: profileResult.data,
+      profile: mergedProfile,
       workExperiences: transformedWorkExperiences,
       education: educationResult.data || [],
       skills: transformedSkills,
@@ -114,6 +143,13 @@ serve(async (req) => {
       });
     }
 
+    console.log(`Profile data loaded for user ${userId}:`, {
+      name: userProfileData.profile?.full_name || 'No name',
+      workExperiences: userProfileData.workExperiences.length,
+      education: userProfileData.education.length,
+      skills: userProfileData.skills.length
+    });
+
     const prompt = buildToneSpecificPrompt(jobDescription, templateId, userProfileData);
 
     console.log(`Calling Gemini API with ${templateId} template tone and user profile data...`);
@@ -153,7 +189,7 @@ serve(async (req) => {
     const rawResume = data.candidates[0].content.parts[0].text;
     const cleanedResume = sanitizeResumeContent(rawResume);
     
-    console.log(`Resume generated successfully with ${templateId} tone and user profile data`);
+    console.log(`Resume generated successfully with ${templateId} tone and user profile data for ${userProfileData.profile?.full_name || 'user'}`);
 
     return new Response(JSON.stringify({ resume: cleanedResume }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -312,6 +312,7 @@ export type Database = {
         Row: {
           career_objective: string | null
           created_at: string
+          full_name: string | null
           id: string
           industry: string | null
           linkedin_url: string | null
@@ -328,6 +329,7 @@ export type Database = {
         Insert: {
           career_objective?: string | null
           created_at?: string
+          full_name?: string | null
           id?: string
           industry?: string | null
           linkedin_url?: string | null
@@ -344,6 +346,7 @@ export type Database = {
         Update: {
           career_objective?: string | null
           created_at?: string
+          full_name?: string | null
           id?: string
           industry?: string | null
           linkedin_url?: string | null

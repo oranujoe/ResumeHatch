@@ -1,168 +1,132 @@
 
-import { toneProfiles, ToneProfile } from './toneProfiles.ts';
-import { getStructureInstructions } from './structureBuilder.ts';
-import { getTemplateGuidelines } from './templateGuidelines.ts';
+import { UserProfileData } from './index.ts';
 
-interface UserProfile {
-  profile: any;
-  workExperiences: any[];
-  education: any[];
-  skills: any[];
-  certifications: any[];
-  projects: any[];
-}
+export function buildToneSpecificPrompt(
+  jobDescription: string, 
+  templateId: string, 
+  userProfileData: UserProfileData
+): string {
+  // Extract user's name with fallback logic
+  const userName = userProfileData.profile?.full_name || 
+                   userProfileData.profile?.professional_title || 
+                   'Your Name';
 
-function formatUserProfileData(userProfileData: UserProfile): string {
-  const { profile, workExperiences, education, skills, certifications, projects } = userProfileData;
-  
-  let profileSection = '';
-  
-  // Personal Information
-  if (profile) {
-    profileSection += `PERSONAL INFORMATION:
-- Professional Title: ${profile.professional_title || 'Professional'}
-- Location: ${profile.location || 'Not specified'}
-- Phone: ${profile.phone || 'Not provided'}
-- LinkedIn: ${profile.linkedin_url || 'Not provided'}
-- Portfolio: ${profile.portfolio_url || 'Not provided'}
-- Professional Summary: ${profile.professional_summary || 'Experienced professional seeking new opportunities'}
-- Years of Experience: ${profile.years_experience || 'Not specified'}
-- Industry: ${profile.industry || 'Not specified'}
+  // Build professional summary with user's actual information
+  const professionalSummary = userProfileData.profile?.professional_summary || 
+    'Experienced professional seeking new opportunities to contribute skills and expertise.';
 
-`;
-  }
+  // Format work experiences
+  const workExperienceText = userProfileData.workExperiences.length > 0 
+    ? userProfileData.workExperiences.map(exp => 
+        `${exp.job_title} at ${exp.company_name} (${exp.start_date} - ${exp.end_date || 'Present'})${exp.location ? ` - ${exp.location}` : ''}
+        ${exp.achievements && exp.achievements.length > 0 ? exp.achievements.map(achievement => `• ${achievement}`).join('\n        ') : ''}
+        ${exp.technologies_used && exp.technologies_used.length > 0 ? `Technologies: ${exp.technologies_used.join(', ')}` : ''}
+        `).join('\n\n')
+    : 'No work experience provided - please add relevant experience or use placeholder content.';
 
-  // Work Experience
-  if (workExperiences.length > 0) {
-    profileSection += `WORK EXPERIENCE:
-`;
-    workExperiences.forEach((exp, index) => {
-      profileSection += `${index + 1}. ${exp.job_title} at ${exp.company_name}
-   - Duration: ${exp.start_date} to ${exp.is_current ? 'Present' : exp.end_date || 'Not specified'}
-   - Location: ${exp.location || 'Not specified'}
-   - Employment Type: ${exp.employment_type || 'Full-time'}
-   - Key Achievements: ${exp.achievements.length > 0 ? exp.achievements.join(', ') : 'Not specified'}
-   - Technologies Used: ${exp.technologies_used?.join(', ') || 'Not specified'}
-   - Skills Demonstrated: ${exp.skills_demonstrated?.join(', ') || 'Not specified'}
+  // Format education
+  const educationText = userProfileData.education.length > 0
+    ? userProfileData.education.map(edu => 
+        `${edu.degree_type} in ${edu.field_of_study} - ${edu.institution_name}${edu.graduation_date ? ` (${edu.graduation_date})` : ''}`
+      ).join('\n')
+    : 'Education details not provided - please add education information.';
 
-`;
-    });
-  }
+  // Format skills
+  const skillsText = userProfileData.skills.length > 0
+    ? userProfileData.skills.map(skill => 
+        `${skill.skill_name} (${skill.proficiency_level})`
+      ).join(', ')
+    : 'Skills not specified - please add your technical and professional skills.';
 
-  // Education
-  if (education.length > 0) {
-    profileSection += `EDUCATION:
-`;
-    education.forEach((edu, index) => {
-      profileSection += `${index + 1}. ${edu.degree_type} in ${edu.field_of_study}
-   - Institution: ${edu.institution_name}
-   - Graduation: ${edu.is_current ? 'Currently Studying' : edu.graduation_date || 'Not specified'}
-   - Location: ${edu.location || 'Not specified'}
-   - GPA: ${edu.gpa || 'Not specified'}
-   - Honors: ${edu.honors || 'None'}
-   - Relevant Coursework: ${edu.relevant_coursework?.join(', ') || 'Not specified'}
+  // Contact information
+  const contactInfo = {
+    phone: userProfileData.profile?.phone || '[Phone Number]',
+    location: userProfileData.profile?.location || '[Location]',
+    linkedin: userProfileData.profile?.linkedin_url || '[LinkedIn URL]',
+    portfolio: userProfileData.profile?.portfolio_url || '[Portfolio URL]'
+  };
 
-`;
-    });
-  }
+  // Template-specific formatting and tone
+  const templateTones = {
+    modern: {
+      tone: 'contemporary, professional, and achievement-focused',
+      structure: 'clean and visually appealing with clear sections',
+      language: 'action-oriented with quantifiable results'
+    },
+    classic: {
+      tone: 'traditional, formal, and comprehensive',
+      structure: 'conventional chronological format with detailed descriptions',
+      language: 'formal business language with complete sentences'
+    },
+    creative: {
+      tone: 'innovative, dynamic, and personality-driven',
+      structure: 'unique layout that showcases creativity and personal brand',
+      language: 'engaging and expressive while maintaining professionalism'
+    },
+    executive: {
+      tone: 'authoritative, strategic, and leadership-focused',
+      structure: 'executive summary prominent with strategic achievements',
+      language: 'senior-level terminology emphasizing leadership and business impact'
+    },
+    technical: {
+      tone: 'detail-oriented, expertise-focused, and technically precise',  
+      structure: 'skills and technical projects prominently featured',
+      language: 'technical terminology with specific tools and methodologies'
+    }
+  };
 
-  // Skills
-  if (skills.length > 0) {
-    profileSection += `SKILLS:
-`;
-    const skillsByCategory = skills.reduce((acc, skill) => {
-      if (!acc[skill.category]) acc[skill.category] = [];
-      acc[skill.category].push(`${skill.skill_name} (${skill.proficiency_level}${skill.years_experience ? `, ${skill.years_experience} years` : ''})`);
-      return acc;
-    }, {} as Record<string, string[]>);
+  const selectedTone = templateTones[templateId as keyof typeof templateTones] || templateTones.modern;
 
-    Object.entries(skillsByCategory).forEach(([category, categorySkills]) => {
-      profileSection += `- ${category}: ${categorySkills.join(', ')}
-`;
-    });
-    profileSection += '\n';
-  }
+  const basePrompt = `
+Create a professional resume that matches this job description using the ${selectedTone.tone} tone and ${selectedTone.structure}. Use ${selectedTone.language}.
 
-  // Certifications
-  if (certifications.length > 0) {
-    profileSection += `CERTIFICATIONS:
-`;
-    certifications.forEach((cert, index) => {
-      profileSection += `${index + 1}. ${cert.name}
-   - Issuing Organization: ${cert.issuing_organization}
-   - Issue Date: ${cert.issue_date}
-   - Expiry Date: ${cert.expiry_date || 'No expiration'}
-   - Status: ${cert.is_active ? 'Active' : 'Inactive'}
-   - Credential ID: ${cert.credential_id || 'Not provided'}
-
-`;
-    });
-  }
-
-  // Projects
-  if (projects.length > 0) {
-    profileSection += `PROJECTS:
-`;
-    projects.forEach((project, index) => {
-      profileSection += `${index + 1}. ${project.project_name}
-   - Description: ${project.description || 'Not provided'}
-   - Duration: ${project.start_date || 'Not specified'} to ${project.end_date || 'Not specified'}
-   - Role: ${project.role || 'Not specified'}
-   - Technologies Used: ${project.technologies_used?.join(', ') || 'Not specified'}
-   - Team Size: ${project.team_size || 'Not specified'}
-   - Project URL: ${project.project_url || 'Not provided'}
-   - GitHub URL: ${project.github_url || 'Not provided'}
-   - Key Achievements: ${project.achievements.length > 0 ? project.achievements.join(', ') : 'Not specified'}
-
-`;
-    });
-  }
-
-  return profileSection;
-}
-
-export function buildToneSpecificPrompt(jobDescription: string, templateId: string, userProfileData: UserProfile): string {
-  const toneProfile: ToneProfile = toneProfiles[templateId] || toneProfiles.modern;
-  
-  const userDataSection = formatUserProfileData(userProfileData);
-  
-  const basePrompt = `You are an expert resume writer creating an ATS-optimized resume with a ${toneProfile.writingStyle} tone. Based on the job description and the user's actual profile data below, generate a professional resume in clean HTML format.
-
-TONE AND WRITING STYLE REQUIREMENTS:
-- Writing Style: ${toneProfile.writingStyle.toUpperCase()}
-- Personality: ${toneProfile.personalityTraits.join(', ')}
-- Professional Summary: Use a ${toneProfile.summaryStyle} approach
-- Action Verbs: Emphasize ${toneProfile.actionVerbStyle} achievements using words like: ${toneProfile.toneKeywords.join(', ')}
-- Industry Focus: Tailor language for ${toneProfile.industryFocus}
-
-CRITICAL FORMATTING REQUIREMENTS:
-- Generate ONLY clean HTML content (NO DOCTYPE, html, head, body tags)
-- Use semantic HTML: <h1> for name, <h2> for sections, <h3> for subsections, <p> for paragraphs, <ul>/<li> for lists
-- Follow this EXACT content structure for ${templateId} template:
-
-${getStructureInstructions(toneProfile.contentStructure)}
-
-CONTENT GUIDELINES FOR ${templateId.toUpperCase()} TEMPLATE:`;
-
-  const templateGuidelines = getTemplateGuidelines(templateId);
-
-  const finalPrompt = basePrompt + templateGuidelines + `
-
-USER'S ACTUAL PROFILE DATA:
-${userDataSection}
-
-Job Description:
+JOB DESCRIPTION TO MATCH:
 ${jobDescription}
 
+USER'S ACTUAL INFORMATION TO USE:
+Name: ${userName}
+Phone: ${contactInfo.phone}
+Location: ${contactInfo.location}
+LinkedIn: ${contactInfo.linkedin}
+Portfolio: ${contactInfo.portfolio}
+
+Professional Summary: ${professionalSummary}
+
+Work Experience:
+${workExperienceText}
+
+Education:
+${educationText}
+
+Skills: ${skillsText}
+
+${userProfileData.certifications.length > 0 ? `
+Certifications:
+${userProfileData.certifications.map(cert => 
+  `${cert.name} - ${cert.issuing_organization} (${cert.issue_date})`
+).join('\n')}
+` : ''}
+
+${userProfileData.projects.length > 0 ? `
+Projects:
+${userProfileData.projects.map(project => 
+  `${project.project_name}: ${project.description || 'Project description'}${project.technologies_used ? ` - Technologies: ${project.technologies_used.join(', ')}` : ''}`
+).join('\n')}
+` : ''}
+
 IMPORTANT INSTRUCTIONS:
-- Use the user's ACTUAL information provided above - do not create fictional data
-- If any information is missing or "Not specified", either omit that section or use appropriate placeholders
-- Tailor the user's real experience and skills to match the job requirements
-- Maintain the ${toneProfile.writingStyle} tone throughout
-- Focus on the most relevant experiences and skills for this specific job
-- Generate a complete, professional resume that would score highly with ATS systems and impress hiring managers
+1. Use the user's ACTUAL NAME "${userName}" - never use placeholder names like "John Doe"
+2. Use all provided user information exactly as given
+3. Tailor the content to match the job requirements while highlighting relevant user experience
+4. If user information is incomplete, use professional placeholders in [brackets] that the user can easily find and replace
+5. Structure the resume with the ${templateId} template style
+6. Make sure all contact information uses the user's actual details
+7. Focus on achievements and quantifiable results where possible
+8. Ensure the resume is ATS-friendly with clear section headers
+9. Keep the resume to 1-2 pages maximum
+10. Use consistent formatting throughout
 
-Generate the resume now using the user's actual profile data and the job requirements.`;
+Generate a complete, professional resume in HTML format that the user can immediately use for job applications.`;
 
-  return finalPrompt;
+  return basePrompt;
 }

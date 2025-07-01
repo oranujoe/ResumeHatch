@@ -7,6 +7,7 @@ import { Json } from '@/integrations/supabase/types';
 export interface UserProfile {
   id?: string;
   user_id: string;
+  full_name?: string;
   phone?: string;
   location?: string;
   linkedin_url?: string;
@@ -135,6 +136,7 @@ export const useProfile = () => {
       // Load all profile data in parallel
       const [
         profileResult,
+        profilesResult,
         workResult,
         educationResult,
         skillsResult,
@@ -142,6 +144,7 @@ export const useProfile = () => {
         projectsResult
       ] = await Promise.all([
         supabase.from('user_profiles').select('*').eq('user_id', user.id).maybeSingle(),
+        supabase.from('profiles').select('*').eq('id', user.id).maybeSingle(),
         supabase.from('work_experiences').select('*').eq('user_id', user.id).order('start_date', { ascending: false }),
         supabase.from('education_records').select('*').eq('user_id', user.id).order('graduation_date', { ascending: false }),
         supabase.from('skills_inventory').select('*').eq('user_id', user.id).order('is_featured', { ascending: false }),
@@ -156,6 +159,15 @@ export const useProfile = () => {
       if (skillsResult.error) throw skillsResult.error;
       if (certificationsResult.error) throw certificationsResult.error;
       if (projectsResult.error) throw projectsResult.error;
+
+      // Merge profile data with fallback to profiles table
+      let mergedProfile = profileResult.data;
+      if (!mergedProfile?.full_name && profilesResult.data?.full_name) {
+        mergedProfile = {
+          ...mergedProfile,
+          full_name: profilesResult.data.full_name
+        };
+      }
 
       // Transform data to match our interfaces
       const transformedWorkExperiences: WorkExperience[] = (workResult.data || []).map(work => ({
@@ -174,7 +186,7 @@ export const useProfile = () => {
       }));
 
       setProfile({
-        profile: profileResult.data,
+        profile: mergedProfile,
         workExperiences: transformedWorkExperiences,
         education: educationResult.data || [],
         skills: transformedSkills,
@@ -195,10 +207,15 @@ export const useProfile = () => {
     const { profile: userProfile, workExperiences, education, skills } = profile;
     
     let completedSections = 0;
-    const totalSections = 5;
+    const totalSections = 6;
 
     // Basic profile info
     if (userProfile?.professional_title && userProfile?.professional_summary) {
+      completedSections++;
+    }
+
+    // Full name
+    if (userProfile?.full_name) {
       completedSections++;
     }
 

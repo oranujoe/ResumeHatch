@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,6 +27,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ initialData, onComp
 
   // Personal info state
   const [personalInfo, setPersonalInfo] = useState({
+    full_name: initialData?.personal_info?.full_name || '',
     phone: initialData?.personal_info?.phone || '',
     location: initialData?.personal_info?.location || '',
     linkedin_url: initialData?.personal_info?.linkedin_url || '',
@@ -58,6 +58,15 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ initialData, onComp
         });
 
       if (error) throw error;
+
+      // Also update the profiles table to keep them synchronized
+      await supabase
+        .from('profiles')
+        .upsert({
+          id: user.id,
+          full_name: personalInfo.full_name,
+          updated_at: new Date().toISOString()
+        });
 
       toast({
         title: "Personal information saved",
@@ -127,6 +136,16 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ initialData, onComp
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="full_name">Full Name</Label>
+                <Input
+                  id="full_name"
+                  value={personalInfo.full_name}
+                  onChange={(e) => handlePersonalInfoChange('full_name', e.target.value)}
+                  placeholder="Your full name"
+                />
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="phone">Phone Number</Label>
