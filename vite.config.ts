@@ -10,10 +10,11 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     watch: {
-      // Reduce file watching overhead
-      usePolling: false,
+      // Use polling to reduce file descriptor usage
+      usePolling: true,
       interval: 1000,
       binaryInterval: 2000,
+      // Aggressively ignore unnecessary directories
       ignored: [
         '**/node_modules/**',
         '**/dist/**',
@@ -22,7 +23,13 @@ export default defineConfig(({ mode }) => ({
         '**/public/**',
         '**/*.log',
         '**/temp/**',
-        '**/tmp/**'
+        '**/tmp/**',
+        '**/build/**',
+        '**/.vscode/**',
+        '**/.idea/**',
+        '**/package-lock.json',
+        '**/yarn.lock',
+        '**/bun.lockb'
       ]
     }
   },
@@ -44,6 +51,8 @@ export default defineConfig(({ mode }) => ({
       'react-router-dom',
       'lucide-react',
       '@radix-ui/react-slot'
-    ]
+    ],
+    // Force pre-bundling to reduce file watching
+    force: true
   }
 }));
