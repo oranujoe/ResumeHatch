@@ -28,7 +28,7 @@ const QuickActionCard: React.FC<QuickActionCardProps> = ({
         <div className={cn("p-2.5 rounded-xl relative", iconColor)}>
           <Icon className="h-4 w-4 md:h-5 md:w-5 text-white" />
           {isNew && (
-            <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-warning-primary rounded-full animate-pulse-glow">
+            <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-warning-primary rounded-full">
               <Sparkles className="h-1.5 w-1.5 text-white absolute top-0.5 left-0.5" />
             </div>
           )}

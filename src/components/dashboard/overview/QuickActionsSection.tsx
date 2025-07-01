@@ -63,13 +63,7 @@ const QuickActionsSection = () => {
       
       <div className="space-y-4">
         {quickActions.map((action, index) => (
-          <div 
-            key={index}
-            className="animate-fade-in-right"
-            style={{ animationDelay: `${0.5 + index * 0.1}s` }}
-          >
-            <QuickActionCard {...action} />
-          </div>
+          <QuickActionCard key={index} {...action} />
         ))}
       </div>
     </div>

@@ -53,11 +53,9 @@ const KPISection = () => {
   ];
 
   return (
-    <div className="responsive-grid-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+    <div className="responsive-grid-4">
       {kpiData.map((kpi, index) => (
-        <div key={index} style={{ animationDelay: `${0.1 + index * 0.1}s` }}>
-          <KPICard {...kpi} />
-        </div>
+        <KPICard key={index} {...kpi} />
       ))}
     </div>
   );

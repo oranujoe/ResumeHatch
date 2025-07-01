@@ -72,13 +72,7 @@ const RecentJobsSection = () => {
       
       <div className="space-y-4">
         {recentJobs.map((job, index) => (
-          <div 
-            key={index} 
-            className="animate-fade-in-left"
-            style={{ animationDelay: `${0.4 + index * 0.1}s` }}
-          >
-            <JobCard {...job} />
-          </div>
+          <JobCard key={index} {...job} />
         ))}
       </div>
       
