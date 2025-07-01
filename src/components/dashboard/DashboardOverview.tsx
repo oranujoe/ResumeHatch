@@ -4,6 +4,7 @@ import WelcomeBanner from './WelcomeBanner';
 import KPISection from './overview/KPISection';
 import RecentJobsSection from './overview/RecentJobsSection';
 import QuickActionsSection from './overview/QuickActionsSection';
+import ProfileCompletionBanner from './ProfileCompletionBanner';
 
 const DashboardOverview = () => {
   const [showBanner, setShowBanner] = useState(true);
@@ -16,6 +17,9 @@ const DashboardOverview = () => {
           onClose={() => setShowBanner(false)}
         />
       )}
+
+      {/* Profile Completion Banner */}
+      <ProfileCompletionBanner />
 
       {/* KPI Cards */}
       <KPISection />

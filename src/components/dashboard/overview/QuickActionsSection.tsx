@@ -1,70 +1,68 @@
 
 import React from 'react';
-import { 
-  FileText, 
-  Users, 
-  Star,
-  Zap,
-  Target
-} from 'lucide-react';
+import { FileText, Upload, User, Settings, Briefcase, Bot } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import QuickActionCard from '../QuickActionCard';
 
 const QuickActionsSection = () => {
+  const navigate = useNavigate();
+
   const quickActions = [
     {
-      title: "AI Job Parser",
-      description: "Extract job details from any listing and create tailored applications with our advanced AI technology.",
-      icon: FileText,
-      iconColor: "bg-gradient-to-br from-primary to-primary/80",
-      action: "Start Parsing",
-      isNew: true
-    },
-    {
-      title: "Smart Referrals",
-      description: "Connect with industry professionals and discover warm introductions at your target companies.",
-      icon: Users,
-      iconColor: "bg-gradient-to-br from-[#8B5CF6] to-[#A78BFA]",
-      action: "Find Connections"
-    },
-    {
-      title: "Interview Mastery",
-      description: "Practice with our AI coach, get personalized feedback, and ace your next interview.",
-      icon: Star,
-      iconColor: "bg-gradient-to-br from-success-primary to-success-secondary",
-      action: "Start Training",
-      isNew: true
-    },
-    {
-      title: "Application Booster",
-      description: "Optimize your applications with AI-powered insights and increase your response rate.",
-      icon: Zap,
-      iconColor: "bg-gradient-to-br from-warning-primary to-warning-secondary",
-      action: "Boost Now"
-    },
-    {
-      title: "Goal Tracker",
-      description: "Set weekly application targets and track your progress towards landing your dream job.",
-      icon: Target,
+      title: "AI Resume Builder",
+      description: "Create a tailored resume using AI that matches job requirements perfectly.",
+      icon: Bot,
       iconColor: "bg-gradient-to-br from-info-primary to-info-secondary",
-      action: "Set Goals"
+      action: "Start Building",
+      isNew: true,
+      onClick: () => navigate('/dashboard/job-parser')
+    },
+    {
+      title: "Upload Resume",
+      description: "Upload your existing resume to automatically populate your profile data.",
+      icon: Upload,
+      iconColor: "bg-gradient-to-br from-success-primary to-success-secondary",
+      action: "Upload Now",
+      onClick: () => {
+        // This will be handled by the ProfileCompletionBanner component
+      }
+    },
+    {
+      title: "Complete Profile",
+      description: "Add your work experience, education, and skills for better resume generation.",
+      icon: User,
+      iconColor: "bg-gradient-to-br from-warning-primary to-warning-secondary",
+      action: "Complete Profile",
+      onClick: () => {
+        // This will be handled by the ProfileCompletionBanner component
+      }
+    },
+    {
+      title: "View Applications",
+      description: "Track your job applications and their current status.",
+      icon: Briefcase,
+      iconColor: "bg-gradient-to-br from-[#8B5CF6] to-[#A78BFA]",
+      action: "View Applications",
+      onClick: () => navigate('/dashboard/applications')
     }
   ];
 
   return (
-    <div className="space-y-4 md:space-y-6">
-      <div>
-        <h2 className="text-headline-medium font-bold text-foreground">
-          Quick Actions
-        </h2>
-        <p className="text-body-small text-muted-foreground mt-1">
-          Powerful tools to accelerate your job search
-        </p>
-      </div>
-      
-      <div className="space-y-4">
-        {quickActions.map((action, index) => (
-          <QuickActionCard key={index} {...action} />
-        ))}
+    <div className="lg:col-span-1">
+      <div className="glass-card p-4 md:p-6 rounded-xl">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-title-large font-bold text-foreground">Quick Actions</h2>
+          <Settings className="h-5 w-5 text-muted-foreground" />
+        </div>
+        
+        <div className="space-y-3">
+          {quickActions.map((action, index) => (
+            <QuickActionCard
+              key={index}
+              {...action}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
