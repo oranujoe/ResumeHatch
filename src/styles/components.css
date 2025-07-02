@@ -91,15 +91,9 @@
     @apply text-muted-foreground flex items-center space-x-0.5;
   }
 
-  /* Job Card Enhancements - Flat Version */
+  /* Job Card Enhancements - Flat Version (No Hover) */
   .job-card {
-    @apply glass-card glass-card-hover p-3 md:p-4 rounded-xl border-l-4;
-    transition: all 0.3s ease-out;
-  }
-
-  .job-card:hover {
-    @apply scale-[1.01];
-    transform: translateY(-2px) scale(1.01);
+    @apply glass-card p-3 md:p-4 rounded-xl border-l-4;
   }
 
   .job-card-applied {

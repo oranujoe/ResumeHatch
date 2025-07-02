@@ -77,7 +77,7 @@ const JobCard: React.FC<JobCardProps> = ({
   const priorityInfo = priorityConfig[priority];
 
   return (
-    <div className={cn("job-card", statusInfo.bgClass)}>
+    <div className={cn("glass-card p-3 md:p-4 rounded-xl border-l-4", statusInfo.bgClass)}>
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-start space-x-3 flex-1 min-w-0">
           <div className="w-12 h-12 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -137,7 +137,7 @@ const JobCard: React.FC<JobCardProps> = ({
         {skills.slice(0, 4).map((skill, index) => (
           <span 
             key={index} 
-            className="px-2 py-1 bg-muted/50 hover:bg-muted rounded-md text-label-small text-muted-foreground transition-colors"
+            className="px-2 py-1 bg-muted/50 rounded-md text-label-small text-muted-foreground"
           >
             {skill}
           </span>
