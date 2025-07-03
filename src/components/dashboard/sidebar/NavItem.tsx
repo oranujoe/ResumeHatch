@@ -66,8 +66,12 @@ const NavItem: React.FC<NavItemProps> = ({
       {hasSubItems ? (
         <button
           onClick={handleClick}
-          className={baseClasses}
+          className={cn(
+            baseClasses,
+            "cursor-pointer relative z-10"
+          )}
           disabled={item.isDisabled}
+          style={{ pointerEvents: 'auto' }}
         >
           <item.icon className={cn(
             "h-4 w-4 flex-shrink-0",
