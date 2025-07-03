@@ -39,7 +39,7 @@ const NavItem: React.FC<NavItemProps> = ({
           onClick={() => onToggleExpanded(item.title)}
           className={cn(
             "w-full flex items-center px-2 py-1.5 rounded-lg transition-all duration-200 text-xs font-medium",
-            "hover:bg-accent hover:text-accent-foreground",
+            "hover:bg-muted hover:text-foreground",
             active && "sidebar-active",
             isCollapsed && "justify-center px-1.5"
           )}
@@ -63,7 +63,7 @@ const NavItem: React.FC<NavItemProps> = ({
           to={item.url}
           className={cn(
             "w-full flex items-center px-2 py-1.5 rounded-lg transition-all duration-200 text-xs font-medium",
-            "hover:bg-accent hover:text-accent-foreground",
+            "hover:bg-muted hover:text-foreground",
             active && "sidebar-active",
             isCollapsed && "justify-center px-1.5"
           )}
@@ -86,7 +86,7 @@ const NavItem: React.FC<NavItemProps> = ({
               to={subItem.url}
               className={cn(
                 "w-full flex items-center px-2 py-1.5 rounded-lg transition-all duration-200 text-xs",
-                "hover:bg-accent/50 hover:text-accent-foreground",
+                "hover:bg-muted hover:text-foreground",
                 isActive(subItem.url) && "bg-muted text-foreground font-medium"
               )}
             >
