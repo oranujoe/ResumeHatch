@@ -87,7 +87,7 @@ const NavItem: React.FC<NavItemProps> = ({
               className={cn(
                 "w-full flex items-center px-2 py-1.5 rounded-lg transition-all duration-200 text-xs",
                 "hover:bg-accent/50 hover:text-accent-foreground",
-                isActive(subItem.url) && "bg-accent/30 text-accent-foreground"
+                isActive(subItem.url) && "bg-muted text-foreground font-medium"
               )}
             >
               <span className="flex-1 text-left">{subItem.title}</span>
