@@ -13,9 +13,10 @@ import { UserProfile } from '@/hooks/useProfile';
 
 interface PersonalInfoSectionProps {
   profile: UserProfile | null;
+  onProfileUpdated?: () => void;
 }
 
-const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({ profile }) => {
+const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({ profile, onProfileUpdated }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     full_name: profile?.full_name || '',
@@ -34,42 +35,99 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({ profile }) =>
   const { user } = useAuth();
 
   const handleSave = async () => {
-    if (!user) return;
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to update your profile.",
+        variant: "destructive"
+      });
+      return;
+    }
 
     setIsLoading(true);
     try {
-      const { error } = await supabase
-        .from('user_profiles')
-        .upsert({
-          user_id: user.id,
-          ...formData,
-          years_experience: formData.years_experience ? parseInt(formData.years_experience) : null,
-          updated_at: new Date().toISOString()
-        });
+      console.log('Starting profile update for user:', user.id);
+      
+      const profileData = {
+        ...formData,
+        years_experience: formData.years_experience ? parseInt(formData.years_experience) : null,
+        updated_at: new Date().toISOString()
+      };
 
-      if (error) throw error;
+      // Check if user_profiles record exists
+      const { data: existingProfile, error: checkError } = await supabase
+        .from('user_profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (checkError) {
+        console.error('Error checking existing profile:', checkError);
+        throw checkError;
+      }
+
+      let profileError;
+      if (existingProfile) {
+        // Update existing profile
+        console.log('Updating existing user_profiles record');
+        const { error } = await supabase
+          .from('user_profiles')
+          .update(profileData)
+          .eq('user_id', user.id);
+        profileError = error;
+      } else {
+        // Insert new profile
+        console.log('Creating new user_profiles record');
+        const { error } = await supabase
+          .from('user_profiles')
+          .insert({
+            user_id: user.id,
+            ...profileData
+          });
+        profileError = error;
+      }
+
+      if (profileError) {
+        console.error('Error updating user_profiles:', profileError);
+        throw profileError;
+      }
 
       // Also update the profiles table for name sync
-      await supabase
+      const { error: profilesError } = await supabase
         .from('profiles')
-        .upsert({
-          id: user.id,
+        .update({
           full_name: formData.full_name,
           updated_at: new Date().toISOString()
-        });
+        })
+        .eq('id', user.id);
 
+      if (profilesError) {
+        console.error('Error updating profiles table:', profilesError);
+        // Don't throw here as the main profile update succeeded
+        console.warn('Profiles table update failed, continuing anyway');
+      }
+
+      console.log('Profile update completed successfully');
+      
       toast({
         title: "Profile updated",
         description: "Your personal information has been saved successfully.",
       });
 
       setIsEditing(false);
-      window.location.reload(); // Refresh to show updated data
+      
+      // Call the callback to refresh data if provided
+      if (onProfileUpdated) {
+        onProfileUpdated();
+      }
+
     } catch (error) {
       console.error('Error updating profile:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      
       toast({
         title: "Error updating profile",
-        description: "Please try again later.",
+        description: `Failed to save changes: ${errorMessage}`,
         variant: "destructive"
       });
     } finally {

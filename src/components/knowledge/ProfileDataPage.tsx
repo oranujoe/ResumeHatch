@@ -14,8 +14,13 @@ import CertificationsSection from './CertificationsSection';
 import ProjectsSection from './ProjectsSection';
 
 const ProfileDataPage = () => {
-  const { profile, isLoading, completeness } = useProfile();
+  const { profile, isLoading, completeness, reload } = useProfile();
   const [activeTab, setActiveTab] = useState('personal');
+
+  const handleProfileUpdated = () => {
+    console.log('Profile updated, reloading data...');
+    reload();
+  };
 
   if (isLoading) {
     return (
@@ -113,7 +118,10 @@ const ProfileDataPage = () => {
         </TabsList>
 
         <TabsContent value="personal" className="mt-6">
-          <PersonalInfoSection profile={profile.profile} />
+          <PersonalInfoSection 
+            profile={profile.profile} 
+            onProfileUpdated={handleProfileUpdated}
+          />
         </TabsContent>
 
         <TabsContent value="work" className="mt-6">
