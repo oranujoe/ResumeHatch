@@ -110,8 +110,8 @@ export const bottomNavItems: NavItem[] = [
     title: "Settings",
     url: "/dashboard/settings",
     icon: Settings,
-    isComingSoon: true,
-    isDisabled: true,
+    isComingSoon: false,
+    isDisabled: false,
     subItems: [
       { title: "Account Security", url: "/dashboard/settings/security", isComingSoon: true, isDisabled: true },
       { title: "Wallet & Billing", url: "/dashboard/settings/billing", isComingSoon: true, isDisabled: true },
@@ -123,8 +123,8 @@ export const bottomNavItems: NavItem[] = [
     title: "Profile",
     url: "/dashboard/profile",
     icon: User,
-    isComingSoon: true,
-    isDisabled: true
+    isComingSoon: false,
+    isDisabled: false
   },
   {
     title: "Help",
