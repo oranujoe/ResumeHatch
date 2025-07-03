@@ -59,14 +59,13 @@
     @apply p-1.5 rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-200 ease-out hover:scale-105;
   }
 
-  /* Sidebar Active States - Flat Version */
+  /* Sidebar Active States - Updated to use brand blue with low opacity */
   .sidebar-active {
-    @apply bg-secondary text-secondary-foreground;
-    background: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary))/0.9);
+    @apply bg-primary/10 text-primary border-l-2 border-l-primary;
   }
 
   .dark .sidebar-active {
-    @apply bg-primary/20 text-primary;
+    @apply bg-primary/15 text-primary border-l-2 border-l-primary;
   }
 
   /* Data Visualization Enhancements - Flat Version */
