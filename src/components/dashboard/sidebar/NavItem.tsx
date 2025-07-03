@@ -4,7 +4,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { NavItem as NavItemType } from './navigationData';
-import { SoonBadge } from '@/components/ui/soon-badge';
 
 interface NavItemProps {
   item: NavItemType;
@@ -33,45 +32,17 @@ const NavItem: React.FC<NavItemProps> = ({
   const expanded = isExpanded;
   const active = isActive(item.url);
 
-  const handleClick = (e: React.MouseEvent) => {
-    console.log('NavItem handleClick called for:', item.title);
-    console.log('Item isDisabled:', item.isDisabled);
-    console.log('Has sub items:', hasSubItems);
-    console.log('Current expandedItems:', expandedItems);
-    console.log('Is currently expanded:', isExpanded);
-    
-    if (item.isDisabled) {
-      e.preventDefault();
-      console.log('Click prevented - item is disabled');
-      return;
-    }
-    
-    if (hasSubItems) {
-      console.log('Calling onToggleExpanded with:', item.title);
-      onToggleExpanded(item.title);
-    }
-  };
-
-  const baseClasses = cn(
-    "w-full flex items-center px-2 py-1.5 rounded-lg transition-all duration-200 text-xs font-medium shadow-none border-0",
-    item.isDisabled 
-      ? "opacity-60 cursor-not-allowed" 
-      : "hover:bg-muted hover:text-foreground",
-    active && "sidebar-active",
-    isCollapsed && "justify-center px-1.5"
-  );
-
   return (
     <div className="w-full">
       {hasSubItems ? (
         <button
-          onClick={handleClick}
+          onClick={() => onToggleExpanded(item.title)}
           className={cn(
-            baseClasses,
-            "cursor-pointer relative z-10"
+            "w-full flex items-center px-2 py-1.5 rounded-lg transition-all duration-200 text-xs font-medium",
+            "hover:bg-muted hover:text-foreground",
+            active && "sidebar-active",
+            isCollapsed && "justify-center px-1.5"
           )}
-          disabled={item.isDisabled}
-          style={{ pointerEvents: 'auto' }}
         >
           <item.icon className={cn(
             "h-4 w-4 flex-shrink-0",
@@ -80,53 +51,47 @@ const NavItem: React.FC<NavItemProps> = ({
           {!isCollapsed && (
             <>
               <span className="flex-1 text-left">{item.title}</span>
-              <div className="flex items-center space-x-1">
-                {item.isComingSoon && <SoonBadge />}
-                <ChevronRight className={cn(
-                  "h-3 w-3 transition-transform duration-200",
-                  expanded && "rotate-90"
-                )} />
-              </div>
+              <ChevronRight className={cn(
+                "h-3 w-3 transition-transform duration-200",
+                expanded && "rotate-90"
+              )} />
             </>
           )}
         </button>
       ) : (
-        <div className={baseClasses}>
+        <Link
+          to={item.url}
+          className={cn(
+            "w-full flex items-center px-2 py-1.5 rounded-lg transition-all duration-200 text-xs font-medium",
+            "hover:bg-muted hover:text-foreground",
+            active && "sidebar-active",
+            isCollapsed && "justify-center px-1.5"
+          )}
+        >
           <item.icon className={cn(
             "h-4 w-4 flex-shrink-0",
             isCollapsed ? "mx-auto" : "mr-2"
           )} />
           {!isCollapsed && (
-            <>
-              <span className="flex-1 text-left">{item.title}</span>
-              {item.isComingSoon && <SoonBadge />}
-            </>
+            <span className="flex-1 text-left">{item.title}</span>
           )}
-          {!item.isDisabled && (
-            <Link to={item.url} className="absolute inset-0" />
-          )}
-        </div>
+        </Link>
       )}
       
       {hasSubItems && !isCollapsed && expanded && (
         <div className="ml-5 mt-1 space-y-1">
           {item.subItems!.map(subItem => (
-            <div
+            <Link
               key={subItem.url}
+              to={subItem.url}
               className={cn(
-                "w-full flex items-center px-2 py-1.5 rounded-lg transition-all duration-200 text-xs relative",
-                subItem.isDisabled 
-                  ? "opacity-60 cursor-not-allowed"
-                  : "hover:bg-muted hover:text-foreground",
+                "w-full flex items-center px-2 py-1.5 rounded-lg transition-all duration-200 text-xs",
+                "hover:bg-muted hover:text-foreground",
                 isActive(subItem.url) && "bg-muted text-foreground font-medium"
               )}
             >
               <span className="flex-1 text-left">{subItem.title}</span>
-              {subItem.isComingSoon && <SoonBadge />}
-              {!subItem.isDisabled && (
-                <Link to={subItem.url} className="absolute inset-0" />
-              )}
-            </div>
+            </Link>
           ))}
         </div>
       )}
