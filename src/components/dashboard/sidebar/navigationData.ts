@@ -32,11 +32,13 @@ export const mainNavItems: NavItem[] = [
     title: "Job Parser",
     url: "/dashboard/job-parser",
     icon: FileText,
+    isComingSoon: false,
+    isDisabled: false,
     subItems: [
-      { title: "Parse & Apply", url: "/dashboard/job-parser/parse" },
-      { title: "Drop-zone Chrome", url: "/dashboard/job-parser/chrome" },
-      { title: "Bulk Queue", url: "/dashboard/job-parser/bulk" },
-      { title: "Job Zone", url: "/dashboard/job-parser/zone" }
+      { title: "Parse & Apply", url: "/dashboard/job-parser/parse", isComingSoon: false, isDisabled: false },
+      { title: "Drop-zone Chrome", url: "/dashboard/job-parser/chrome", isComingSoon: false, isDisabled: false },
+      { title: "Bulk Queue", url: "/dashboard/job-parser/bulk", isComingSoon: false, isDisabled: false },
+      { title: "Job Zone", url: "/dashboard/job-parser/zone", isComingSoon: false, isDisabled: false }
     ]
   },
   {
