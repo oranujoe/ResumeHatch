@@ -38,9 +38,10 @@ const GoogleSignInButton = () => {
     <Button
       type="button"
       variant="outline"
-      className="w-full flex items-center justify-center gap-3 py-2.5 border-gray-300 hover:bg-gray-50"
+      className="w-full flex items-center justify-center gap-3 py-2.5 border-gray-300 bg-white text-gray-700"
       onClick={handleGoogleSignIn}
       disabled={isLoading}
+      disableHoverEffect={true}
     >
       <svg
         className="w-5 h-5"
