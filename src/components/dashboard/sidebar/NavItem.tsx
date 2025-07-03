@@ -56,28 +56,33 @@ const NavItem: React.FC<NavItemProps> = ({
   return (
     <div className="w-full">
       {hasSubItems ? (
-        <button
-          onClick={handleClick}
-          className={baseClasses}
-          disabled={item.isDisabled}
-        >
-          <item.icon className={cn(
-            "h-4 w-4 flex-shrink-0",
-            isCollapsed ? "mx-auto" : "mr-2"
-          )} />
-          {!isCollapsed && (
-            <>
-              <span className="flex-1 text-left">{item.title}</span>
-              <div className="flex items-center space-x-1">
-                {item.isComingSoon && <SoonBadge />}
-                <ChevronRight className={cn(
-                  "h-3 w-3 transition-transform duration-200",
-                  expanded && "rotate-90"
-                )} />
-              </div>
-            </>
+        <div className="relative">
+          <button
+            onClick={handleClick}
+            className={baseClasses}
+            disabled={item.isDisabled}
+          >
+            <item.icon className={cn(
+              "h-4 w-4 flex-shrink-0",
+              isCollapsed ? "mx-auto" : "mr-2"
+            )} />
+            {!isCollapsed && (
+              <>
+                <span className="flex-1 text-left">{item.title}</span>
+                <div className="flex items-center space-x-1">
+                  {item.isComingSoon && <SoonBadge />}
+                  <ChevronRight className={cn(
+                    "h-3 w-3 transition-transform duration-200",
+                    expanded && "rotate-90"
+                  )} />
+                </div>
+              </>
+            )}
+          </button>
+          {!item.isDisabled && (
+            <Link to={item.url} className="absolute inset-0 z-10" />
           )}
-        </button>
+        </div>
       ) : (
         <div className={baseClasses}>
           <item.icon className={cn(
