@@ -38,7 +38,7 @@ export function buildToneSpecificPrompt(
       ).join(', ')
     : 'Skills not specified - please add your technical and professional skills.';
 
-  // Contact information
+  // Contact information - Fix LinkedIn URL extraction
   const contactInfo = {
     phone: userProfileData.profile?.phone || '[Phone Number]',
     location: userProfileData.profile?.location || '[Location]',
@@ -116,15 +116,16 @@ ${userProfileData.projects.map(project =>
 
 IMPORTANT INSTRUCTIONS:
 1. Use the user's ACTUAL NAME "${userName}" - never use placeholder names like "John Doe"
-2. Use all provided user information exactly as given
+2. Use all provided user information exactly as given, especially the LinkedIn URL "${contactInfo.linkedin}"
 3. Tailor the content to match the job requirements while highlighting relevant user experience
 4. If user information is incomplete, use professional placeholders in [brackets] that the user can easily find and replace
 5. Structure the resume with the ${templateId} template style
-6. Make sure all contact information uses the user's actual details
+6. Make sure all contact information uses the user's actual details - particularly ensure LinkedIn URL is included prominently in the contact section
 7. Focus on achievements and quantifiable results where possible
 8. Ensure the resume is ATS-friendly with clear section headers
 9. Keep the resume to 1-2 pages maximum
 10. Use consistent formatting throughout
+11. CRITICAL: Always include the LinkedIn URL in the contact information section at the top of the resume
 
 Generate a complete, professional resume in HTML format that the user can immediately use for job applications.`;
 

@@ -1,4 +1,3 @@
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4';
@@ -43,6 +42,8 @@ export interface UserProfileData {
 
 async function fetchUserProfile(userId: string): Promise<UserProfileData | null> {
   try {
+    console.log(`Loading profile data for user: ${userId}`);
+    
     // Load all profile data in parallel
     const [
       profileResult,
@@ -62,6 +63,12 @@ async function fetchUserProfile(userId: string): Promise<UserProfileData | null>
       supabase.from('projects_portfolio').select('*').eq('user_id', userId).order('start_date', { ascending: false })
     ]);
 
+    console.log('Profile query result:', { 
+      hasUserProfile: !!profileResult.data, 
+      hasProfilesRecord: !!profilesResult.data,
+      userProfileData: profileResult.data 
+    });
+
     // Merge profile data with fallback logic
     let mergedProfile = profileResult.data;
     if (!mergedProfile && profilesResult.data) {
@@ -80,6 +87,9 @@ async function fetchUserProfile(userId: string): Promise<UserProfileData | null>
       mergedProfile.full_name = profilesResult.data.full_name;
     }
 
+    // Log the LinkedIn URL specifically to debug
+    console.log('LinkedIn URL from profile:', mergedProfile?.linkedin_url);
+
     // Transform data to match our interfaces
     const transformedWorkExperiences = (workResult.data || []).map(work => ({
       ...work,
@@ -96,7 +106,7 @@ async function fetchUserProfile(userId: string): Promise<UserProfileData | null>
       achievements: jsonToStringArray(project.achievements)
     }));
 
-    return {
+    const finalProfileData = {
       profile: mergedProfile,
       workExperiences: transformedWorkExperiences,
       education: educationResult.data || [],
@@ -104,6 +114,15 @@ async function fetchUserProfile(userId: string): Promise<UserProfileData | null>
       certifications: certificationsResult.data || [],
       projects: transformedProjects
     };
+
+    console.log('Final profile data structure:', {
+      name: finalProfileData.profile?.full_name,
+      linkedin: finalProfileData.profile?.linkedin_url,
+      phone: finalProfileData.profile?.phone,
+      location: finalProfileData.profile?.location
+    });
+
+    return finalProfileData;
   } catch (error) {
     console.error('Error fetching user profile:', error);
     return null;
@@ -145,6 +164,7 @@ serve(async (req) => {
 
     console.log(`Profile data loaded for user ${userId}:`, {
       name: userProfileData.profile?.full_name || 'No name',
+      linkedin: userProfileData.profile?.linkedin_url || 'No LinkedIn',
       workExperiences: userProfileData.workExperiences.length,
       education: userProfileData.education.length,
       skills: userProfileData.skills.length
@@ -189,7 +209,7 @@ serve(async (req) => {
     const rawResume = data.candidates[0].content.parts[0].text;
     const cleanedResume = sanitizeResumeContent(rawResume);
     
-    console.log(`Resume generated successfully with ${templateId} tone and user profile data for ${userProfileData.profile?.full_name || 'user'}`);
+    console.log(`Resume generated successfully with ${templateId} tone and user profile data for ${userProfileData.profile?.full_name || 'user'} with LinkedIn: ${userProfileData.profile?.linkedin_url || 'none'}`);
 
     return new Response(JSON.stringify({ resume: cleanedResume }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
