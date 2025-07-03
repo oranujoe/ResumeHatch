@@ -89,16 +89,30 @@ const Dashboard = () => {
             <Route path="settings/*" element={<SettingsPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="help/*" element={<HelpPage />} />
-            {/* Job Parser Routes - now consolidated under single DashboardLayout */}
-            <Route path="job-parser/*" element={
+            {/* Job Parser Routes - integrated directly */}
+            <Route path="job-parser" element={
               <JobParserLayout>
-                <Routes>
-                  <Route index element={<ParseAndApplyPage />} />
-                  <Route path="parse" element={<ParseAndApplyPage />} />
-                  <Route path="chrome" element={<DropZonePage />} />
-                  <Route path="bulk" element={<BulkQueuePage />} />
-                  <Route path="zone" element={<JobZonePage />} />
-                </Routes>
+                <ParseAndApplyPage />
+              </JobParserLayout>
+            } />
+            <Route path="job-parser/parse" element={
+              <JobParserLayout>
+                <ParseAndApplyPage />
+              </JobParserLayout>
+            } />
+            <Route path="job-parser/chrome" element={
+              <JobParserLayout>
+                <DropZonePage />
+              </JobParserLayout>
+            } />
+            <Route path="job-parser/bulk" element={
+              <JobParserLayout>
+                <BulkQueuePage />
+              </JobParserLayout>
+            } />
+            <Route path="job-parser/zone" element={
+              <JobParserLayout>
+                <JobZonePage />
               </JobParserLayout>
             } />
           </Routes>
