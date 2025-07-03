@@ -53,7 +53,7 @@ const NavItem: React.FC<NavItemProps> = ({
   };
 
   const baseClasses = cn(
-    "w-full flex items-center px-2 py-1.5 rounded-lg transition-all duration-200 text-xs font-medium",
+    "w-full flex items-center px-2 py-1.5 rounded-lg transition-all duration-200 text-xs font-medium shadow-none border-0",
     item.isDisabled 
       ? "opacity-60 cursor-not-allowed" 
       : "hover:bg-muted hover:text-foreground",
