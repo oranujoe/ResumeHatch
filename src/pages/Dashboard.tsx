@@ -1,13 +1,12 @@
-
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
 import DashboardOverview from '../components/dashboard/DashboardOverview';
-import JobParserLayout from '../components/job-parser/JobParserLayout';
 import ParseAndApplyPage from '../components/job-parser/ParseAndApplyPage';
 import DropZonePage from '../components/job-parser/DropZonePage';
 import BulkQueuePage from '../components/job-parser/BulkQueuePage';
 import JobZonePage from '../components/job-parser/JobZonePage';
+import JobParserTabs from '../components/job-parser/JobParserTabs';
 
 // Create placeholder components for other dashboard sections
 const ApplicationsPage = () => (
@@ -74,6 +73,9 @@ const HelpPage = () => (
 );
 
 const Dashboard = () => {
+  const location = useLocation();
+  const isJobParserRoute = location.pathname.includes('/job-parser');
+
   return (
     <Routes>
       <Route path="/*" element={
@@ -89,31 +91,37 @@ const Dashboard = () => {
             <Route path="settings/*" element={<SettingsPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="help/*" element={<HelpPage />} />
-            {/* Job Parser Routes - integrated directly */}
+            
+            {/* Job Parser Routes - with shared tabs */}
             <Route path="job-parser" element={
-              <JobParserLayout>
+              <div className="space-y-6">
+                <JobParserTabs />
                 <ParseAndApplyPage />
-              </JobParserLayout>
+              </div>
             } />
             <Route path="job-parser/parse" element={
-              <JobParserLayout>
+              <div className="space-y-6">
+                <JobParserTabs />
                 <ParseAndApplyPage />
-              </JobParserLayout>
+              </div>
             } />
             <Route path="job-parser/chrome" element={
-              <JobParserLayout>
+              <div className="space-y-6">
+                <JobParserTabs />
                 <DropZonePage />
-              </JobParserLayout>
+              </div>
             } />
             <Route path="job-parser/bulk" element={
-              <JobParserLayout>
+              <div className="space-y-6">
+                <JobParserTabs />
                 <BulkQueuePage />
-              </JobParserLayout>
+              </div>
             } />
             <Route path="job-parser/zone" element={
-              <JobParserLayout>
+              <div className="space-y-6">
+                <JobParserTabs />
                 <JobZonePage />
-              </JobParserLayout>
+              </div>
             } />
           </Routes>
         </DashboardLayout>
