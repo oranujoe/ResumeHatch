@@ -34,12 +34,20 @@ const NavItem: React.FC<NavItemProps> = ({
   const active = isActive(item.url);
 
   const handleClick = (e: React.MouseEvent) => {
+    console.log('NavItem handleClick called for:', item.title);
+    console.log('Item isDisabled:', item.isDisabled);
+    console.log('Has sub items:', hasSubItems);
+    console.log('Current expandedItems:', expandedItems);
+    console.log('Is currently expanded:', isExpanded);
+    
     if (item.isDisabled) {
       e.preventDefault();
+      console.log('Click prevented - item is disabled');
       return;
     }
     
     if (hasSubItems) {
+      console.log('Calling onToggleExpanded with:', item.title);
       onToggleExpanded(item.title);
     }
   };
