@@ -3,6 +3,11 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
 import DashboardOverview from '../components/dashboard/DashboardOverview';
+import JobParserLayout from '../components/job-parser/JobParserLayout';
+import ParseAndApplyPage from '../components/job-parser/ParseAndApplyPage';
+import DropZonePage from '../components/job-parser/DropZonePage';
+import BulkQueuePage from '../components/job-parser/BulkQueuePage';
+import JobZonePage from '../components/job-parser/JobZonePage';
 
 // Create placeholder components for other dashboard sections
 const ApplicationsPage = () => (
@@ -84,6 +89,18 @@ const Dashboard = () => {
             <Route path="settings/*" element={<SettingsPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="help/*" element={<HelpPage />} />
+            {/* Job Parser Routes - now consolidated under single DashboardLayout */}
+            <Route path="job-parser/*" element={
+              <JobParserLayout>
+                <Routes>
+                  <Route index element={<ParseAndApplyPage />} />
+                  <Route path="parse" element={<ParseAndApplyPage />} />
+                  <Route path="chrome" element={<DropZonePage />} />
+                  <Route path="bulk" element={<BulkQueuePage />} />
+                  <Route path="zone" element={<JobZonePage />} />
+                </Routes>
+              </JobParserLayout>
+            } />
           </Routes>
         </DashboardLayout>
       } />
