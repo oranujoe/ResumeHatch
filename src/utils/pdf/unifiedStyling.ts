@@ -161,21 +161,29 @@ export const generateUnifiedCSS = (templateId: string): string => {
       margin-bottom: ${styles.spacing.sectionMarginBottom}px;
     }
     
-    /* URL and link styling */
+    /* URL and link styling - Higher specificity to override template styles */
+    .resume-container .resume-template-${templateId} a,
+    .resume-container a,
     .resume-template-${templateId} a {
       color: ${styles.colors.primary.css} !important;
       text-decoration: underline !important;
-      font-weight: 500;
-      transition: color 0.2s ease;
+      font-weight: 500 !important;
+      transition: color 0.2s ease !important;
       cursor: pointer !important;
       pointer-events: auto !important;
+      border: none !important;
+      background: transparent !important;
     }
     
+    .resume-container .resume-template-${templateId} a:hover,
+    .resume-container a:hover,
     .resume-template-${templateId} a:hover {
       color: ${styles.colors.secondary.css} !important;
       text-decoration: underline !important;
     }
     
+    .resume-container .resume-template-${templateId} a:visited,
+    .resume-container a:visited,
     .resume-template-${templateId} a:visited {
       color: ${styles.colors.primary.css} !important;
     }
@@ -190,7 +198,9 @@ export const generateUnifiedCSS = (templateId: string): string => {
       cursor: text;
     }
     
-    /* Override cursor for links */
+    /* Override cursor for links with maximum specificity */
+    .resume-container .resume-template-${templateId} a,
+    .resume-container a,
     .resume-template-${templateId} a {
       cursor: pointer !important;
     }
