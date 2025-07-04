@@ -163,19 +163,21 @@ export const generateUnifiedCSS = (templateId: string): string => {
     
     /* URL and link styling */
     .resume-template-${templateId} a {
-      color: ${styles.colors.primary.css};
-      text-decoration: underline;
+      color: ${styles.colors.primary.css} !important;
+      text-decoration: underline !important;
       font-weight: 500;
       transition: color 0.2s ease;
+      cursor: pointer !important;
+      pointer-events: auto !important;
     }
     
     .resume-template-${templateId} a:hover {
-      color: ${styles.colors.secondary.css};
-      text-decoration: underline;
+      color: ${styles.colors.secondary.css} !important;
+      text-decoration: underline !important;
     }
     
     .resume-template-${templateId} a:visited {
-      color: ${styles.colors.primary.css};
+      color: ${styles.colors.primary.css} !important;
     }
     
     /* Editing-specific styles for better UX */
@@ -186,6 +188,11 @@ export const generateUnifiedCSS = (templateId: string): string => {
     
     .resume-container * {
       cursor: text;
+    }
+    
+    /* Override cursor for links */
+    .resume-template-${templateId} a {
+      cursor: pointer !important;
     }
     
     .resume-container:hover h1,

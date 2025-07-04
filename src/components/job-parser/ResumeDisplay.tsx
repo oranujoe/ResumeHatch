@@ -121,6 +121,7 @@ const ResumeDisplay: React.FC<ResumeDisplayProps> = ({
           onBeforeInput={handleBeforeInput}
           onInput={handleInput}
           onKeyDown={handleKeyDown}
+          onFocus={() => console.log('Resume focused, content:', elementRef.current?.innerHTML.substring(0, 300))}
           style={{ userSelect: 'text' }}
         />
       </GlassCard>

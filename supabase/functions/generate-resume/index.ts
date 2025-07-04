@@ -119,6 +119,7 @@ async function fetchUserProfile(userId: string): Promise<UserProfileData | null>
 
     console.log('Final profile data structure:', {
       name: finalProfileData.profile?.full_name,
+      email: finalProfileData.profiles?.email,
       linkedin: finalProfileData.profile?.linkedin_url,
       phone: finalProfileData.profile?.phone,
       location: finalProfileData.profile?.location
@@ -209,7 +210,13 @@ serve(async (req) => {
     }
 
     const rawResume = data.candidates[0].content.parts[0].text;
+    console.log('=== AI GENERATED RESUME DEBUG ===');
+    console.log('Raw AI response:', rawResume.substring(0, 500) + '...');
+    console.log('Looking for links in AI response:', rawResume.match(/<a[^>]*>.*?<\/a>/gi));
+    
     const cleanedResume = sanitizeResumeContent(rawResume);
+    console.log('After sanitization:', cleanedResume.substring(0, 500) + '...');
+    console.log('Links after sanitization:', cleanedResume.match(/<a[^>]*>.*?<\/a>/gi));
     
     console.log(`Resume generated successfully with ${templateId} tone and user profile data for ${userProfileData.profile?.full_name || 'user'} with LinkedIn: ${userProfileData.profile?.linkedin_url || 'none'}`);
 
