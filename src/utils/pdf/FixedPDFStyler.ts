@@ -1,16 +1,19 @@
 import jsPDF from 'jspdf';
 import { resumeTemplates, ResumeTemplate } from '@/components/job-parser/ResumeTemplates';
 import { PDFSection, PDFDimensions, PDFSpacing } from './types';
+import { getUnifiedTemplateStyles, UnifiedTemplateStyles } from './unifiedStyling';
 
 export class FixedPDFStyler {
   private doc: jsPDF;
   private template: ResumeTemplate;
+  private unifiedStyles: UnifiedTemplateStyles;
   private dimensions: PDFDimensions;
   private spacing: PDFSpacing;
   
   constructor(doc: jsPDF, templateId: string) {
     this.doc = doc;
     this.template = resumeTemplates.find(t => t.id === templateId) || resumeTemplates[0];
+    this.unifiedStyles = getUnifiedTemplateStyles(templateId);
     
     this.dimensions = {
       pageWidth: doc.internal.pageSize.getWidth(),
@@ -19,11 +22,11 @@ export class FixedPDFStyler {
       maxWidth: doc.internal.pageSize.getWidth() - 80
     };
     
-    // Improved spacing calculations to match HTML rendering
+    // Use unified spacing calculations to match HTML rendering exactly
     this.spacing = {
-      lineHeight: this.template.pdfStyles.bodyFontSize * 1.4, // More accurate line height
-      headerHeight: this.template.pdfStyles.headerFontSize * 1.3,
-      subHeaderHeight: this.template.pdfStyles.sectionTitleFontSize * 1.3
+      lineHeight: this.unifiedStyles.typography.bodyFontSize * this.unifiedStyles.typography.lineHeight,
+      headerHeight: this.unifiedStyles.typography.headerFontSize * 1.2,
+      subHeaderHeight: this.unifiedStyles.typography.sectionTitleFontSize * 1.2
     };
     
     // Set default font with better kerning
@@ -33,9 +36,9 @@ export class FixedPDFStyler {
   }
   
   public setTemplateColor(colorType: 'primary' | 'secondary' | 'text'): void {
-    const color = colorType === 'primary' ? this.template.pdfStyles.primaryColor : 
-                 colorType === 'secondary' ? this.template.pdfStyles.secondaryColor : 
-                 this.template.pdfStyles.textColor;
+    const color = colorType === 'primary' ? this.unifiedStyles.colors.primary.rgb : 
+                 colorType === 'secondary' ? this.unifiedStyles.colors.secondary.rgb : 
+                 this.unifiedStyles.colors.text.rgb;
     this.doc.setTextColor(color[0], color[1], color[2]);
   }
   
@@ -56,26 +59,26 @@ export class FixedPDFStyler {
   }
   
   public applyHeaderStyle(section: PDFSection, yPosition: number): number {
-    const pdfStyles = this.template.pdfStyles;
     const isMainHeader = section.level === 1;
-    const headerFontSize = isMainHeader ? pdfStyles.headerFontSize : pdfStyles.sectionTitleFontSize;
+    const headerFontSize = isMainHeader ? this.unifiedStyles.typography.headerFontSize : this.unifiedStyles.typography.sectionTitleFontSize;
     
-    // Consistent spacing before headers
-    const topSpacing = isMainHeader ? 15 : 10;
+    // Use unified spacing values
+    const topSpacing = isMainHeader ? this.unifiedStyles.spacing.sectionMarginBottom : this.unifiedStyles.spacing.titleMarginBottom;
     yPosition += topSpacing;
     
     yPosition = this.checkNewPage(this.spacing.headerHeight + 15, yPosition);
     
     this.doc.setFontSize(headerFontSize);
     this.doc.setFont('helvetica', 'bold');
-    this.doc.setCharSpace(isMainHeader ? 0.02 : 0.01); // Slightly more spacing for headers
+    this.doc.setCharSpace(isMainHeader ? 0.02 : 0.01);
     
     if (isMainHeader) {
       this.setTemplateColor('primary');
       
-      // Remove background for creative template but keep it for others
-      if (pdfStyles.headerStyle === 'background' && this.template.id !== 'creative') {
-        this.doc.setFillColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
+      // Apply unified header styles
+      if (this.unifiedStyles.styles.headerStyle === 'background') {
+        const primaryColor = this.unifiedStyles.colors.primary.rgb;
+        this.doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
         this.doc.rect(this.dimensions.margin, yPosition - 8, this.dimensions.maxWidth, headerFontSize + 12, 'F');
         this.doc.setTextColor(255, 255, 255);
       }
@@ -84,21 +87,23 @@ export class FixedPDFStyler {
     }
     
     this.doc.text(section.content, this.dimensions.margin, yPosition);
-    yPosition += Math.ceil(headerFontSize * 0.6); // Reduced from 0.8 to bring underline closer
+    yPosition += Math.ceil(headerFontSize * 0.6);
     
-    // Add underlines with tighter spacing and better bottom margin
-    if (isMainHeader && pdfStyles.headerStyle === 'underline') {
-      this.doc.setDrawColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
-      this.doc.setLineWidth(2); // Keep main header line width the same
-      this.doc.line(this.dimensions.margin, yPosition + 1, this.dimensions.margin + this.dimensions.maxWidth, yPosition + 1); // Reduced from +2 to +1
-      yPosition += 18; // Increased from 16 to 18 for slightly more space below the line
-    } else if (!isMainHeader && pdfStyles.sectionTitleStyle === 'underline') {
-      this.doc.setDrawColor(pdfStyles.secondaryColor[0], pdfStyles.secondaryColor[1], pdfStyles.secondaryColor[2]);
-      this.doc.setLineWidth(2); // Increased from 1 to 2 for thicker sub-section lines
-      this.doc.line(this.dimensions.margin, yPosition + 1, this.dimensions.margin + this.dimensions.maxWidth, yPosition + 1); // Reduced from +2 to +1
-      yPosition += 14; // Increased from 12 to 14 for slightly more space below the line
+    // Apply unified styling patterns
+    if (isMainHeader && this.unifiedStyles.styles.headerStyle === 'underline') {
+      const primaryColor = this.unifiedStyles.colors.primary.rgb;
+      this.doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+      this.doc.setLineWidth(2);
+      this.doc.line(this.dimensions.margin, yPosition + 1, this.dimensions.margin + this.dimensions.maxWidth, yPosition + 1);
+      yPosition += this.unifiedStyles.spacing.titleMarginBottom + 6;
+    } else if (!isMainHeader && this.unifiedStyles.styles.sectionTitleStyle === 'underline') {
+      const secondaryColor = this.unifiedStyles.colors.secondary.rgb;
+      this.doc.setDrawColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
+      this.doc.setLineWidth(2);
+      this.doc.line(this.dimensions.margin, yPosition + 1, this.dimensions.margin + this.dimensions.maxWidth, yPosition + 1);
+      yPosition += this.unifiedStyles.spacing.titleMarginBottom + 2;
     } else {
-      yPosition += 6;
+      yPosition += this.unifiedStyles.spacing.titleMarginBottom;
     }
     
     // Reset character spacing
@@ -109,36 +114,36 @@ export class FixedPDFStyler {
   public applyContactStyle(section: PDFSection, yPosition: number): number {
     yPosition = this.checkNewPage(25, yPosition);
     
-    this.doc.setFontSize(this.template.pdfStyles.bodyFontSize);
+    this.doc.setFontSize(this.unifiedStyles.typography.bodyFontSize);
     this.doc.setFont('helvetica', 'normal');
     this.doc.setCharSpace(0.005); // Tighter spacing for contact info
     this.setTemplateColor('text');
     
-    const contactLines = this.splitTextToLines(section.content, this.dimensions.maxWidth, this.template.pdfStyles.bodyFontSize);
+    const contactLines = this.splitTextToLines(section.content, this.dimensions.maxWidth, this.unifiedStyles.typography.bodyFontSize);
     
     contactLines.forEach((line, index) => {
       this.doc.text(line, this.dimensions.margin, yPosition + (index * this.spacing.lineHeight));
     });
     
     this.doc.setCharSpace(0.01); // Reset
-    return yPosition + (contactLines.length * this.spacing.lineHeight) + 10;
+    return yPosition + (contactLines.length * this.spacing.lineHeight) + this.unifiedStyles.spacing.contentMarginBottom;
   }
   
   public applySubheaderStyle(section: PDFSection, yPosition: number): number {
-    yPosition += 8; // Consistent top spacing
+    yPosition += this.unifiedStyles.spacing.contentMarginBottom;
     yPosition = this.checkNewPage(this.spacing.subHeaderHeight + 12, yPosition);
     
-    this.doc.setFontSize(this.template.pdfStyles.bodyFontSize + 2);
+    this.doc.setFontSize(this.unifiedStyles.typography.bodyFontSize + 2);
     this.doc.setFont('helvetica', 'bold');
     this.doc.setCharSpace(0.01);
     this.setTemplateColor('primary');
     
     this.doc.text(section.content, this.dimensions.margin, yPosition);
-    return yPosition + this.spacing.subHeaderHeight + 6;
+    return yPosition + this.spacing.subHeaderHeight + this.unifiedStyles.spacing.contentMarginBottom;
   }
   
   public applyTextStyle(section: PDFSection, yPosition: number): number {
-    const fontSize = this.template.pdfStyles.bodyFontSize;
+    const fontSize = this.unifiedStyles.typography.bodyFontSize;
     const textLines = this.splitTextToLines(section.content, this.dimensions.maxWidth, fontSize);
     const textBlockHeight = textLines.length * this.spacing.lineHeight;
     
@@ -153,11 +158,11 @@ export class FixedPDFStyler {
       this.doc.text(line, this.dimensions.margin, yPosition + (index * this.spacing.lineHeight));
     });
     
-    return yPosition + textBlockHeight + 8;
+    return yPosition + textBlockHeight + this.unifiedStyles.spacing.contentMarginBottom;
   }
   
   public applyListStyle(section: PDFSection, yPosition: number): number {
-    const fontSize = this.template.pdfStyles.bodyFontSize;
+    const fontSize = this.unifiedStyles.typography.bodyFontSize;
     const bulletText = `• ${section.content}`;
     
     // Better list text wrapping
@@ -177,7 +182,7 @@ export class FixedPDFStyler {
       this.doc.text(line, xPosition, yPosition + (index * this.spacing.lineHeight));
     });
     
-    return yPosition + listBlockHeight + 6;
+    return yPosition + listBlockHeight + this.unifiedStyles.spacing.listItemSpacing;
   }
   
   public addFooter(): void {
