@@ -42,13 +42,13 @@ const convertPlainTextUrlsToLinks = (content: string): string => {
   // LinkedIn URL pattern (not already in <a> tags)
   processedContent = processedContent.replace(
     /(?<!href=["'])(https?:\/\/(?:www\.)?linkedin\.com\/in\/[^\s<>"']+)(?![^<]*<\/a>)/gi,
-    '<a href="$1">$1</a>'
+    '<a href="$1">LinkedIn</a>'
   );
   
   // Portfolio/website URL pattern (not already in <a> tags)  
   processedContent = processedContent.replace(
     /(?<!href=["'])(https?:\/\/(?:www\.)?(?!linkedin\.com)[^\s<>"']+\.[a-z]{2,})(?![^<]*<\/a>)/gi,
-    '<a href="$1">$1</a>'
+    '<a href="$1">Portfolio</a>'
   );
   
   // Email pattern (not already in <a> tags)

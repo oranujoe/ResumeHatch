@@ -126,10 +126,10 @@ IMPORTANT INSTRUCTIONS:
 9. Keep the resume to 1-2 pages maximum
 10. Use consistent formatting throughout
 11. CRITICAL: Always include the LinkedIn URL in the contact information section at the top of the resume
-12. CRITICAL: Format ALL URLs as clickable HTML links using proper <a> tags. For example:
-    - LinkedIn: <a href="${contactInfo.linkedin}">${contactInfo.linkedin}</a>
-    - Portfolio: <a href="${contactInfo.portfolio}">${contactInfo.portfolio}</a>
-    - Email: <a href="mailto:user@email.com">user@email.com</a>
+12. CRITICAL: Format ALL URLs as clickable HTML links using proper <a> tags with clean, user-friendly text. For example:
+     - LinkedIn: <a href="${contactInfo.linkedin}">LinkedIn</a>
+     - Portfolio: <a href="${contactInfo.portfolio}">Portfolio</a>
+     - Email: <a href="mailto:user@email.com">user@email.com</a>
 13. NEVER include URLs as plain text - they MUST be wrapped in <a> tags to be clickable
 14. Ensure all contact information URLs are properly formatted as clickable links in the HTML output
 
