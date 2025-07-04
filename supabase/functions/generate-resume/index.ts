@@ -33,6 +33,7 @@ const validateProficiencyLevel = (level: string): 'beginner' | 'intermediate' | 
 
 export interface UserProfileData {
   profile: any;
+  profiles: any; // Add profiles table data for email access
   workExperiences: any[];
   education: any[];
   skills: any[];
@@ -108,6 +109,7 @@ async function fetchUserProfile(userId: string): Promise<UserProfileData | null>
 
     const finalProfileData = {
       profile: mergedProfile,
+      profiles: profilesResult.data, // Add profiles data for email access
       workExperiences: transformedWorkExperiences,
       education: educationResult.data || [],
       skills: transformedSkills,

@@ -40,6 +40,7 @@ export function buildToneSpecificPrompt(
 
   // Contact information - Fix LinkedIn URL extraction
   const contactInfo = {
+    email: userProfileData.profiles?.email || '[Email Address]',
     phone: userProfileData.profile?.phone || '[Phone Number]',
     location: userProfileData.profile?.location || '[Location]',
     linkedin: userProfileData.profile?.linkedin_url || '[LinkedIn URL]',
@@ -85,6 +86,7 @@ ${jobDescription}
 
 USER'S ACTUAL INFORMATION TO USE:
 Name: ${userName}
+Email: ${contactInfo.email}
 Phone: ${contactInfo.phone}
 Location: ${contactInfo.location}
 LinkedIn: ${contactInfo.linkedin}
@@ -129,7 +131,7 @@ IMPORTANT INSTRUCTIONS:
 12. CRITICAL: Format ALL URLs as clickable HTML links using proper <a> tags with clean, user-friendly text. For example:
      - LinkedIn: <a href="${contactInfo.linkedin}">LinkedIn</a>
      - Portfolio: <a href="${contactInfo.portfolio}">Portfolio</a>
-     - Email: <a href="mailto:user@email.com">user@email.com</a>
+     - Email: <a href="mailto:${contactInfo.email}">${contactInfo.email}</a>
 13. NEVER include URLs as plain text - they MUST be wrapped in <a> tags to be clickable
 14. Ensure all contact information URLs are properly formatted as clickable links in the HTML output
 
