@@ -329,33 +329,53 @@ serve(async (req) => {
 
     console.log('=== CALLING GEMINI API ===');
     console.log(`Using template: ${templateId}`);
+    console.log(`Gemini API Key validation: length=${geminiApiKey.length}, starts with=${geminiApiKey.substring(0, 10)}...`);
+    
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`;
+    console.log('Gemini API URL (without key):', geminiUrl.replace(/key=.*/, 'key=***'));
+    
+    const requestPayload = {
+      contents: [{
+        parts: [{
+          text: prompt
+        }]
+      }],
+      generationConfig: {
+        temperature: 0.7,
+        topK: 40,
+        topP: 0.95,
+        maxOutputTokens: 2048,
+      }
+    };
+    
+    console.log('Request payload structure:', {
+      hasContents: !!requestPayload.contents,
+      contentsLength: requestPayload.contents.length,
+      hasGenerationConfig: !!requestPayload.generationConfig,
+      promptLength: requestPayload.contents[0].parts[0].text.length
+    });
     
     let geminiResponse;
     try {
-      geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+      console.log('Making fetch request to Gemini API...');
+      geminiResponse = await fetch(geminiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: prompt
-            }]
-          }],
-          generationConfig: {
-            temperature: 0.7,
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 2048,
-          }
-        }),
+        body: JSON.stringify(requestPayload),
       });
       
       console.log('Gemini API response status:', geminiResponse.status);
+      console.log('Gemini API response statusText:', geminiResponse.statusText);
       console.log('Gemini API response headers:', Object.fromEntries(geminiResponse.headers.entries()));
     } catch (fetchError) {
       console.error('Failed to call Gemini API:', fetchError);
+      console.error('Fetch error details:', {
+        name: fetchError.name,
+        message: fetchError.message,
+        stack: fetchError.stack
+      });
       return new Response(JSON.stringify({ error: 'Failed to connect to AI service' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -363,9 +383,25 @@ serve(async (req) => {
     }
 
     if (!geminiResponse.ok) {
-      const errorText = await geminiResponse.text();
-      console.error('Gemini API error response:', errorText);
-      return new Response(JSON.stringify({ error: `AI service error: ${geminiResponse.status}` }), {
+      let errorText;
+      try {
+        errorText = await geminiResponse.text();
+        console.error('Gemini API error response:', errorText);
+      } catch (readError) {
+        console.error('Failed to read Gemini error response:', readError);
+        errorText = 'Could not read error response';
+      }
+      
+      console.error('Gemini API request failed:', {
+        status: geminiResponse.status,
+        statusText: geminiResponse.statusText,
+        errorText: errorText
+      });
+      
+      return new Response(JSON.stringify({ 
+        error: `AI service error: ${geminiResponse.status} - ${geminiResponse.statusText}`,
+        details: errorText 
+      }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -376,9 +412,25 @@ serve(async (req) => {
     try {
       geminiData = await geminiResponse.json();
       console.log('Gemini response parsed successfully');
+      console.log('Response structure:', {
+        hasCandidates: !!geminiData.candidates,
+        candidatesLength: geminiData.candidates?.length || 0,
+        hasError: !!geminiData.error
+      });
     } catch (parseError) {
       console.error('Failed to parse Gemini response:', parseError);
       return new Response(JSON.stringify({ error: 'Invalid response from AI service' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (geminiData.error) {
+      console.error('Gemini API returned error:', geminiData.error);
+      return new Response(JSON.stringify({ 
+        error: 'AI service error', 
+        details: geminiData.error 
+      }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
