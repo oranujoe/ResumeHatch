@@ -47,9 +47,13 @@ export const generatePDFFromSections = (
         yPosition = styler.applyTextStyle(section, yPosition);
         break;
         
-      case 'list':
-        yPosition = styler.applyListStyle(section, yPosition);
-        break;
+        case 'list':
+          yPosition = styler.applyListStyle(section, yPosition);
+          break;
+          
+        case 'link':
+          yPosition = styler.applyLinkStyle(section, yPosition);
+          break;
         
       default:
         console.warn('Unknown section type:', section.type);

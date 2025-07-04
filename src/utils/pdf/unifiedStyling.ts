@@ -161,6 +161,23 @@ export const generateUnifiedCSS = (templateId: string): string => {
       margin-bottom: ${styles.spacing.sectionMarginBottom}px;
     }
     
+    /* URL and link styling */
+    .resume-template-${templateId} a {
+      color: ${styles.colors.primary.css};
+      text-decoration: underline;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    
+    .resume-template-${templateId} a:hover {
+      color: ${styles.colors.secondary.css};
+      text-decoration: underline;
+    }
+    
+    .resume-template-${templateId} a:visited {
+      color: ${styles.colors.primary.css};
+    }
+    
     /* Editing-specific styles for better UX */
     .resume-container:focus {
       outline: 2px solid ${styles.colors.primary.css};

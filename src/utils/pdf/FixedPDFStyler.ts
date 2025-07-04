@@ -119,14 +119,70 @@ export class FixedPDFStyler {
     this.doc.setCharSpace(0.005); // Tighter spacing for contact info
     this.setTemplateColor('text');
     
-    const contactLines = this.splitTextToLines(section.content, this.dimensions.maxWidth, this.unifiedStyles.typography.bodyFontSize);
-    
-    contactLines.forEach((line, index) => {
-      this.doc.text(line, this.dimensions.margin, yPosition + (index * this.spacing.lineHeight));
-    });
+    // Handle contact info with potential URLs
+    if (section.htmlContent) {
+      yPosition = this.renderContactWithLinks(section.htmlContent, yPosition);
+    } else {
+      const contactLines = this.splitTextToLines(section.content, this.dimensions.maxWidth, this.unifiedStyles.typography.bodyFontSize);
+      
+      contactLines.forEach((line, index) => {
+        this.doc.text(line, this.dimensions.margin, yPosition + (index * this.spacing.lineHeight));
+      });
+      
+      yPosition += contactLines.length * this.spacing.lineHeight;
+    }
     
     this.doc.setCharSpace(0.01); // Reset
-    return yPosition + (contactLines.length * this.spacing.lineHeight) + this.unifiedStyles.spacing.contentMarginBottom;
+    return yPosition + this.unifiedStyles.spacing.contentMarginBottom;
+  }
+  
+  private renderContactWithLinks(htmlContent: string, yPosition: number): number {
+    // Parse HTML to extract text and links
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+    
+    let currentY = yPosition;
+    
+    // Process each text node and link
+    this.processContactNodes(tempDiv, currentY);
+    
+    return currentY + this.spacing.lineHeight;
+  }
+  
+  private processContactNodes(element: Element, yPosition: number): number {
+    let currentY = yPosition;
+    let currentX = this.dimensions.margin;
+    
+    for (const node of element.childNodes) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const text = node.textContent?.trim();
+        if (text) {
+          this.doc.text(text, currentX, currentY);
+          currentX += this.doc.getTextWidth(text) + 5;
+        }
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        const el = node as Element;
+        if (el.tagName.toLowerCase() === 'a') {
+          const linkText = el.textContent?.trim() || '';
+          const href = el.getAttribute('href') || '';
+          
+          // Style link text differently
+          this.setTemplateColor('primary');
+          this.doc.setFont('helvetica', 'normal');
+          
+          // Add clickable link to PDF
+          const linkWidth = this.doc.getTextWidth(linkText);
+          this.doc.textWithLink(linkText, currentX, currentY, { url: href });
+          
+          currentX += linkWidth + 5;
+          
+          // Reset styling
+          this.setTemplateColor('text');
+        }
+      }
+    }
+    
+    return currentY;
   }
   
   public applySubheaderStyle(section: PDFSection, yPosition: number): number {
@@ -183,6 +239,23 @@ export class FixedPDFStyler {
     });
     
     return yPosition + listBlockHeight + this.unifiedStyles.spacing.listItemSpacing;
+  }
+  
+  public applyLinkStyle(section: PDFSection, yPosition: number): number {
+    const fontSize = this.unifiedStyles.typography.bodyFontSize;
+    
+    yPosition = this.checkNewPage(this.spacing.lineHeight + 10, yPosition);
+    
+    this.doc.setFontSize(fontSize);
+    this.doc.setFont('helvetica', 'normal');
+    this.doc.setCharSpace(0.005);
+    this.setTemplateColor('primary');
+    
+    // Add clickable link to PDF
+    const linkWidth = this.doc.getTextWidth(section.content);
+    this.doc.textWithLink(section.content, this.dimensions.margin, yPosition, { url: section.url || section.content });
+    
+    return yPosition + this.spacing.lineHeight + this.unifiedStyles.spacing.contentMarginBottom;
   }
   
   public addFooter(): void {

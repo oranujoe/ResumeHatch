@@ -71,12 +71,22 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
       case 'p':
         if (textContent.length > 5) {
           if (isContactInfo(textContent)) {
-            sections.push({ type: 'contact', content: textContent });
+            // Preserve links in contact info
+            const htmlContent = element.innerHTML;
+            sections.push({ type: 'contact', content: textContent, htmlContent });
           } else if (isSectionHeader(element)) {
             sections.push({ type: 'header', content: textContent, level: 2 });
           } else {
             sections.push({ type: 'text', content: textContent });
           }
+        }
+        break;
+        
+      case 'a':
+        // Handle standalone links
+        if (textContent.length > 3) {
+          const href = element.getAttribute('href') || '';
+          sections.push({ type: 'link', content: textContent, url: href });
         }
         break;
         

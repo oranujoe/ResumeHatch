@@ -13,6 +13,9 @@ export const cleanResumeContent = (htmlContent: string): string => {
   cleanContent = cleanContent.replace(/^```html\s*/i, '');
   cleanContent = cleanContent.replace(/\s*```$/i, '');
   
+  // Convert plain text URLs to clickable links (safety net for AI-generated content)
+  cleanContent = convertPlainTextUrlsToLinks(cleanContent);
+  
   // Clean up excessive whitespace
   cleanContent = cleanContent.replace(/\n\s*\n\s*\n/g, '\n\n');
   cleanContent = cleanContent.trim();
@@ -29,6 +32,32 @@ export const cleanResumeContent = (htmlContent: string): string => {
   }
   
   return cleanContent;
+};
+
+// Convert plain text URLs to clickable links
+const convertPlainTextUrlsToLinks = (content: string): string => {
+  // Don't process URLs that are already in <a> tags
+  let processedContent = content;
+  
+  // LinkedIn URL pattern (not already in <a> tags)
+  processedContent = processedContent.replace(
+    /(?<!href=["'])(https?:\/\/(?:www\.)?linkedin\.com\/in\/[^\s<>"']+)(?![^<]*<\/a>)/gi,
+    '<a href="$1">$1</a>'
+  );
+  
+  // Portfolio/website URL pattern (not already in <a> tags)  
+  processedContent = processedContent.replace(
+    /(?<!href=["'])(https?:\/\/(?:www\.)?(?!linkedin\.com)[^\s<>"']+\.[a-z]{2,})(?![^<]*<\/a>)/gi,
+    '<a href="$1">$1</a>'
+  );
+  
+  // Email pattern (not already in <a> tags)
+  processedContent = processedContent.replace(
+    /(?<!href=["'])([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(?![^<]*<\/a>)/gi,
+    '<a href="mailto:$1">$1</a>'
+  );
+  
+  return processedContent;
 };
 
 // Validate resume content structure
