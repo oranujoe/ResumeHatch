@@ -10,18 +10,18 @@ console.log('=== EDGE FUNCTION STARTUP ===');
 console.log('Function initialized successfully');
 
 // Environment variables check with detailed logging
-const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
+const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL');
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
 console.log('=== ENVIRONMENT VARIABLES CHECK ===');
-console.log('GEMINI_API_KEY exists:', !!geminiApiKey);
+console.log('OPENAI_API_KEY exists:', !!openaiApiKey);
 console.log('SUPABASE_URL exists:', !!supabaseUrl);
 console.log('SUPABASE_SERVICE_ROLE_KEY exists:', !!supabaseServiceKey);
 
-if (geminiApiKey) {
-  console.log('GEMINI_API_KEY length:', geminiApiKey.length);
-  console.log('GEMINI_API_KEY starts with:', geminiApiKey.substring(0, 10) + '...');
+if (openaiApiKey) {
+  console.log('OPENAI_API_KEY length:', openaiApiKey.length);
+  console.log('OPENAI_API_KEY starts with:', openaiApiKey.substring(0, 10) + '...');
 }
 
 if (supabaseUrl) {
@@ -236,9 +236,9 @@ serve(async (req) => {
   try {
     // Validate environment variables before processing
     console.log('=== ENVIRONMENT VALIDATION ===');
-    if (!geminiApiKey) {
-      console.error('GEMINI_API_KEY is missing');
-      return new Response(JSON.stringify({ error: 'Server configuration error: GEMINI_API_KEY not configured' }), {
+    if (!openaiApiKey) {
+      console.error('OPENAI_API_KEY is missing');
+      return new Response(JSON.stringify({ error: 'Server configuration error: OPENAI_API_KEY not configured' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -327,50 +327,54 @@ serve(async (req) => {
       });
     }
 
-    console.log('=== CALLING GEMINI API ===');
+    console.log('=== CALLING OPENAI API ===');
     console.log(`Using template: ${templateId}`);
-    console.log(`Gemini API Key validation: length=${geminiApiKey.length}, starts with=${geminiApiKey.substring(0, 10)}...`);
+    console.log(`OpenAI API Key validation: length=${openaiApiKey.length}, starts with=${openaiApiKey.substring(0, 10)}...`);
     
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`;
-    console.log('Gemini API URL (without key):', geminiUrl.replace(/key=.*/, 'key=***'));
+    const openaiUrl = 'https://api.openai.com/v1/chat/completions';
+    console.log('OpenAI API URL:', openaiUrl);
     
     const requestPayload = {
-      contents: [{
-        parts: [{
-          text: prompt
-        }]
-      }],
-      generationConfig: {
-        temperature: 0.7,
-        topK: 40,
-        topP: 0.95,
-        maxOutputTokens: 2048,
-      }
+      model: 'gpt-4o-mini',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a professional resume writer who creates compelling, tailored resumes based on job descriptions and user profile data. Always return the resume in clean HTML format.'
+        },
+        {
+          role: 'user',
+          content: prompt
+        }
+      ],
+      temperature: 0.7,
+      max_tokens: 2048,
     };
     
     console.log('Request payload structure:', {
-      hasContents: !!requestPayload.contents,
-      contentsLength: requestPayload.contents.length,
-      hasGenerationConfig: !!requestPayload.generationConfig,
-      promptLength: requestPayload.contents[0].parts[0].text.length
+      model: requestPayload.model,
+      messagesLength: requestPayload.messages.length,
+      temperature: requestPayload.temperature,
+      max_tokens: requestPayload.max_tokens,
+      promptLength: prompt.length
     });
     
-    let geminiResponse;
+    let openaiResponse;
     try {
-      console.log('Making fetch request to Gemini API...');
-      geminiResponse = await fetch(geminiUrl, {
+      console.log('Making fetch request to OpenAI API...');
+      openaiResponse = await fetch(openaiUrl, {
         method: 'POST',
         headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestPayload),
       });
       
-      console.log('Gemini API response status:', geminiResponse.status);
-      console.log('Gemini API response statusText:', geminiResponse.statusText);
-      console.log('Gemini API response headers:', Object.fromEntries(geminiResponse.headers.entries()));
+      console.log('OpenAI API response status:', openaiResponse.status);
+      console.log('OpenAI API response statusText:', openaiResponse.statusText);
+      console.log('OpenAI API response headers:', Object.fromEntries(openaiResponse.headers.entries()));
     } catch (fetchError) {
-      console.error('Failed to call Gemini API:', fetchError);
+      console.error('Failed to call OpenAI API:', fetchError);
       console.error('Fetch error details:', {
         name: fetchError.name,
         message: fetchError.message,
@@ -382,24 +386,24 @@ serve(async (req) => {
       });
     }
 
-    if (!geminiResponse.ok) {
+    if (!openaiResponse.ok) {
       let errorText;
       try {
-        errorText = await geminiResponse.text();
-        console.error('Gemini API error response:', errorText);
+        errorText = await openaiResponse.text();
+        console.error('OpenAI API error response:', errorText);
       } catch (readError) {
-        console.error('Failed to read Gemini error response:', readError);
+        console.error('Failed to read OpenAI error response:', readError);
         errorText = 'Could not read error response';
       }
       
-      console.error('Gemini API request failed:', {
-        status: geminiResponse.status,
-        statusText: geminiResponse.statusText,
+      console.error('OpenAI API request failed:', {
+        status: openaiResponse.status,
+        statusText: openaiResponse.statusText,
         errorText: errorText
       });
       
       return new Response(JSON.stringify({ 
-        error: `AI service error: ${geminiResponse.status} - ${geminiResponse.statusText}`,
+        error: `AI service error: ${openaiResponse.status} - ${openaiResponse.statusText}`,
         details: errorText 
       }), {
         status: 500,
@@ -407,44 +411,44 @@ serve(async (req) => {
       });
     }
 
-    console.log('=== PROCESSING GEMINI RESPONSE ===');
-    let geminiData;
+    console.log('=== PROCESSING OPENAI RESPONSE ===');
+    let openaiData;
     try {
-      geminiData = await geminiResponse.json();
-      console.log('Gemini response parsed successfully');
+      openaiData = await openaiResponse.json();
+      console.log('OpenAI response parsed successfully');
       console.log('Response structure:', {
-        hasCandidates: !!geminiData.candidates,
-        candidatesLength: geminiData.candidates?.length || 0,
-        hasError: !!geminiData.error
+        hasChoices: !!openaiData.choices,
+        choicesLength: openaiData.choices?.length || 0,
+        hasError: !!openaiData.error
       });
     } catch (parseError) {
-      console.error('Failed to parse Gemini response:', parseError);
+      console.error('Failed to parse OpenAI response:', parseError);
       return new Response(JSON.stringify({ error: 'Invalid response from AI service' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    if (geminiData.error) {
-      console.error('Gemini API returned error:', geminiData.error);
+    if (openaiData.error) {
+      console.error('OpenAI API returned error:', openaiData.error);
       return new Response(JSON.stringify({ 
         error: 'AI service error', 
-        details: geminiData.error 
+        details: openaiData.error 
       }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    if (!geminiData.candidates || geminiData.candidates.length === 0) {
-      console.error('No candidates in Gemini response:', geminiData);
+    if (!openaiData.choices || openaiData.choices.length === 0) {
+      console.error('No choices in OpenAI response:', openaiData);
       return new Response(JSON.stringify({ error: 'AI service did not generate content' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    const rawResume = geminiData.candidates[0].content.parts[0].text;
+    const rawResume = openaiData.choices[0].message.content;
     console.log('Raw resume generated, length:', rawResume.length);
     
     console.log('=== SANITIZING CONTENT ===');
@@ -460,7 +464,7 @@ serve(async (req) => {
     }
     
     console.log('=== SUCCESS ===');
-    console.log(`Resume generation completed successfully with ${templateId} template`);
+    console.log(`Resume generation completed successfully with ${templateId} template using OpenAI`);
 
     return new Response(JSON.stringify({ resume: cleanedResume }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
