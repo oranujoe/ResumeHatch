@@ -1,7 +1,7 @@
 
 import jsPDF from 'jspdf';
 import { PDFSection, PDFGenerationOptions } from './types';
-import { FixedPDFStyler } from './FixedPDFStyler';
+import { EnhancedPDFStyler } from './EnhancedPDFStyler';
 
 export const generatePDFFromSections = (
   sections: PDFSection[], 
@@ -17,7 +17,7 @@ export const generatePDFFromSections = (
     format: 'a4'
   });
   
-  const styler = new FixedPDFStyler(doc, templateId);
+  const styler = new EnhancedPDFStyler(doc, templateId);
   const dimensions = styler.getDimensions();
   
   let yPosition = dimensions.margin + 20; // Start with proper top margin
@@ -32,7 +32,7 @@ export const generatePDFFromSections = (
     
     switch (section.type) {
       case 'header':
-        yPosition = styler.applyHeaderStyle(section, yPosition);
+        yPosition = styler.applyEnhancedHeaderStyle(section, yPosition);
         break;
         
       case 'contact':
@@ -40,20 +40,20 @@ export const generatePDFFromSections = (
         break;
         
       case 'subheader':
-        yPosition = styler.applySubheaderStyle(section, yPosition);
+        yPosition = styler.applyEnhancedSectionTitleStyle(section, yPosition);
         break;
         
       case 'text':
         yPosition = styler.applyTextStyle(section, yPosition);
         break;
         
-        case 'list':
-          yPosition = styler.applyListStyle(section, yPosition);
-          break;
-          
-        case 'link':
-          yPosition = styler.applyLinkStyle(section, yPosition);
-          break;
+      case 'list':
+        yPosition = styler.applyEnhancedListStyle(section, yPosition);
+        break;
+        
+      case 'link':
+        yPosition = styler.applyLinkStyle(section, yPosition);
+        break;
         
       default:
         console.warn('Unknown section type:', section.type);
@@ -64,8 +64,8 @@ export const generatePDFFromSections = (
     console.log(`Section ${index + 1} processed, yPosition now:`, yPosition);
   });
   
-  // Add footer with template information
-  styler.addFooter();
+  // Add enhanced footer with template information
+  styler.addEnhancedFooter();
   
   console.log('PDF generation complete, saving as:', filename);
   
