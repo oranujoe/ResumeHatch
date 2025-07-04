@@ -1,3 +1,4 @@
+
 // Unified styling system for both HTML and PDF rendering
 // This ensures visual consistency between preview and export
 
@@ -161,10 +162,12 @@ export const generateUnifiedCSS = (templateId: string): string => {
       margin-bottom: ${styles.spacing.sectionMarginBottom}px;
     }
     
-    /* URL and link styling - Higher specificity to override template styles */
-    .resume-container .resume-template-${templateId} a,
+    /* Critical link styling with maximum specificity to ensure clickability */
     .resume-container a,
-    .resume-template-${templateId} a {
+    .resume-container .resume-template-${templateId} a,
+    .resume-template-${templateId} a,
+    div[contenteditable] a,
+    [contenteditable="true"] a {
       color: ${styles.colors.primary.css} !important;
       text-decoration: underline !important;
       font-weight: 500 !important;
@@ -173,36 +176,66 @@ export const generateUnifiedCSS = (templateId: string): string => {
       pointer-events: auto !important;
       border: none !important;
       background: transparent !important;
+      display: inline !important;
+      position: relative !important;
+      z-index: 10 !important;
     }
     
-    .resume-container .resume-template-${templateId} a:hover,
     .resume-container a:hover,
-    .resume-template-${templateId} a:hover {
+    .resume-container .resume-template-${templateId} a:hover,
+    .resume-template-${templateId} a:hover,
+    div[contenteditable] a:hover,
+    [contenteditable="true"] a:hover {
       color: ${styles.colors.secondary.css} !important;
       text-decoration: underline !important;
+      cursor: pointer !important;
     }
     
-    .resume-container .resume-template-${templateId} a:visited,
     .resume-container a:visited,
-    .resume-template-${templateId} a:visited {
+    .resume-container .resume-template-${templateId} a:visited,
+    .resume-template-${templateId} a:visited,
+    div[contenteditable] a:visited,
+    [contenteditable="true"] a:visited {
       color: ${styles.colors.primary.css} !important;
     }
     
-    /* Editing-specific styles for better UX */
-    .resume-container:focus {
-      outline: 2px solid ${styles.colors.primary.css};
-      outline-offset: 2px;
+    /* Ensure contenteditable doesn't interfere with link clicks */
+    .resume-container[contenteditable] {
+      cursor: auto;
     }
     
-    .resume-container * {
+    .resume-container[contenteditable] * {
       cursor: text;
     }
     
-    /* Override cursor for links with maximum specificity */
-    .resume-container .resume-template-${templateId} a,
-    .resume-container a,
-    .resume-template-${templateId} a {
+    /* Override cursor specifically for links with ultra-high specificity */
+    .resume-container[contenteditable] a,
+    .resume-container[contenteditable] .resume-template-${templateId} a,
+    .resume-container[contenteditable] a:hover,
+    .resume-container[contenteditable] a:active,
+    .resume-container[contenteditable] a:focus,
+    div[contenteditable="true"] a,
+    div[contenteditable="true"] a:hover,
+    div[contenteditable="true"] a:active,
+    div[contenteditable="true"] a:focus {
       cursor: pointer !important;
+      pointer-events: auto !important;
+      user-select: auto !important;
+    }
+    
+    /* Prevent contenteditable from capturing link events */
+    .resume-container a {
+      -webkit-user-drag: none !important;
+      -webkit-user-select: auto !important;
+      -moz-user-select: auto !important;
+      -ms-user-select: auto !important;
+      user-select: auto !important;
+    }
+    
+    /* Focus styles for better accessibility */
+    .resume-container:focus {
+      outline: 2px solid ${styles.colors.primary.css};
+      outline-offset: 2px;
     }
     
     .resume-container:hover h1,
@@ -212,6 +245,11 @@ export const generateUnifiedCSS = (templateId: string): string => {
     .resume-container:hover li {
       background-color: rgba(${styles.colors.primary.rgb[0]}, ${styles.colors.primary.rgb[1]}, ${styles.colors.primary.rgb[2]}, 0.05);
       border-radius: 2px;
+    }
+    
+    /* Ensure links don't get the hover background */
+    .resume-container:hover a {
+      background-color: transparent !important;
     }
     
     @media print {
