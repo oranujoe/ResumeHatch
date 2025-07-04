@@ -1,241 +1,212 @@
+
 import { PDFSection } from './types';
 
-export interface ParsedElement {
-  type: 'header' | 'subheader' | 'text' | 'list' | 'contact' | 'link';
-  content: string;
-  level?: number;
-  url?: string;
-  htmlContent?: string;
-  cssClasses?: string[];
-  visualCues?: {
-    hasBackground: boolean;
-    hasBorder: boolean;
-    isHighlighted: boolean;
-    colorScheme?: string;
-  };
-}
-
-export class EnhancedHTMLParser {
-  private templateId: string;
+export const parseHTMLToPDFSections = (htmlContent: string): PDFSection[] => {
+  console.log('Starting HTML parsing for PDF generation');
+  console.log('HTML content length:', htmlContent.length);
   
-  constructor(templateId: string = 'modern') {
-    this.templateId = templateId;
-  }
+  // Create a temporary container to parse HTML
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = htmlContent;
   
-  public parseHTMLToSections(htmlString: string): PDFSection[] {
-    // Clean and prepare HTML
-    const cleanedHTML = this.cleanHTML(htmlString);
-    
-    // Create temporary DOM element
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = cleanedHTML;
-    
-    const sections: PDFSection[] = [];
-    const elements = this.getAllTextElements(tempDiv);
-    
-    elements.forEach((element, index) => {
-      const parsedElement = this.parseElement(element);
-      if (parsedElement) {
-        sections.push(this.convertToSection(parsedElement));
-      }
-    });
-    
-    return sections.filter(section => section.content.trim().length > 0);
-  }
+  const sections: PDFSection[] = [];
+  let currentContactItems: string[] = [];
   
-  private cleanHTML(html: string): string {
-    return html
-      .replace(/\s+/g, ' ')
-      .replace(/&nbsp;/g, ' ')
-      .replace(/&amp;/g, '&')
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/&quot;/g, '"')
-      .replace(/<br\s*\/?>/gi, '\n')
-      .trim();
-  }
-  
-  private getAllTextElements(container: Element): Element[] {
-    const elements: Element[] = [];
-    const walker = document.createTreeWalker(
-      container,
-      NodeFilter.SHOW_ELEMENT,
-      {
-        acceptNode: (node) => {
-          const element = node as Element;
-          const tagName = element.tagName.toLowerCase();
-          
-          // Include headers, paragraphs, lists, and links
-          if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'li', 'div', 'span', 'a'].includes(tagName)) {
-            // Check if element has meaningful text content
-            const textContent = element.textContent?.trim();
-            if (textContent && textContent.length > 0) {
-              return NodeFilter.FILTER_ACCEPT;
-            }
-          }
-          return NodeFilter.FILTER_REJECT;
-        }
-      }
-    );
-    
-    let node;
-    while (node = walker.nextNode()) {
-      elements.push(node as Element);
+  // Helper function to flush contact items
+  const flushContactItems = () => {
+    if (currentContactItems.length > 0) {
+      // Combine all contact items into a single section
+      const contactContent = currentContactItems.join(' | ');
+      sections.push({
+        type: 'contact',
+        content: contactContent,
+        level: 1
+      });
+      currentContactItems = [];
     }
-    
-    return elements;
-  }
+  };
   
-  private parseElement(element: Element): ParsedElement | null {
+  // Helper function to extract text content and detect links
+  const extractTextAndLinks = (element: Element): { text: string; hasLinks: boolean; url?: string } => {
+    const links = element.querySelectorAll('a');
+    if (links.length > 0) {
+      const link = links[0];
+      return {
+        text: element.textContent?.trim() || '',
+        hasLinks: true,
+        url: link.getAttribute('href') || undefined
+      };
+    }
+    return {
+      text: element.textContent?.trim() || '',
+      hasLinks: false
+    };
+  };
+  
+  // Helper function to determine if text is contact information
+  const isContactInfo = (text: string): boolean => {
+    const contactPatterns = [
+      /@/,  // Email
+      /^\+?\d[\d\s\-\(\)]+$/,  // Phone
+      /linkedin\.com/i,  // LinkedIn
+      /github\.com/i,  // GitHub
+      /portfolio/i,  // Portfolio
+      /^https?:\/\//,  // URLs
+    ];
+    
+    return contactPatterns.some(pattern => pattern.test(text));
+  };
+  
+  // Process all elements
+  const processElement = (element: Element) => {
     const tagName = element.tagName.toLowerCase();
     const textContent = element.textContent?.trim() || '';
-    const classList = Array.from(element.classList);
-    const visualCues = this.extractVisualCues(element, classList);
     
-    if (!textContent) return null;
+    // Skip empty elements
+    if (!textContent) return;
     
-    // Parse headers
-    if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tagName)) {
+    // Handle headers
+    if (tagName.match(/^h[1-6]$/)) {
+      // Flush any pending contact items before processing header
+      flushContactItems();
+      
       const level = parseInt(tagName.charAt(1));
-      return {
-        type: level <= 2 ? 'header' : 'subheader',
-        content: textContent,
+      const { text, hasLinks, url } = extractTextAndLinks(element);
+      
+      sections.push({
+        type: 'header',
+        content: text,
         level: level,
-        cssClasses: classList,
-        visualCues
-      };
+        url: hasLinks ? url : undefined
+      });
+      return;
     }
     
-    // Parse lists
+    // Handle paragraphs and divs
+    if (tagName === 'p' || tagName === 'div') {
+      const { text, hasLinks, url } = extractTextAndLinks(element);
+      
+      // Check if this is contact information
+      if (isContactInfo(text)) {
+        currentContactItems.push(text);
+        return;
+      }
+      
+      // If not contact info, flush any pending contact items first
+      flushContactItems();
+      
+      if (hasLinks) {
+        sections.push({
+          type: 'link',
+          content: text,
+          level: 1,
+          url: url
+        });
+      } else {
+        sections.push({
+          type: 'text',
+          content: text,
+          level: 1
+        });
+      }
+      return;
+    }
+    
+    // Handle lists
+    if (tagName === 'ul' || tagName === 'ol') {
+      flushContactItems();
+      
+      const listItems = element.querySelectorAll('li');
+      listItems.forEach(li => {
+        const { text, hasLinks, url } = extractTextAndLinks(li);
+        if (text) {
+          sections.push({
+            type: 'list',
+            content: text,
+            level: 1,
+            url: hasLinks ? url : undefined
+          });
+        }
+      });
+      return;
+    }
+    
+    // Handle direct list items
     if (tagName === 'li') {
-      return {
-        type: 'list',
-        content: textContent,
-        cssClasses: classList,
-        visualCues
-      };
+      const { text, hasLinks, url } = extractTextAndLinks(element);
+      if (text) {
+        sections.push({
+          type: 'list',
+          content: text,
+          level: 1,
+          url: hasLinks ? url : undefined
+        });
+      }
+      return;
     }
     
-    // Parse links - check if element contains links or is a link itself
-    if (tagName === 'a' || element.querySelector('a')) {
-      const links = element.tagName.toLowerCase() === 'a' ? [element] : Array.from(element.querySelectorAll('a'));
-      if (links.length > 0) {
-        return {
-          type: 'contact',
-          content: textContent,
-          htmlContent: element.innerHTML,
-          cssClasses: classList,
-          visualCues
-        };
+    // Handle links
+    if (tagName === 'a') {
+      const text = textContent;
+      const url = element.getAttribute('href') || '';
+      
+      if (text && url) {
+        if (isContactInfo(text) || isContactInfo(url)) {
+          currentContactItems.push(text);
+        } else {
+          flushContactItems();
+          sections.push({
+            type: 'link',
+            content: text,
+            level: 1,
+            url: url
+          });
+        }
+      }
+      return;
+    }
+  };
+  
+  // Walk through all elements
+  const walker = document.createTreeWalker(
+    tempDiv,
+    NodeFilter.SHOW_ELEMENT,
+    {
+      acceptNode: function(node) {
+        const element = node as Element;
+        // Skip nested elements that are already processed by their parents
+        if (element.closest('ul, ol') && element.tagName.toLowerCase() !== 'ul' && element.tagName.toLowerCase() !== 'ol') {
+          return NodeFilter.FILTER_REJECT;
+        }
+        return NodeFilter.FILTER_ACCEPT;
       }
     }
-    
-    // Check if this looks like contact information
-    if (this.isContactInfo(textContent, element)) {
-      return {
-        type: 'contact',
-        content: textContent,
-        htmlContent: element.innerHTML,
-        cssClasses: classList,
-        visualCues
-      };
-    }
-    
-    // Default to text
-    return {
-      type: 'text',
-      content: textContent,
-      cssClasses: classList,
-      visualCues
-    };
+  );
+  
+  let currentNode = walker.firstChild();
+  while (currentNode) {
+    processElement(currentNode as Element);
+    currentNode = walker.nextSibling();
   }
   
-  private extractVisualCues(element: Element, classList: string[]): ParsedElement['visualCues'] {
-    const computedStyle = window.getComputedStyle(element);
-    const parent = element.parentElement;
-    const parentStyle = parent ? window.getComputedStyle(parent) : null;
-    
-    // Check for background colors/images
-    const hasBackground = 
-      computedStyle.backgroundColor !== 'rgba(0, 0, 0, 0)' && 
-      computedStyle.backgroundColor !== 'transparent' ||
-      computedStyle.backgroundImage !== 'none' ||
-      (parentStyle && parentStyle.backgroundColor !== 'rgba(0, 0, 0, 0)' && 
-       parentStyle.backgroundColor !== 'transparent');
-    
-    // Check for borders
-    const hasBorder = 
-      parseFloat(computedStyle.borderTopWidth || '0') > 0 ||
-      parseFloat(computedStyle.borderBottomWidth || '0') > 0 ||
-      parseFloat(computedStyle.borderLeftWidth || '0') > 0 ||
-      parseFloat(computedStyle.borderRightWidth || '0') > 0;
-    
-    // Check for highlighting based on class names and styles
-    const isHighlighted = 
-      classList.some(cls => cls.includes('highlight') || cls.includes('accent') || cls.includes('featured')) ||
-      hasBackground ||
-      hasBorder;
-    
-    // Determine color scheme based on template and classes
-    let colorScheme = 'default';
-    if (classList.some(cls => cls.includes('primary'))) colorScheme = 'primary';
-    else if (classList.some(cls => cls.includes('secondary'))) colorScheme = 'secondary';
-    else if (classList.some(cls => cls.includes('success'))) colorScheme = 'success';
-    else if (classList.some(cls => cls.includes('warning'))) colorScheme = 'warning';
-    
-    return {
-      hasBackground,
-      hasBorder,
-      isHighlighted,
-      colorScheme
-    };
-  }
+  // Flush any remaining contact items
+  flushContactItems();
   
-  private isContactInfo(text: string, element: Element): boolean {
-    // Check for email patterns
-    const emailPattern = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
-    
-    // Check for phone patterns
-    const phonePattern = /(\+\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/;
-    
-    // Check for URL patterns
-    const urlPattern = /(https?:\/\/|www\.)[^\s]+/;
-    
-    // Check for location patterns
-    const locationKeywords = ['Street', 'St.', 'Avenue', 'Ave.', 'Road', 'Rd.', 'City', 'State', 'Country'];
-    
-    // Check if element contains links
-    const hasLinks = element.querySelector('a') !== null;
-    
-    return emailPattern.test(text) || 
-           phonePattern.test(text) || 
-           urlPattern.test(text) || 
-           locationKeywords.some(keyword => text.includes(keyword)) ||
-           hasLinks;
-  }
+  // Filter out empty sections and deduplicate
+  const filteredSections = sections.filter(section => 
+    section.content && 
+    section.content.trim().length > 0
+  );
   
-  private convertToSection(parsedElement: ParsedElement): PDFSection {
-    const section: PDFSection = {
-      type: parsedElement.type,
-      content: parsedElement.content,
-      level: parsedElement.level,
-      url: parsedElement.url,
-      htmlContent: parsedElement.htmlContent
-    };
-    
-    return section;
-  }
-}
-
-// Enhanced parsing function that replaces the existing one
-export const parseHTMLToPDFSections = (htmlString: string, templateId: string = 'modern'): PDFSection[] => {
-  console.log('Enhanced HTML parsing started for template:', templateId);
+  // Remove duplicates based on content
+  const uniqueSections = filteredSections.filter((section, index, array) => 
+    array.findIndex(s => s.content === section.content && s.type === section.type) === index
+  );
   
-  const parser = new EnhancedHTMLParser(templateId);
-  const sections = parser.parseHTMLToSections(htmlString);
+  console.log('Parsed sections:', uniqueSections.length);
+  uniqueSections.forEach((section, index) => {
+    console.log(`Section ${index + 1}:`, section.type, section.content.substring(0, 50) + '...');
+  });
   
-  console.log('Enhanced parsing complete. Sections found:', sections.length);
-  console.log('Section types:', sections.map(s => s.type));
-  
-  return sections;
+  return uniqueSections;
 };
