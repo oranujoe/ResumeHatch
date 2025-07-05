@@ -35,8 +35,8 @@ const HelpLayout: React.FC<HelpLayoutProps> = ({ children }) => {
   ];
 
   const getActiveTab = () => {
-    if (currentPath.includes('/chat')) return 'chat';
     if (currentPath.includes('/changelog')) return 'changelog';
+    if (currentPath.includes('/chat')) return 'chat';
     return 'docs';
   };
 
@@ -46,19 +46,21 @@ const HelpLayout: React.FC<HelpLayoutProps> = ({ children }) => {
         <Tabs value={getActiveTab()} className="w-full">
           <TabsList className="grid w-full grid-cols-3 bg-muted/20">
             {helpTabs.map((tab) => (
-              <Link key={tab.id} to={tab.path} className="w-full">
-                <TabsTrigger 
-                  value={tab.id} 
-                  className={cn(
-                    "w-full flex items-center space-x-2 data-[state=active]:bg-background",
-                    "hover:bg-accent/50 transition-colors duration-200"
-                  )}
-                >
+              <TabsTrigger 
+                key={tab.id}
+                value={tab.id} 
+                className={cn(
+                  "w-full flex items-center space-x-2 data-[state=active]:bg-background",
+                  "hover:bg-accent/50 transition-colors duration-200"
+                )}
+                asChild
+              >
+                <Link to={tab.path} className="w-full flex items-center space-x-2">
                   <tab.icon className="h-4 w-4" />
                   <span className="hidden sm:inline">{tab.label}</span>
                   <span className="sm:hidden">{tab.label.split('/')[0]}</span>
-                </TabsTrigger>
-              </Link>
+                </Link>
+              </TabsTrigger>
             ))}
           </TabsList>
         </Tabs>
