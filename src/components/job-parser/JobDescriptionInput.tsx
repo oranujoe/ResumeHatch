@@ -24,7 +24,7 @@ const JobDescriptionInput: React.FC<JobDescriptionInputProps> = ({
   return (
     <div className="space-y-6">
       {/* Job Description Input Section */}
-      <GlassCard className="p-6">
+      <GlassCard className="p-6" hover={false}>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <Label htmlFor="jdInput" className="text-headline-small font-semibold">
@@ -44,7 +44,7 @@ const JobDescriptionInput: React.FC<JobDescriptionInputProps> = ({
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
             rows={12}
-            className="w-full resize-none border-muted-foreground/20 focus:border-primary/50 transition-colors"
+            className="w-full resize-none border-muted-foreground/20 focus:border-primary/50 transition-colors transform-none hover:transform-none"
           />
           
           <div className="flex items-center space-x-2 text-label-small text-muted-foreground">

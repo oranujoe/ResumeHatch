@@ -12,7 +12,7 @@ const GenerationProgress: React.FC<GenerationProgressProps> = ({ isVisible, prog
   if (!isVisible) return null;
 
   return (
-    <GlassCard className="p-4">
+    <GlassCard className="p-4" hover={false}>
       <div className="space-y-2">
         <div className="flex items-center justify-between text-label-medium">
           <span className="text-muted-foreground">Processing job requirements...</span>

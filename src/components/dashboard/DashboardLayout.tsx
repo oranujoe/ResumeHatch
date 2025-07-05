@@ -87,9 +87,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
         {/* Main Content */}
         <main className="flex-1 p-3 md:p-4 overflow-auto">
-          <div className="animate-fade-in">
-            {children}
-          </div>
+          {children}
         </main>
       </div>
     </div>

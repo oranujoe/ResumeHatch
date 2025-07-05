@@ -1,166 +1,13 @@
 
 import React from 'react';
+import { ResumeTemplate, TemplateCategory } from '@/types/resumeTemplates';
+import { resumeTemplateData, getTemplateById } from '@/data/templateRegistry';
 
-export interface ToneProfile {
-  writingStyle: 'professional' | 'creative' | 'executive' | 'technical';
-  toneKeywords: string[];
-  industryFocus: string[];
-  personalityTraits: string[];
-  actionVerbStyle: 'quantitative' | 'collaborative' | 'strategic' | 'innovative';
-}
+// Re-export types for backward compatibility
+export type { ToneProfile, ResumeTemplate } from '@/types/resumeTemplates';
 
-export interface ResumeTemplate {
-  id: string;
-  name: string;
-  description: string;
-  preview: string;
-  toneProfile: ToneProfile;
-  styles: {
-    container: string;
-    header: string;
-    section: string;
-    title: string;
-    content: string;
-    list: string;
-  };
-  pdfStyles: {
-    primaryColor: [number, number, number];
-    secondaryColor: [number, number, number];
-    textColor: [number, number, number];
-    headerFontSize: number;
-    sectionTitleFontSize: number;
-    bodyFontSize: number;
-    headerStyle: 'plain' | 'underline' | 'background';
-    sectionTitleStyle: 'plain' | 'underline' | 'bold';
-  };
-}
-
-export const resumeTemplates: ResumeTemplate[] = [
-  {
-    id: 'modern',
-    name: 'Modern Professional',
-    description: 'Clean, modern design with confident, results-driven tone',
-    preview: '📄',
-    toneProfile: {
-      writingStyle: 'professional',
-      toneKeywords: ['optimized', 'streamlined', 'enhanced', 'delivered', 'achieved'],
-      industryFocus: ['technology', 'consulting', 'finance', 'marketing'],
-      personalityTraits: ['results-driven', 'analytical', 'tech-savvy', 'efficient'],
-      actionVerbStyle: 'quantitative'
-    },
-    styles: {
-      container: 'max-w-4xl mx-auto bg-white text-gray-900 leading-relaxed',
-      header: 'border-b-2 border-blue-600 pb-4 mb-6',
-      section: 'mb-6',
-      title: 'text-xl font-bold text-blue-600 mb-3 uppercase tracking-wide border-b border-blue-200 pb-1',
-      content: 'text-gray-700 mb-3',
-      list: 'space-y-2 ml-4'
-    },
-    pdfStyles: {
-      primaryColor: [37, 99, 235],
-      secondaryColor: [147, 197, 253],
-      textColor: [55, 65, 81],
-      headerFontSize: 20,
-      sectionTitleFontSize: 14,
-      bodyFontSize: 10,
-      headerStyle: 'underline',
-      sectionTitleStyle: 'underline'
-    }
-  },
-  {
-    id: 'classic',
-    name: 'Classic Executive',
-    description: 'Traditional format with authoritative, strategic tone',
-    preview: '📋',
-    toneProfile: {
-      writingStyle: 'executive',
-      toneKeywords: ['spearheaded', 'orchestrated', 'championed', 'executed', 'directed'],
-      industryFocus: ['executive', 'management', 'corporate', 'operations'],
-      personalityTraits: ['strategic', 'authoritative', 'experienced', 'decisive'],
-      actionVerbStyle: 'strategic'
-    },
-    styles: {
-      container: 'max-w-4xl mx-auto bg-white text-gray-900 leading-relaxed',
-      header: 'border-b-2 border-gray-800 pb-4 mb-6',
-      section: 'mb-6',
-      title: 'text-xl font-bold text-gray-800 mb-3 uppercase tracking-wide',
-      content: 'text-gray-700 mb-3',
-      list: 'space-y-2 ml-4'
-    },
-    pdfStyles: {
-      primaryColor: [31, 41, 55],
-      secondaryColor: [107, 114, 128],
-      textColor: [55, 65, 81],
-      headerFontSize: 18,
-      sectionTitleFontSize: 13,
-      bodyFontSize: 10,
-      headerStyle: 'underline',
-      sectionTitleStyle: 'bold'
-    }
-  },
-  {
-    id: 'creative',
-    name: 'Creative Edge',
-    description: 'Bold design with innovative, collaborative tone',
-    preview: '🎨',
-    toneProfile: {
-      writingStyle: 'creative',
-      toneKeywords: ['innovated', 'collaborated', 'conceptualized', 'designed', 'transformed'],
-      industryFocus: ['design', 'marketing', 'media', 'startups', 'agencies'],
-      personalityTraits: ['innovative', 'collaborative', 'dynamic', 'creative'],
-      actionVerbStyle: 'innovative'
-    },
-    styles: {
-      container: 'max-w-4xl mx-auto bg-white text-gray-900 leading-relaxed',
-      header: 'bg-gradient-to-r from-purple-600 to-blue-600 text-white p-4 mb-6 rounded-lg',
-      section: 'mb-6',
-      title: 'text-xl font-bold text-purple-600 mb-3 uppercase tracking-wide border-b-2 border-purple-300 pb-1',
-      content: 'text-gray-700 mb-3',
-      list: 'space-y-2 ml-4'
-    },
-    pdfStyles: {
-      primaryColor: [147, 51, 234],
-      secondaryColor: [37, 99, 235],
-      textColor: [55, 65, 81],
-      headerFontSize: 20,
-      sectionTitleFontSize: 14,
-      bodyFontSize: 10,
-      headerStyle: 'background',
-      sectionTitleStyle: 'underline'
-    }
-  },
-  {
-    id: 'minimal',
-    name: 'Minimal Clean',
-    description: 'Simple, ATS-friendly with straightforward, skill-focused tone',
-    preview: '⚪',
-    toneProfile: {
-      writingStyle: 'technical',
-      toneKeywords: ['implemented', 'developed', 'maintained', 'configured', 'automated'],
-      industryFocus: ['engineering', 'IT', 'technical', 'healthcare', 'research'],
-      personalityTraits: ['precise', 'methodical', 'skilled', 'reliable'],
-      actionVerbStyle: 'quantitative'
-    },
-    styles: {
-      container: 'max-w-4xl mx-auto bg-white text-gray-900 leading-relaxed',
-      header: 'pb-4 mb-6',
-      section: 'mb-6',
-      title: 'text-lg font-semibold text-gray-900 mb-3 uppercase tracking-wide',
-      content: 'text-gray-700 mb-3',
-      list: 'space-y-2'
-    },
-    pdfStyles: {
-      primaryColor: [17, 24, 39],
-      secondaryColor: [75, 85, 99],
-      textColor: [55, 65, 81],
-      headerFontSize: 18,
-      sectionTitleFontSize: 12,
-      bodyFontSize: 10,
-      headerStyle: 'plain',
-      sectionTitleStyle: 'plain'
-    }
-  }
-];
+// Main templates export for backward compatibility
+export const resumeTemplates = resumeTemplateData;
 
 interface TemplatePreviewProps {
   template: ResumeTemplate;
@@ -174,6 +21,15 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template, isSelected,
     onSelect(template.id);
   };
 
+  const getCategoryColor = (category: string) => {
+    switch (category) {
+      case 'standard': return 'bg-blue-50 text-blue-700 border-blue-200';
+      case 'specialized': return 'bg-purple-50 text-purple-700 border-purple-200';
+      case 'industry': return 'bg-green-50 text-green-700 border-green-200';
+      default: return 'bg-gray-50 text-gray-700 border-gray-200';
+    }
+  };
+
   return (
     <div
       className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 ${
@@ -184,6 +40,9 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template, isSelected,
       <div className="text-center">
         <div className="text-2xl mb-2">{template.preview}</div>
         <h3 className="font-semibold text-sm mb-1">{template.name}</h3>
+        <div className={`inline-block px-2 py-1 rounded-full text-xs mb-2 border ${getCategoryColor(template.category)}`}>
+          {template.category}
+        </div>
         <p className="text-xs text-muted-foreground mb-2">{template.description}</p>
         <div className="text-xs text-muted-foreground">
           <div className="font-medium">Style: {template.toneProfile.writingStyle}</div>
@@ -205,6 +64,8 @@ interface TemplateSelectionProps {
 }
 
 const TemplateSelection: React.FC<TemplateSelectionProps> = ({ selectedTemplate, onTemplateChange }) => {
+  const [selectedCategory, setSelectedCategory] = React.useState<TemplateCategory>('all');
+
   React.useEffect(() => {
     console.log('TemplateSelection rendered with:', { selectedTemplate });
   }, [selectedTemplate]);
@@ -214,21 +75,44 @@ const TemplateSelection: React.FC<TemplateSelectionProps> = ({ selectedTemplate,
     onTemplateChange(templateId);
   };
 
+  const categories: TemplateCategory[] = ['all', 'standard', 'specialized', 'industry'];
+  const filteredTemplates = selectedCategory === 'all' 
+    ? resumeTemplateData 
+    : resumeTemplateData.filter(t => t.category === selectedCategory);
+
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="text-title-large font-medium mb-1">Choose Resume Template & Tone</h3>
           <p className="text-sm text-muted-foreground">
-            Each template applies a unique writing style and tone to match different industries and roles
+            Each template applies a unique writing style, structure, and tone to match different industries and career stages
           </p>
         </div>
         <div className="text-sm text-muted-foreground">
           Click any template to apply it instantly
         </div>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {resumeTemplates.map((template) => (
+      
+      {/* Category Filter */}
+      <div className="flex gap-2 mb-4">
+        {categories.map((category) => (
+          <button
+            key={category}
+            onClick={() => setSelectedCategory(category)}
+            className={`px-3 py-1 text-xs rounded-full transition-colors ${
+              selectedCategory === category
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted text-muted-foreground hover:bg-muted/80'
+            }`}
+          >
+            {category.charAt(0).toUpperCase() + category.slice(1)}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        {filteredTemplates.map((template) => (
           <TemplatePreview
             key={template.id}
             template={template}

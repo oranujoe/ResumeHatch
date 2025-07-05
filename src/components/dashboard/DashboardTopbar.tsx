@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   Menu, 
@@ -138,7 +139,7 @@ const DashboardTopbar: React.FC<DashboardTopbarProps> = ({
                 />
                 
                 {/* Menu */}
-                <div className="absolute right-0 top-full mt-1.5 w-48 bg-card border border-border rounded-lg shadow-lg z-50 animate-scale-in">
+                <div className="absolute right-0 top-full mt-1.5 w-48 bg-card border border-border rounded-lg shadow-lg z-50 opacity-100 scale-100 transition-all duration-200">
                   <div className="p-3 border-b border-border">
                     <div className="flex items-center space-x-2.5">
                       <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">

@@ -1,5 +1,11 @@
 
 import React, { useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useProfile } from '@/hooks/useProfile';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { User, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import JobZoneHeader from './JobZoneHeader';
 import JobDescriptionInput from './JobDescriptionInput';
 import GenerationProgress from './GenerationProgress';
@@ -15,6 +21,10 @@ const JobZonePage = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showResume, setShowResume] = useState(false);
   const [progress, setProgress] = useState(0);
+  
+  const { user } = useAuth();
+  const { profile, completeness, needsSetup } = useProfile();
+  const navigate = useNavigate();
 
   const handleGenerationStart = () => {
     setIsGenerating(true);
@@ -67,6 +77,26 @@ const JobZonePage = () => {
   return (
     <div className="space-y-8 animate-fade-in-up">
       <JobZoneHeader />
+      
+      {needsSetup && (
+        <Alert className="border-amber-200 bg-amber-50">
+          <User className="h-4 w-4" />
+          <AlertDescription className="flex items-center justify-between">
+            <span>
+              Complete your profile ({completeness}% done) to generate personalized resumes with your actual information instead of placeholder data.
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/dashboard')}
+              className="ml-4"
+            >
+              Complete Profile
+              <ArrowRight className="h-4 w-4 ml-1" />
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
       
       <JobDescriptionInput
         jobDescription={jobDescription}

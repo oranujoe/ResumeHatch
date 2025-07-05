@@ -11,8 +11,8 @@ interface WelcomeBannerProps {
 const WelcomeBanner: React.FC<WelcomeBannerProps> = ({ onClose, className }) => {
   return (
     <div className={cn(
-      "relative glass-card p-3 md:p-4 rounded-xl border-l-4 border-l-warning-primary",
-      "bg-gradient-to-r from-warning-light to-warning-light/50",
+      "relative p-3 md:p-4 rounded-xl border-l-4 border-l-warning-primary",
+      "bg-gradient-to-r from-warning-light to-warning-light/50 border border-warning-primary/20",
       className
     )}>
       <div className="flex items-start space-x-3">
@@ -41,7 +41,7 @@ const WelcomeBanner: React.FC<WelcomeBannerProps> = ({ onClose, className }) => 
           </p>
           
           <div className="flex flex-col sm:flex-row gap-2.5">
-            <button className="btn-primary px-3 py-1.5 text-label-medium flex items-center justify-center space-x-1.5">
+            <button className="bg-primary text-primary-foreground px-3 py-1.5 text-label-medium flex items-center justify-center space-x-1.5 rounded-md">
               <BookOpen className="h-3.5 w-3.5" />
               <span>Quick Start Guide</span>
             </button>
