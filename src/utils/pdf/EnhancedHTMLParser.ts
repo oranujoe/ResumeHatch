@@ -5,9 +5,15 @@ export const parseHTMLToPDFSections = (htmlContent: string): PDFSection[] => {
   console.log('Starting HTML parsing for PDF generation');
   console.log('HTML content length:', htmlContent.length);
   
-  // Create a temporary container to parse HTML
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = htmlContent;
+  try {
+    // Validate input
+    if (!htmlContent || htmlContent.trim() === '') {
+      throw new Error('Empty HTML content provided for PDF parsing');
+    }
+    
+    // Create a temporary container to parse HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
   
   const sections: PDFSection[] = [];
   let currentContactItems: string[] = [];
@@ -208,5 +214,15 @@ export const parseHTMLToPDFSections = (htmlContent: string): PDFSection[] => {
     console.log(`Section ${index + 1}:`, section.type, section.content.substring(0, 50) + '...');
   });
   
+  // Validate that we have at least one section
+  if (uniqueSections.length === 0) {
+    throw new Error('No content sections could be parsed from HTML for PDF generation');
+  }
+  
   return uniqueSections;
+  
+  } catch (error) {
+    console.error('HTML parsing error:', error);
+    throw new Error(`HTML parsing failed: ${error instanceof Error ? error.message : 'Unknown parsing error'}`);
+  }
 };

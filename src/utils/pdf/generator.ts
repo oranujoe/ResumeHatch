@@ -11,16 +11,26 @@ export const generatePDFFromSections = (
   console.log('Generating PDF with template:', templateId);
   console.log('Sections to process:', sections.length);
   
-  const doc = new jsPDF({
-    orientation: 'portrait',
-    unit: 'pt',
-    format: 'a4'
-  });
-  
-  const styler = new EnhancedPDFStyler(doc, templateId);
-  const dimensions = styler.getDimensions();
-  
-  let yPosition = dimensions.margin + 20; // Start with proper top margin
+  try {
+    // Validate inputs
+    if (!sections || sections.length === 0) {
+      throw new Error('No sections provided for PDF generation');
+    }
+    
+    if (!templateId) {
+      throw new Error('Template ID is required for PDF generation');
+    }
+    
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'pt',
+      format: 'a4'
+    });
+    
+    const styler = new EnhancedPDFStyler(doc, templateId);
+    const dimensions = styler.getDimensions();
+    
+    let yPosition = dimensions.margin + 20; // Start with proper top margin
   
   sections.forEach((section, index) => {
     console.log(`Processing section ${index + 1}:`, section.type, section.content.substring(0, 50) + '...');
@@ -71,4 +81,9 @@ export const generatePDFFromSections = (
   
   // Save the PDF
   doc.save(filename);
+  
+  } catch (error) {
+    console.error('PDF generation error:', error);
+    throw new Error(`PDF generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
 };

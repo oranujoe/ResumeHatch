@@ -46,9 +46,30 @@ export const useResumeExport = (selectedTemplate?: string) => {
       });
     } catch (error) {
       console.error('Error generating PDF:', error);
+      
+      // Enhanced error logging for debugging
+      if (error instanceof Error) {
+        console.error('PDF Generation Error Details:', {
+          message: error.message,
+          stack: error.stack,
+          templateId: selectedTemplate,
+          resumeContent: resumeElement.innerHTML.substring(0, 500) + '...'
+        });
+      }
+      
+      // Try to provide more specific error information
+      let errorMessage = 'Failed to generate PDF. Please try the copy option instead.';
+      if (error instanceof Error) {
+        if (error.message.includes('template')) {
+          errorMessage = `Template "${selectedTemplate}" has formatting issues. Try selecting a different template.`;
+        } else if (error.message.includes('parsing') || error.message.includes('section')) {
+          errorMessage = 'Resume content could not be processed. Try editing your resume content and try again.';
+        }
+      }
+      
       toast({
-        title: 'Error',
-        description: 'Failed to generate PDF. Please try the copy option instead.',
+        title: 'PDF Generation Failed',
+        description: errorMessage,
         variant: 'destructive',
       });
     }

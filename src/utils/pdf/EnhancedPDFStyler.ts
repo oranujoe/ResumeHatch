@@ -26,9 +26,15 @@ export class EnhancedPDFStyler {
   private enhancedStyles: EnhancedPDFStyles;
   
   constructor(doc: jsPDF, templateId: string) {
-    this.doc = doc;
-    this.template = getTemplateById(templateId) || getTemplateById('modern')!;
-    this.unifiedStyles = getUnifiedTemplateStyles(templateId);
+    try {
+      this.doc = doc;
+      this.template = getTemplateById(templateId) || getTemplateById('modern')!;
+      
+      if (!this.template) {
+        throw new Error(`Template not found: ${templateId}`);
+      }
+      
+      this.unifiedStyles = getUnifiedTemplateStyles(templateId);
     
     this.dimensions = {
       pageWidth: doc.internal.pageSize.getWidth(),
@@ -49,6 +55,12 @@ export class EnhancedPDFStyler {
     // Set up enhanced document properties
     doc.setFont('helvetica', 'normal');
     doc.setCharSpace(0.01);
+    
+    console.log(`PDF Styler initialized for template: ${templateId}`);
+    } catch (error) {
+      console.error(`Failed to initialize PDF styler for template ${templateId}:`, error);
+      throw new Error(`PDF styling initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   }
   
   private getTemplateSpecificStyles(templateId: string): EnhancedPDFStyles {
