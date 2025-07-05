@@ -70,56 +70,55 @@ export class FixedPDFStyler {
     this.doc.setFont('helvetica', 'bold');
     this.doc.setCharSpace(isMainHeader ? 0.02 : 0.01);
     
-   if (isMainHeader) {
+    if (isMainHeader) {
       this.setTemplateColor('primary');
       
-      // Apply background for templates that need it (like Creative Edge)
+      // Apply background for templates that need it (like nomad)
       if (pdfStyles.headerStyle === 'background') {
-        // Calculate proper background dimensions
-        const backgroundHeight = headerFontSize + 16; // More padding
-        const backgroundY = yPosition - 12; // Start higher
-        const textY = yPosition + 2; // Adjust text position for better centering
-        
         this.doc.setFillColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
-        this.doc.rect(this.dimensions.margin - 8, backgroundY, this.dimensions.maxWidth + 16, backgroundHeight, 'F');
+        this.doc.rect(this.dimensions.margin, yPosition - 8, this.dimensions.maxWidth, headerFontSize + 12, 'F');
         this.doc.setTextColor(255, 255, 255);
-        
-        // Place text with proper padding
-        this.doc.text(section.content, this.dimensions.margin, textY);
-      } else {
-        this.doc.text(section.content, this.dimensions.margin, yPosition);
       }
     } else {
       this.setTemplateColor('primary');
-      this.doc.text(section.content, this.dimensions.margin, yPosition);
     }
     
-    // Adjust yPosition based on whether background was applied
-    if (isMainHeader && pdfStyles.headerStyle === 'background') {
-      yPosition += Math.ceil(headerFontSize * 0.8); // More spacing for background headers
-    } else {
-      yPosition += Math.ceil(headerFontSize * 0.6);
-    }
+    this.doc.text(section.content, this.dimensions.margin, yPosition);
+    yPosition += Math.ceil(headerFontSize * 0.6);
     
     // Add underlines with tighter spacing and better bottom margin
     if (isMainHeader && pdfStyles.headerStyle === 'underline') {
+      this.doc.setDrawColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
+      this.doc.setLineWidth(2);
+      this.doc.line(this.dimensions.margin, yPosition + 1, this.dimensions.margin + this.dimensions.maxWidth, yPosition + 1);
+      yPosition += 18;
+    } else if (!isMainHeader && pdfStyles.sectionTitleStyle === 'underline') {
+      this.doc.setDrawColor(pdfStyles.secondaryColor[0], pdfStyles.secondaryColor[1], pdfStyles.secondaryColor[2]);
+      this.doc.setLineWidth(2);
       this.doc.line(this.dimensions.margin, yPosition + 1, this.dimensions.margin + this.dimensions.maxWidth, yPosition + 1);
       yPosition += 14;
     } else if (isMainHeader) {
-      // For main headers without underlines, add appropriate spacing
-      if (pdfStyles.headerStyle === 'background') {
-        yPosition += 12; // More spacing for background headers
-      } else {
-        yPosition += 8;
-      }
+      // For main headers without underlines (like nomad), add minimal spacing
+      yPosition += 8;
     } else {
       yPosition += 6;
     }
+    
+    // Reset character spacing
+    this.doc.setCharSpace(0.01);
+    return yPosition;
+  }
+  
+  public applyContactStyle(section: PDFSection, yPosition: number): number {
+    // Remove extra spacing before contact info to align properly with header
+    yPosition = this.checkNewPage(25, yPosition);
+    
+    this.doc.setFontSize(this.template.pdfStyles.bodyFontSize);
     this.doc.setFont('helvetica', 'normal');
     this.doc.setCharSpace(0.005);
     
-    // For templates with background header style, ensure white text on colored background
-    if (this.template.pdfStyles.headerStyle === 'background') {
+    // For nomad template, ensure white text on colored background
+    if (this.template.id === 'nomad') {
       this.doc.setTextColor(255, 255, 255);
     } else {
       this.setTemplateColor('text');
