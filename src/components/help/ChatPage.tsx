@@ -30,7 +30,7 @@ const ChatPage: React.FC = () => {
               <Clock className="h-5 w-5 text-blue-600" />
               <div>
                 <div className="text-sm font-medium">Response Time</div>
-                <div className="text-xs text-muted-foreground">< 2 minutes</div>
+                <div className="text-xs text-muted-foreground">Under 2 minutes</div>
               </div>
             </div>
             <div className="flex items-center space-x-3">
