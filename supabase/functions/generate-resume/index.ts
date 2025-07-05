@@ -4,64 +4,26 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4';
 import { buildToneSpecificPrompt } from './promptBuilder.ts';
 import { sanitizeResumeContent } from './contentSanitizer.ts';
-import type { UserProfileData } from './types.ts';
 
-console.log('=== EDGE FUNCTION STARTUP ===');
-console.log('Function initialized successfully');
-
-// Environment variables check with detailed logging
-const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
+const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL');
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-
-console.log('=== ENVIRONMENT VARIABLES CHECK ===');
-console.log('OPENAI_API_KEY exists:', !!openaiApiKey);
-console.log('SUPABASE_URL exists:', !!supabaseUrl);
-console.log('SUPABASE_SERVICE_ROLE_KEY exists:', !!supabaseServiceKey);
-
-if (openaiApiKey) {
-  console.log('OPENAI_API_KEY length:', openaiApiKey.length);
-  console.log('OPENAI_API_KEY starts with:', openaiApiKey.substring(0, 10) + '...');
-}
-
-if (supabaseUrl) {
-  console.log('SUPABASE_URL:', supabaseUrl);
-}
-
-if (supabaseServiceKey) {
-  console.log('SUPABASE_SERVICE_ROLE_KEY length:', supabaseServiceKey.length);
-  console.log('SUPABASE_SERVICE_ROLE_KEY starts with:', supabaseServiceKey.substring(0, 10) + '...');
-}
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Create Supabase client with extensive error handling
-let supabase;
-try {
-  if (!supabaseUrl || !supabaseServiceKey) {
-    throw new Error(`Missing Supabase configuration: URL=${!!supabaseUrl}, ServiceKey=${!!supabaseServiceKey}`);
-  }
-  supabase = createClient(supabaseUrl, supabaseServiceKey);
-  console.log('Supabase client created successfully');
-} catch (error) {
-  console.error('FATAL: Failed to create Supabase client:', error);
-}
+// Create Supabase client with service role key for data access
+const supabase = createClient(supabaseUrl!, supabaseServiceKey!);
 
 // Helper function to convert Json to string array
 const jsonToStringArray = (jsonValue: any): string[] => {
-  try {
-    if (!jsonValue) return [];
-    if (Array.isArray(jsonValue)) {
-      return jsonValue.filter((item): item is string => typeof item === 'string');
-    }
-    return [];
-  } catch (error) {
-    console.error('Error converting JSON to string array:', error);
-    return [];
+  if (!jsonValue) return [];
+  if (Array.isArray(jsonValue)) {
+    return jsonValue.filter((item): item is string => typeof item === 'string');
   }
+  return [];
 };
 
 // Helper function to validate proficiency level
@@ -70,18 +32,18 @@ const validateProficiencyLevel = (level: string): 'beginner' | 'intermediate' | 
   return validLevels.includes(level as any) ? level as any : 'intermediate';
 };
 
-async function fetchUserProfile(userId: string): Promise<UserProfileData | null> {
-  console.log('=== FETCHING USER PROFILE ===');
-  console.log(`Starting profile fetch for user: ${userId}`);
-  
-  try {
-    if (!supabase) {
-      throw new Error('Supabase client not initialized');
-    }
+export interface UserProfileData {
+  profile: any;
+  workExperiences: any[];
+  education: any[];
+  skills: any[];
+  certifications: any[];
+  projects: any[];
+}
 
-    console.log('Executing parallel database queries...');
-    
-    // Load all profile data in parallel with individual error handling
+async function fetchUserProfile(userId: string): Promise<UserProfileData | null> {
+  try {
+    // Load all profile data in parallel
     const [
       profileResult,
       profilesResult,
@@ -90,7 +52,7 @@ async function fetchUserProfile(userId: string): Promise<UserProfileData | null>
       skillsResult,
       certificationsResult,
       projectsResult
-    ] = await Promise.allSettled([
+    ] = await Promise.all([
       supabase.from('user_profiles').select('*').eq('user_id', userId).maybeSingle(),
       supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
       supabase.from('work_experiences').select('*').eq('user_id', userId).order('start_date', { ascending: false }),
@@ -100,194 +62,63 @@ async function fetchUserProfile(userId: string): Promise<UserProfileData | null>
       supabase.from('projects_portfolio').select('*').eq('user_id', userId).order('start_date', { ascending: false })
     ]);
 
-    console.log('=== DATABASE QUERY RESULTS ===');
-    
-    // Process each result with detailed logging
-    const getResultData = (result: any, tableName: string) => {
-      if (result.status === 'fulfilled') {
-        const { data, error } = result.value;
-        console.log(`${tableName}:`, { hasData: !!data, error: error?.message });
-        if (error) {
-          console.error(`${tableName} error details:`, error);
-          return { data: null, error };
-        }
-        return { data, error: null };
-      } else {
-        console.error(`${tableName} promise rejected:`, result.reason);
-        return { data: null, error: result.reason };
-      }
-    };
-
-    const profile = getResultData(profileResult, 'user_profiles');
-    const profiles = getResultData(profilesResult, 'profiles');
-    const work = getResultData(workResult, 'work_experiences');
-    const education = getResultData(educationResult, 'education_records');
-    const skills = getResultData(skillsResult, 'skills_inventory');
-    const certifications = getResultData(certificationsResult, 'certifications');
-    const projects = getResultData(projectsResult, 'projects_portfolio');
-
-    // Check for critical errors
-    const criticalErrors = [profile.error, profiles.error].filter(Boolean);
-    if (criticalErrors.length > 0) {
-      console.error('Critical database errors:', criticalErrors);
-      throw new Error(`Critical database query failed: ${criticalErrors.map(e => e?.message).join(', ')}`);
-    }
-
-    console.log('=== PROCESSING PROFILE DATA ===');
-    
     // Merge profile data with fallback logic
-    let mergedProfile = profile.data;
-    if (!mergedProfile && profiles.data) {
-      console.log('Using fallback profile from profiles table');
+    let mergedProfile = profileResult.data;
+    if (!mergedProfile && profilesResult.data) {
+      // Fallback to profiles table if user_profiles is empty
       mergedProfile = {
-        full_name: profiles.data.full_name,
-        professional_title: profiles.data.full_name,
+        full_name: profilesResult.data.full_name,
+        professional_title: profilesResult.data.full_name,
         professional_summary: 'Experienced professional seeking new opportunities.',
         phone: null,
         location: null,
         linkedin_url: null,
         portfolio_url: null
       };
-    } else if (mergedProfile && !mergedProfile.full_name && profiles.data?.full_name) {
-      console.log('Enhancing profile with name from profiles table');
-      mergedProfile.full_name = profiles.data.full_name;
+    } else if (mergedProfile && !mergedProfile.full_name && profilesResult.data?.full_name) {
+      // Enhance user_profiles with name from profiles table
+      mergedProfile.full_name = profilesResult.data.full_name;
     }
 
-    // Transform data with error handling
-    const transformedWorkExperiences = (work.data || []).map(workItem => {
-      try {
-        return {
-          ...workItem,
-          achievements: jsonToStringArray(workItem.achievements)
-        };
-      } catch (error) {
-        console.error('Error transforming work experience:', error);
-        return workItem;
-      }
-    });
+    // Transform data to match our interfaces
+    const transformedWorkExperiences = (workResult.data || []).map(work => ({
+      ...work,
+      achievements: jsonToStringArray(work.achievements)
+    }));
 
-    const transformedSkills = (skills.data || []).map(skill => {
-      try {
-        return {
-          ...skill,
-          proficiency_level: validateProficiencyLevel(skill.proficiency_level)
-        };
-      } catch (error) {
-        console.error('Error transforming skill:', error);
-        return skill;
-      }
-    });
+    const transformedSkills = (skillsResult.data || []).map(skill => ({
+      ...skill,
+      proficiency_level: validateProficiencyLevel(skill.proficiency_level)
+    }));
 
-    const transformedProjects = (projects.data || []).map(project => {
-      try {
-        return {
-          ...project,
-          achievements: jsonToStringArray(project.achievements)
-        };
-      } catch (error) {
-        console.error('Error transforming project:', error);
-        return project;
-      }
-    });
+    const transformedProjects = (projectsResult.data || []).map(project => ({
+      ...project,
+      achievements: jsonToStringArray(project.achievements)
+    }));
 
-    const finalProfileData = {
+    return {
       profile: mergedProfile,
-      profiles: profiles.data,
       workExperiences: transformedWorkExperiences,
-      education: education.data || [],
+      education: educationResult.data || [],
       skills: transformedSkills,
-      certifications: certifications.data || [],
+      certifications: certificationsResult.data || [],
       projects: transformedProjects
     };
-
-    console.log('=== FINAL PROFILE DATA SUMMARY ===');
-    console.log({
-      hasProfile: !!finalProfileData.profile,
-      name: finalProfileData.profile?.full_name,
-      email: finalProfileData.profiles?.email,
-      workCount: finalProfileData.workExperiences.length,
-      educationCount: finalProfileData.education.length,
-      skillsCount: finalProfileData.skills.length,
-      certificationsCount: finalProfileData.certifications.length,
-      projectsCount: finalProfileData.projects.length
-    });
-
-    return finalProfileData;
   } catch (error) {
-    console.error('=== PROFILE FETCH ERROR ===');
-    console.error('Error type:', error.constructor.name);
-    console.error('Error message:', error.message);
-    console.error('Error stack:', error.stack);
-    throw error;
+    console.error('Error fetching user profile:', error);
+    return null;
   }
 }
 
 serve(async (req) => {
-  console.log('=== REQUEST RECEIVED ===');
-  console.log(`Method: ${req.method}`);
-  console.log(`URL: ${req.url}`);
-  console.log(`Headers:`, Object.fromEntries(req.headers.entries()));
-
   if (req.method === 'OPTIONS') {
-    console.log('Handling CORS preflight request');
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // Validate environment variables before processing
-    console.log('=== ENVIRONMENT VALIDATION ===');
-    if (!openaiApiKey) {
-      console.error('OPENAI_API_KEY is missing');
-      return new Response(JSON.stringify({ error: 'Server configuration error: OPENAI_API_KEY not configured' }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    if (!supabaseUrl || !supabaseServiceKey) {
-      console.error('Supabase configuration is missing');
-      return new Response(JSON.stringify({ error: 'Server configuration error: Supabase not configured' }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    if (!supabase) {
-      console.error('Supabase client not initialized');
-      return new Response(JSON.stringify({ error: 'Server configuration error: Database not available' }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    console.log('=== PARSING REQUEST BODY ===');
-    let requestBody;
-    try {
-      const bodyText = await req.text();
-      console.log('Raw request body length:', bodyText.length);
-      console.log('Raw request body preview:', bodyText.substring(0, 200));
-      requestBody = JSON.parse(bodyText);
-      console.log('Request body parsed successfully');
-    } catch (parseError) {
-      console.error('Failed to parse request body:', parseError);
-      return new Response(JSON.stringify({ error: 'Invalid request body format' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    console.log('=== REQUEST VALIDATION ===');
-    const { jobDescription, templateId = 'modern', userId } = requestBody;
-    
-    console.log('Request parameters:', {
-      hasJobDescription: !!jobDescription,
-      jobDescriptionLength: jobDescription?.length || 0,
-      templateId,
-      hasUserId: !!userId
-    });
+    const { jobDescription, templateId = 'modern', userId } = await req.json();
 
     if (!jobDescription || jobDescription.trim() === '') {
-      console.error('Job description is missing or empty');
       return new Response(JSON.stringify({ error: 'Job description is required' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -295,7 +126,6 @@ serve(async (req) => {
     }
 
     if (!userId) {
-      console.error('User ID is missing');
       return new Response(JSON.stringify({ error: 'User ID is required' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -303,184 +133,70 @@ serve(async (req) => {
     }
 
     // Fetch user profile data
-    console.log('=== FETCHING USER PROFILE DATA ===');
+    console.log(`Fetching profile data for user: ${userId}`);
     const userProfileData = await fetchUserProfile(userId);
 
     if (!userProfileData) {
-      console.error('Failed to fetch user profile data');
       return new Response(JSON.stringify({ error: 'Failed to fetch user profile data' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    console.log('=== BUILDING PROMPT ===');
-    let prompt;
-    try {
-      prompt = buildToneSpecificPrompt(jobDescription, templateId, userProfileData);
-      console.log('Prompt built successfully, length:', prompt.length);
-    } catch (promptError) {
-      console.error('Failed to build prompt:', promptError);
-      return new Response(JSON.stringify({ error: 'Failed to build prompt for AI generation' }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    console.log('=== CALLING OPENAI API ===');
-    console.log(`Using template: ${templateId}`);
-    console.log(`OpenAI API Key validation: length=${openaiApiKey.length}, starts with=${openaiApiKey.substring(0, 10)}...`);
-    
-    const openaiUrl = 'https://api.openai.com/v1/chat/completions';
-    console.log('OpenAI API URL:', openaiUrl);
-    
-    const requestPayload = {
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are a professional resume writer who creates compelling, tailored resumes based on job descriptions and user profile data. Always return the resume in clean HTML format.'
-        },
-        {
-          role: 'user',
-          content: prompt
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 2048,
-    };
-    
-    console.log('Request payload structure:', {
-      model: requestPayload.model,
-      messagesLength: requestPayload.messages.length,
-      temperature: requestPayload.temperature,
-      max_tokens: requestPayload.max_tokens,
-      promptLength: prompt.length
+    console.log(`Profile data loaded for user ${userId}:`, {
+      name: userProfileData.profile?.full_name || 'No name',
+      workExperiences: userProfileData.workExperiences.length,
+      education: userProfileData.education.length,
+      skills: userProfileData.skills.length
     });
+
+    const prompt = buildToneSpecificPrompt(jobDescription, templateId, userProfileData);
+
+    console.log(`Calling Gemini API with ${templateId} template tone and user profile data...`);
     
-    let openaiResponse;
-    try {
-      console.log('Making fetch request to OpenAI API...');
-      openaiResponse = await fetch(openaiUrl, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${openaiApiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestPayload),
-      });
-      
-      console.log('OpenAI API response status:', openaiResponse.status);
-      console.log('OpenAI API response statusText:', openaiResponse.statusText);
-      console.log('OpenAI API response headers:', Object.fromEntries(openaiResponse.headers.entries()));
-    } catch (fetchError) {
-      console.error('Failed to call OpenAI API:', fetchError);
-      console.error('Fetch error details:', {
-        name: fetchError.name,
-        message: fetchError.message,
-        stack: fetchError.stack
-      });
-      return new Response(JSON.stringify({ error: 'Failed to connect to AI service' }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 2048,
+        }
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Gemini API error:', errorText);
+      throw new Error(`Gemini API error: ${response.status}`);
     }
 
-    if (!openaiResponse.ok) {
-      let errorText;
-      try {
-        errorText = await openaiResponse.text();
-        console.error('OpenAI API error response:', errorText);
-      } catch (readError) {
-        console.error('Failed to read OpenAI error response:', readError);
-        errorText = 'Could not read error response';
-      }
-      
-      console.error('OpenAI API request failed:', {
-        status: openaiResponse.status,
-        statusText: openaiResponse.statusText,
-        errorText: errorText
-      });
-      
-      return new Response(JSON.stringify({ 
-        error: `AI service error: ${openaiResponse.status} - ${openaiResponse.statusText}`,
-        details: errorText 
-      }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    console.log('=== PROCESSING OPENAI RESPONSE ===');
-    let openaiData;
-    try {
-      openaiData = await openaiResponse.json();
-      console.log('OpenAI response parsed successfully');
-      console.log('Response structure:', {
-        hasChoices: !!openaiData.choices,
-        choicesLength: openaiData.choices?.length || 0,
-        hasError: !!openaiData.error
-      });
-    } catch (parseError) {
-      console.error('Failed to parse OpenAI response:', parseError);
-      return new Response(JSON.stringify({ error: 'Invalid response from AI service' }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    if (openaiData.error) {
-      console.error('OpenAI API returned error:', openaiData.error);
-      return new Response(JSON.stringify({ 
-        error: 'AI service error', 
-        details: openaiData.error 
-      }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    if (!openaiData.choices || openaiData.choices.length === 0) {
-      console.error('No choices in OpenAI response:', openaiData);
-      return new Response(JSON.stringify({ error: 'AI service did not generate content' }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    const rawResume = openaiData.choices[0].message.content;
-    console.log('Raw resume generated, length:', rawResume.length);
+    const data = await response.json();
     
-    console.log('=== SANITIZING CONTENT ===');
-    let cleanedResume;
-    try {
-      cleanedResume = sanitizeResumeContent(rawResume);
-      console.log('Resume sanitized successfully, final length:', cleanedResume.length);
-    } catch (sanitizeError) {
-      console.error('Failed to sanitize resume content:', sanitizeError);
-      // Use raw resume if sanitization fails
-      cleanedResume = rawResume;
-      console.log('Using raw resume due to sanitization error');
+    if (!data.candidates || data.candidates.length === 0) {
+      throw new Error('No response generated from Gemini API');
     }
+
+    const rawResume = data.candidates[0].content.parts[0].text;
+    const cleanedResume = sanitizeResumeContent(rawResume);
     
-    console.log('=== SUCCESS ===');
-    console.log(`Resume generation completed successfully with ${templateId} template using OpenAI`);
+    console.log(`Resume generated successfully with ${templateId} tone and user profile data for ${userProfileData.profile?.full_name || 'user'}`);
 
     return new Response(JSON.stringify({ resume: cleanedResume }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
-
   } catch (error) {
-    console.error('=== UNHANDLED ERROR ===');
-    console.error('Error type:', error.constructor.name);
-    console.error('Error message:', error.message);
-    console.error('Error stack:', error.stack);
-    
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-    return new Response(JSON.stringify({ 
-      error: errorMessage,
-      details: 'Check edge function logs for detailed error information'
-    }), {
+    console.error('Error in generate-resume function:', error);
+    return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

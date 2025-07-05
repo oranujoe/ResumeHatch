@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FileText, Chrome, List, MapPin } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -12,18 +12,6 @@ interface JobParserLayoutProps {
 const JobParserLayout: React.FC<JobParserLayoutProps> = ({ children }) => {
   const location = useLocation();
   const currentPath = location.pathname;
-
-  // Update document title based on current tab
-  useEffect(() => {
-    const getPageTitle = () => {
-      if (currentPath.includes('/chrome')) return 'Drop-zone Chrome - Job Parser';
-      if (currentPath.includes('/bulk')) return 'Bulk Queue - Job Parser';
-      if (currentPath.includes('/zone')) return 'Job Zone - Job Parser';
-      return 'Parse & Apply - Job Parser';
-    };
-    
-    document.title = getPageTitle();
-  }, [currentPath]);
 
   const tabs = [
     {

@@ -14,12 +14,9 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
       /@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/, // Email
       /\(\d{3}\)\s*\d{3}-\d{4}/, // Phone (XXX) XXX-XXXX
       /\d{3}-\d{3}-\d{4}/, // Phone XXX-XXX-XXXX
-      /\+\d{1,3}[\s-]?\d{3,4}[\s-]?\d{3,4}[\s-]?\d{3,4}/, // International phone variations
+      /\+\d{3}\s*\d{3}\s*\d{3}\s*\d{4}/, // International phone
       /linkedin\.com/, // LinkedIn
       /github\.com/, // GitHub
-      /portfolio/, // Portfolio references
-      /^[A-Z][a-z]+\s+[A-Z][a-z]+$/, // Name pattern (First Last)
-      /^\d{3}[\s-]?\d{3}[\s-]?\d{4}$/, // Simple phone pattern
     ];
     return contactPatterns.some(pattern => pattern.test(text));
   };
@@ -71,22 +68,12 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
       case 'p':
         if (textContent.length > 5) {
           if (isContactInfo(textContent)) {
-            // Preserve links in contact info
-            const htmlContent = element.innerHTML;
-            sections.push({ type: 'contact', content: textContent, htmlContent });
+            sections.push({ type: 'contact', content: textContent });
           } else if (isSectionHeader(element)) {
             sections.push({ type: 'header', content: textContent, level: 2 });
           } else {
             sections.push({ type: 'text', content: textContent });
           }
-        }
-        break;
-        
-      case 'a':
-        // Handle standalone links
-        if (textContent.length > 3) {
-          const href = element.getAttribute('href') || '';
-          sections.push({ type: 'link', content: textContent, url: href });
         }
         break;
         
