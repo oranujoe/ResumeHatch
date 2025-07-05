@@ -112,7 +112,8 @@ export const bottomNavItems: NavItem[] = [
     icon: HelpCircle,
     subItems: [
       { title: "Docs/FAQ", url: "/dashboard/help/docs" },
-      { title: "Live Chat", url: "/dashboard/help/chat" }
+      { title: "Live Chat", url: "/dashboard/help/chat" },
+      { title: "Changelog", url: "/dashboard/help/changelog" }
     ]
   }
 ];

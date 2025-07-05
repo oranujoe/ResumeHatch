@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
@@ -7,6 +8,10 @@ import DropZonePage from '../components/job-parser/DropZonePage';
 import BulkQueuePage from '../components/job-parser/BulkQueuePage';
 import JobZonePage from '../components/job-parser/JobZonePage';
 import JobParserTabs from '../components/job-parser/JobParserTabs';
+import HelpLayout from '../components/help/HelpLayout';
+import DocsPage from '../components/help/DocsPage';
+import ChatPage from '../components/help/ChatPage';
+import ChangelogPage from '../components/help/ChangelogPage';
 
 // Create placeholder components for other dashboard sections
 const ApplicationsPage = () => (
@@ -65,16 +70,8 @@ const ProfilePage = () => (
   </div>
 );
 
-const HelpPage = () => (
-  <div className="space-y-6">
-    <h2 className="text-2xl font-bold">Help</h2>
-    <p className="text-muted-foreground">Get help and support here.</p>
-  </div>
-);
-
 const Dashboard = () => {
   const location = useLocation();
-  const isJobParserRoute = location.pathname.includes('/job-parser');
 
   return (
     <Routes>
@@ -90,7 +87,28 @@ const Dashboard = () => {
             <Route path="referrals" element={<ReferralsPage />} />
             <Route path="settings/*" element={<SettingsPage />} />
             <Route path="profile" element={<ProfilePage />} />
-            <Route path="help/*" element={<HelpPage />} />
+            
+            {/* Help Routes - with shared layout and tabs */}
+            <Route path="help" element={
+              <HelpLayout>
+                <DocsPage />
+              </HelpLayout>
+            } />
+            <Route path="help/docs" element={
+              <HelpLayout>
+                <DocsPage />
+              </HelpLayout>
+            } />
+            <Route path="help/chat" element={
+              <HelpLayout>
+                <ChatPage />
+              </HelpLayout>
+            } />
+            <Route path="help/changelog" element={
+              <HelpLayout>
+                <ChangelogPage />
+              </HelpLayout>
+            } />
             
             {/* Job Parser Routes - with shared tabs */}
             <Route path="job-parser" element={
