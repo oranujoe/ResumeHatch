@@ -3,7 +3,7 @@ import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { CheckCircle, Plus, AlertTriangle, Zap } from 'lucide-react';
-import { ChangelogEntry } from '@/data/changelogData';
+import type { ChangelogEntry } from '@/data/changelogData';
 
 interface ChangelogEntryProps {
   entry: ChangelogEntry;
