@@ -111,9 +111,9 @@ const TemplateSelection: React.FC<TemplateSelectionProps> = ({ selectedTemplate,
         ))}
       </div>
 
-      {/* Horizontal Scrolling Templates Container */}
-      <div className="relative">
-        <div className="flex gap-4 overflow-x-auto overflow-y-hidden scroll-smooth pb-2 -mb-2">
+      {/* Horizontal Scrolling Templates Container - FIXED */}
+      <div className="w-full overflow-hidden">
+        <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           {filteredTemplates.map((template) => (
             <TemplatePreview
               key={template.id}
@@ -123,9 +123,6 @@ const TemplateSelection: React.FC<TemplateSelectionProps> = ({ selectedTemplate,
             />
           ))}
         </div>
-        
-        {/* Scroll Indicator (subtle visual cue) */}
-        <div className="absolute right-0 top-0 bottom-2 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none" />
       </div>
     </div>
   );
