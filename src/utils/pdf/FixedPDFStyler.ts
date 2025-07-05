@@ -71,13 +71,15 @@ export class FixedPDFStyler {
     this.doc.setCharSpace(isMainHeader ? 0.02 : 0.01);
     
     if (isMainHeader) {
-      this.setTemplateColor('primary');
-      
-      // Apply background for templates that need it (like nomad)
+      // Apply background for templates that need it (like Creative Edge)
       if (pdfStyles.headerStyle === 'background') {
         this.doc.setFillColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
-        this.doc.rect(this.dimensions.margin, yPosition - 8, this.dimensions.maxWidth, headerFontSize + 12, 'F');
+        // Create a larger background area to accommodate both name and contact info
+        const backgroundHeight = headerFontSize + 40; // Increased height for better coverage
+        this.doc.rect(this.dimensions.margin - 5, yPosition - 12, this.dimensions.maxWidth + 10, backgroundHeight, 'F');
         this.doc.setTextColor(255, 255, 255);
+      } else {
+        this.setTemplateColor('primary');
       }
     } else {
       this.setTemplateColor('primary');
@@ -113,18 +115,23 @@ export class FixedPDFStyler {
     // Remove extra spacing before contact info to align properly with header
     yPosition = this.checkNewPage(25, yPosition);
     
-    this.doc.setFontSize(this.template.pdfStyles.bodyFontSize);
+    // Use slightly larger font size for contact info in background header templates
+    const contactFontSize = this.template.pdfStyles.headerStyle === 'background' 
+      ? this.template.pdfStyles.bodyFontSize + 2 
+      : this.template.pdfStyles.bodyFontSize;
+    
+    this.doc.setFontSize(contactFontSize);
     this.doc.setFont('helvetica', 'normal');
     this.doc.setCharSpace(0.005);
     
-    // For nomad template, ensure white text on colored background
-    if (this.template.id === 'nomad') {
+    // For templates with background headers, ensure white text on colored background
+    if (this.template.pdfStyles.headerStyle === 'background') {
       this.doc.setTextColor(255, 255, 255);
     } else {
       this.setTemplateColor('text');
     }
     
-    const contactLines = this.splitTextToLines(section.content, this.dimensions.maxWidth, this.template.pdfStyles.bodyFontSize);
+    const contactLines = this.splitTextToLines(section.content, this.dimensions.maxWidth, contactFontSize);
     
     contactLines.forEach((line, index) => {
       this.doc.text(line, this.dimensions.margin, yPosition + (index * this.spacing.lineHeight));
