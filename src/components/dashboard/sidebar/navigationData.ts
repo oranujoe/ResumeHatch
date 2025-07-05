@@ -17,7 +17,9 @@ export interface NavItem {
   title: string;
   url: string;
   icon: React.ComponentType<{ className?: string }>;
-  subItems?: { title: string; url: string }[];
+  subItems?: { title: string; url: string; comingSoon?: boolean }[];
+  comingSoon?: boolean;
+  disabled?: boolean;
 }
 
 export const mainNavItems: NavItem[] = [
@@ -41,51 +43,63 @@ export const mainNavItems: NavItem[] = [
     title: "Applications",
     url: "/dashboard/applications",
     icon: Briefcase,
+    comingSoon: true,
+    disabled: true,
     subItems: [
-      { title: "My Applications", url: "/dashboard/applications/list" },
-      { title: "Analytics", url: "/dashboard/applications/analytics" },
-      { title: "Funnel View", url: "/dashboard/applications/funnel" }
+      { title: "My Applications", url: "/dashboard/applications/list", comingSoon: true },
+      { title: "Analytics", url: "/dashboard/applications/analytics", comingSoon: true },
+      { title: "Funnel View", url: "/dashboard/applications/funnel", comingSoon: true }
     ]
   },
   {
     title: "Documents",
     url: "/dashboard/documents",
     icon: FolderOpen,
+    comingSoon: true,
+    disabled: true,
     subItems: [
-      { title: "Résumés", url: "/dashboard/documents/resumes" },
-      { title: "Cover Letters", url: "/dashboard/documents/cover-letters" },
-      { title: "Templates Gallery", url: "/dashboard/documents/templates" },
-      { title: "Document Locker", url: "/dashboard/documents/locker" }
+      { title: "Résumés", url: "/dashboard/documents/resumes", comingSoon: true },
+      { title: "Cover Letters", url: "/dashboard/documents/cover-letters", comingSoon: true },
+      { title: "Templates Gallery", url: "/dashboard/documents/templates", comingSoon: true },
+      { title: "Document Locker", url: "/dashboard/documents/locker", comingSoon: true }
     ]
   },
   {
     title: "Knowledge Base",
     url: "/dashboard/knowledge",
     icon: BookOpen,
+    comingSoon: true,
+    disabled: true,
     subItems: [
-      { title: "Profile Data", url: "/dashboard/knowledge/profile" },
-      { title: "Skills Gap", url: "/dashboard/knowledge/skills" }
+      { title: "Profile Data", url: "/dashboard/knowledge/profile", comingSoon: true },
+      { title: "Skills Gap", url: "/dashboard/knowledge/skills", comingSoon: true }
     ]
   },
   {
     title: "Job Feed",
     url: "/dashboard/job-feed",
-    icon: Rss
+    icon: Rss,
+    comingSoon: true,
+    disabled: true
   },
   {
     title: "Interview Prep",
     url: "/dashboard/interview-prep",
     icon: MessageSquare,
+    comingSoon: true,
+    disabled: true,
     subItems: [
-      { title: "AI Coach", url: "/dashboard/interview-prep/ai-coach" },
-      { title: "Scheduler", url: "/dashboard/interview-prep/scheduler" },
-      { title: "Follow-Ups", url: "/dashboard/interview-prep/follow-ups" }
+      { title: "AI Coach", url: "/dashboard/interview-prep/ai-coach", comingSoon: true },
+      { title: "Scheduler", url: "/dashboard/interview-prep/scheduler", comingSoon: true },
+      { title: "Follow-Ups", url: "/dashboard/interview-prep/follow-ups", comingSoon: true }
     ]
   },
   {
     title: "Referrals",
     url: "/dashboard/referrals",
-    icon: Users
+    icon: Users,
+    comingSoon: true,
+    disabled: true
   }
 ];
 
@@ -94,17 +108,21 @@ export const bottomNavItems: NavItem[] = [
     title: "Settings",
     url: "/dashboard/settings",
     icon: Settings,
+    comingSoon: true,
+    disabled: true,
     subItems: [
-      { title: "Account Security", url: "/dashboard/settings/security" },
-      { title: "Wallet & Billing", url: "/dashboard/settings/billing" },
-      { title: "Notifications", url: "/dashboard/settings/notifications" },
-      { title: "Integrations", url: "/dashboard/settings/integrations" }
+      { title: "Account Security", url: "/dashboard/settings/security", comingSoon: true },
+      { title: "Wallet & Billing", url: "/dashboard/settings/billing", comingSoon: true },
+      { title: "Notifications", url: "/dashboard/settings/notifications", comingSoon: true },
+      { title: "Integrations", url: "/dashboard/settings/integrations", comingSoon: true }
     ]
   },
   {
     title: "Profile",
     url: "/dashboard/profile",
-    icon: User
+    icon: User,
+    comingSoon: true,
+    disabled: true
   },
   {
     title: "Help",

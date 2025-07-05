@@ -12,63 +12,7 @@ import HelpLayout from '../components/help/HelpLayout';
 import DocsPage from '../components/help/DocsPage';
 import ChatPage from '../components/help/ChatPage';
 import ChangelogPage from '../components/help/ChangelogPage';
-
-// Create placeholder components for other dashboard sections
-const ApplicationsPage = () => (
-  <div className="space-y-6">
-    <h2 className="text-2xl font-bold">Applications</h2>
-    <p className="text-muted-foreground">Manage your job applications here.</p>
-  </div>
-);
-
-const DocumentsPage = () => (
-  <div className="space-y-6">
-    <h2 className="text-2xl font-bold">Documents</h2>
-    <p className="text-muted-foreground">Manage your documents and templates here.</p>
-  </div>
-);
-
-const KnowledgePage = () => (
-  <div className="space-y-6">
-    <h2 className="text-2xl font-bold">Knowledge Base</h2>
-    <p className="text-muted-foreground">Manage your profile data and skills here.</p>
-  </div>
-);
-
-const JobFeedPage = () => (
-  <div className="space-y-6">
-    <h2 className="text-2xl font-bold">Job Feed</h2>
-    <p className="text-muted-foreground">Browse job opportunities here.</p>
-  </div>
-);
-
-const InterviewPrepPage = () => (
-  <div className="space-y-6">
-    <h2 className="text-2xl font-bold">Interview Prep</h2>
-    <p className="text-muted-foreground">Prepare for interviews with AI coaching.</p>
-  </div>
-);
-
-const ReferralsPage = () => (
-  <div className="space-y-6">
-    <h2 className="text-2xl font-bold">Referrals</h2>
-    <p className="text-muted-foreground">Manage your referral network here.</p>
-  </div>
-);
-
-const SettingsPage = () => (
-  <div className="space-y-6">
-    <h2 className="text-2xl font-bold">Settings</h2>
-    <p className="text-muted-foreground">Configure your account settings here.</p>
-  </div>
-);
-
-const ProfilePage = () => (
-  <div className="space-y-6">
-    <h2 className="text-2xl font-bold">Profile</h2>
-    <p className="text-muted-foreground">Manage your profile information here.</p>
-  </div>
-);
+import ComingSoonPage from '../components/dashboard/ComingSoonPage';
 
 const Dashboard = () => {
   const location = useLocation();
@@ -79,14 +23,16 @@ const Dashboard = () => {
         <DashboardLayout pageTitle="Dashboard">
           <Routes>
             <Route index element={<DashboardOverview />} />
-            <Route path="applications/*" element={<ApplicationsPage />} />
-            <Route path="documents/*" element={<DocumentsPage />} />
-            <Route path="knowledge/*" element={<KnowledgePage />} />
-            <Route path="job-feed" element={<JobFeedPage />} />
-            <Route path="interview-prep/*" element={<InterviewPrepPage />} />
-            <Route path="referrals" element={<ReferralsPage />} />
-            <Route path="settings/*" element={<SettingsPage />} />
-            <Route path="profile" element={<ProfilePage />} />
+            
+            {/* Coming Soon Routes */}
+            <Route path="applications/*" element={<ComingSoonPage />} />
+            <Route path="documents/*" element={<ComingSoonPage />} />
+            <Route path="knowledge/*" element={<ComingSoonPage />} />
+            <Route path="job-feed" element={<ComingSoonPage />} />
+            <Route path="interview-prep/*" element={<ComingSoonPage />} />
+            <Route path="referrals" element={<ComingSoonPage />} />
+            <Route path="settings/*" element={<ComingSoonPage />} />
+            <Route path="profile" element={<ComingSoonPage />} />
             
             {/* Help Routes - with shared layout and tabs */}
             <Route path="help" element={
