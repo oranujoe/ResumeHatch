@@ -44,7 +44,7 @@ const JobDescriptionInput: React.FC<JobDescriptionInputProps> = ({
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
             rows={12}
-            className="w-full resize-none border-muted-foreground/20 focus:border-primary/50 transition-colors"
+            className="w-full resize-none border-muted-foreground/20 focus:border-primary/50 transition-colors hover:scale-100"
           />
           
           <div className="flex items-center space-x-2 text-label-small text-muted-foreground">
