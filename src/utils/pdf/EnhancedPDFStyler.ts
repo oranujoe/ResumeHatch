@@ -207,24 +207,9 @@ export class EnhancedPDFStyler {
   }
   
   private drawRoundedRect(x: number, y: number, width: number, height: number, radius: number, fillStyle: 'S' | 'F' | 'FD' = 'F'): void {
-    if (radius === 0) {
-      this.doc.rect(x, y, width, height, fillStyle);
-      return;
-    }
-    
-    // Draw rounded rectangle using lines and arcs
-    const r = Math.min(radius, width / 2, height / 2);
-    
-    this.doc.lines([
-      [r, 0], [width - 2 * r, 0], // top line
-      [r, r, r, 0, Math.PI / 2, Math.PI], // top-right arc
-      [0, height - 2 * r], // right line
-      [r, r, 0, r, 0, Math.PI / 2], // bottom-right arc
-      [-(width - 2 * r), 0], // bottom line
-      [r, r, -r, 0, -Math.PI / 2, 0], // bottom-left arc
-      [0, -(height - 2 * r)], // left line
-      [r, r, 0, -r, Math.PI, -Math.PI / 2] // top-left arc
-    ], x + r, y + r, [1, 1], fillStyle);
+    // Simplified approach: Use regular rectangles to avoid complex jsPDF arc issues
+    // This fixes the Digital Nomad template download issue
+    this.doc.rect(x, y, width, height, fillStyle);
   }
   
   private drawGradientEffect(x: number, y: number, width: number, height: number): void {
