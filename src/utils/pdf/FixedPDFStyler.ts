@@ -1,3 +1,4 @@
+
 import jsPDF from 'jspdf';
 import { getTemplateById, getDefaultTemplate } from '@/data/templateRegistry';
 import { PDFSection, PDFDimensions, PDFSpacing } from './types';
@@ -115,6 +116,11 @@ export class FixedPDFStyler {
     } else {
       yPosition += 6;
     }
+    
+    return yPosition;
+  }
+  
+  public applyContactStyle(section: PDFSection, yPosition: number): number {
     this.doc.setFont('helvetica', 'normal');
     this.doc.setCharSpace(0.005);
     
