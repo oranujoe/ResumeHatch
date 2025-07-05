@@ -32,7 +32,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template, isSelected,
 
   return (
     <div
-      className={`min-w-[200px] w-[200px] flex-shrink-0 p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 ${
+      className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 ${
         isSelected ? 'border-primary bg-primary/5 ring-2 ring-primary/20' : 'border-border hover:border-primary/50'
       }`}
       onClick={handleClick}
@@ -111,18 +111,15 @@ const TemplateSelection: React.FC<TemplateSelectionProps> = ({ selectedTemplate,
         ))}
       </div>
 
-      {/* Horizontal Scrolling Templates Container - FIXED */}
-      <div className="w-full overflow-hidden">
-        <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-          {filteredTemplates.map((template) => (
-            <TemplatePreview
-              key={template.id}
-              template={template}
-              isSelected={selectedTemplate === template.id}
-              onSelect={handleTemplateChange}
-            />
-          ))}
-        </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        {filteredTemplates.map((template) => (
+          <TemplatePreview
+            key={template.id}
+            template={template}
+            isSelected={selectedTemplate === template.id}
+            onSelect={handleTemplateChange}
+          />
+        ))}
       </div>
     </div>
   );
