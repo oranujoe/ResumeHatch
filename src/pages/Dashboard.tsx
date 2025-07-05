@@ -12,6 +12,9 @@ import HelpLayout from '../components/help/HelpLayout';
 import DocsPage from '../components/help/DocsPage';
 import ChatPage from '../components/help/ChatPage';
 import ChangelogPage from '../components/help/ChangelogPage';
+import KnowledgeBaseLayout from '../components/knowledge/KnowledgeBaseLayout';
+import ProfileDataPage from '../components/knowledge/ProfileDataPage';
+import SkillsGapPage from '../components/knowledge/SkillsGapPage';
 import ComingSoonPage from '../components/dashboard/ComingSoonPage';
 
 const Dashboard = () => {
@@ -27,12 +30,28 @@ const Dashboard = () => {
             {/* Coming Soon Routes */}
             <Route path="applications/*" element={<ComingSoonPage />} />
             <Route path="documents/*" element={<ComingSoonPage />} />
-            <Route path="knowledge/*" element={<ComingSoonPage />} />
             <Route path="job-feed" element={<ComingSoonPage />} />
             <Route path="interview-prep/*" element={<ComingSoonPage />} />
             <Route path="referrals" element={<ComingSoonPage />} />
             <Route path="settings/*" element={<ComingSoonPage />} />
             <Route path="profile" element={<ComingSoonPage />} />
+            
+            {/* Knowledge Base Routes - with shared layout and tabs */}
+            <Route path="knowledge" element={
+              <KnowledgeBaseLayout>
+                <ProfileDataPage />
+              </KnowledgeBaseLayout>
+            } />
+            <Route path="knowledge/profile" element={
+              <KnowledgeBaseLayout>
+                <ProfileDataPage />
+              </KnowledgeBaseLayout>
+            } />
+            <Route path="knowledge/skills" element={
+              <KnowledgeBaseLayout>
+                <SkillsGapPage />
+              </KnowledgeBaseLayout>
+            } />
             
             {/* Help Routes - with shared layout and tabs */}
             <Route path="help" element={

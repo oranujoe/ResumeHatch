@@ -1,4 +1,3 @@
-
 import { 
   Home, 
   FileText, 
@@ -68,11 +67,9 @@ export const mainNavItems: NavItem[] = [
     title: "Knowledge Base",
     url: "/dashboard/knowledge",
     icon: BookOpen,
-    comingSoon: true,
-    disabled: true,
     subItems: [
-      { title: "Profile Data", url: "/dashboard/knowledge/profile", comingSoon: true },
-      { title: "Skills Gap", url: "/dashboard/knowledge/skills", comingSoon: true }
+      { title: "Profile Data", url: "/dashboard/knowledge/profile" },
+      { title: "Skills Gap", url: "/dashboard/knowledge/skills" }
     ]
   },
   {
