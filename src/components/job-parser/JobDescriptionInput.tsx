@@ -24,7 +24,7 @@ const JobDescriptionInput: React.FC<JobDescriptionInputProps> = ({
   return (
     <div className="space-y-6">
       {/* Job Description Input Section */}
-      <GlassCard className="p-6">
+      <GlassCard className="p-6" hover={false}>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <Label htmlFor="jdInput" className="text-headline-small font-semibold">
