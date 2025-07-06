@@ -53,9 +53,27 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
     if (!textContent || textContent.length < 3) return;
     
     switch (tagName) {
+      case 'header':
+        // Process header elements by looking for nested h1 tags first
+        const h1InHeader = element.querySelector('h1');
+        if (h1InHeader && h1InHeader.textContent?.trim()) {
+          // Found h1 inside header - treat as main resume header
+          sections.push({ type: 'header', content: h1InHeader.textContent.trim(), level: 1 });
+        }
+        
+        // Process other children of header (like contact info)
+        Array.from(element.children).forEach(child => {
+          if (child.tagName.toLowerCase() !== 'h1') {
+            processElement(child);
+          }
+        });
+        break;
+        
       case 'h1':
-        // Main resume header (name)
-        sections.push({ type: 'header', content: textContent, level: 1 });
+        // Only process h1 if it's not already handled by a parent header element
+        if (!element.closest('header')) {
+          sections.push({ type: 'header', content: textContent, level: 1 });
+        }
         break;
         
       case 'h2':
