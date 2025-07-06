@@ -15,8 +15,17 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
       /\(\d{3}\)\s*\d{3}-\d{4}/, // Phone (XXX) XXX-XXXX
       /\d{3}-\d{3}-\d{4}/, // Phone XXX-XXX-XXXX
       /\+\d{3}\s*\d{3}\s*\d{3}\s*\d{4}/, // International phone
+      /\+\d{1,4}\s*\d{3,4}\s*\d{3,4}\s*\d{3,4}/, // More flexible international phone
       /linkedin\.com/, // LinkedIn
       /github\.com/, // GitHub
+      /^Phone:/i, // Phone label
+      /^Email:/i, // Email label
+      /^LinkedIn:/i, // LinkedIn label
+      /^Portfolio:/i, // Portfolio label
+      /^Professional Title:/i, // Professional title
+      /^Location:/i, // Location
+      /^Website:/i, // Website
+      /^Github:/i, // Github
     ];
     return contactPatterns.some(pattern => pattern.test(text));
   };
@@ -44,9 +53,27 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
     if (!textContent || textContent.length < 3) return;
     
     switch (tagName) {
+      case 'header':
+        // Process header elements by looking for nested h1 tags first
+        const h1InHeader = element.querySelector('h1');
+        if (h1InHeader && h1InHeader.textContent?.trim()) {
+          // Found h1 inside header - treat as main resume header
+          sections.push({ type: 'header', content: h1InHeader.textContent.trim(), level: 1 });
+        }
+        
+        // Process other children of header (like contact info)
+        Array.from(element.children).forEach(child => {
+          if (child.tagName.toLowerCase() !== 'h1') {
+            processElement(child);
+          }
+        });
+        break;
+        
       case 'h1':
-        // Main resume header (name)
-        sections.push({ type: 'header', content: textContent, level: 1 });
+        // Only process h1 if it's not already handled by a parent header element
+        if (!element.closest('header')) {
+          sections.push({ type: 'header', content: textContent, level: 1 });
+        }
         break;
         
       case 'h2':
@@ -141,11 +168,16 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
   let lastSection: PDFSection | null = null;
   
   sections.forEach(section => {
-    // Don't merge different types or headers
+    // Merge consecutive contact sections into one
     if (lastSection && 
-        lastSection.type === section.type && 
-        section.type === 'text' && 
-        lastSection.content.length + section.content.length < 400) {
+        lastSection.type === 'contact' && 
+        section.type === 'contact') {
+      // Combine contact info with line breaks
+      lastSection.content += '\n' + section.content;
+    } else if (lastSection && 
+               lastSection.type === section.type && 
+               section.type === 'text' && 
+               lastSection.content.length + section.content.length < 400) {
       // Merge similar text sections if they're not too long
       lastSection.content += ' ' + section.content;
     } else {

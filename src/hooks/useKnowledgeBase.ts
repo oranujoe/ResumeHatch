@@ -11,14 +11,40 @@ export const useUserProfile = () => {
     queryFn: async () => {
       if (!user?.id) throw new Error('User not authenticated');
 
-      const { data, error } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      // Fetch both user_profiles and profiles to get complete data including email
+      const [userProfileResult, profileResult] = await Promise.all([
+        supabase
+          .from('user_profiles')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle(),
+        supabase
+          .from('profiles')
+          .select('email, full_name')
+          .eq('id', user.id)
+          .maybeSingle()
+      ]);
 
-      if (error) throw error;
-      return data;
+      if (userProfileResult.error) throw userProfileResult.error;
+      if (profileResult.error) throw profileResult.error;
+      
+      // Merge the data, including email from profiles table
+      const mergedData = {
+        ...userProfileResult.data,
+        email: profileResult.data?.email || user.email, // Use auth email as fallback
+        // Also merge full_name if it's missing from user_profiles
+        full_name: userProfileResult.data?.full_name || profileResult.data?.full_name
+      };
+      
+      console.log('Retrieved user profile with email:', {
+        email: mergedData.email,
+        linkedin_url: mergedData.linkedin_url,
+        portfolio_url: mergedData.portfolio_url,
+        phone: mergedData.phone,
+        full_name: mergedData.full_name
+      });
+      
+      return mergedData;
     },
     enabled: !!user?.id,
   });

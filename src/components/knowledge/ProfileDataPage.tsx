@@ -30,6 +30,20 @@ const ProfileDataPage: React.FC = () => {
   const { data: workExperiences, isLoading: workLoading } = useWorkExperiences();
   const { data: education, isLoading: eduLoading } = useEducationRecords();
 
+  // Debug logging to see what profile data we actually have
+  React.useEffect(() => {
+    if (profile) {
+      console.log('ProfileDataPage - Current profile data:', {
+        email: (profile as any).email, // Cast to any since TypeScript doesn't know about email yet
+        full_name: profile.full_name,
+        linkedin_url: profile.linkedin_url,
+        portfolio_url: profile.portfolio_url,
+        phone: profile.phone,
+        allFields: Object.keys(profile)
+      });
+    }
+  }, [profile]);
+
   if (profileLoading) {
     return <div>Loading profile data...</div>;
   }
@@ -66,6 +80,17 @@ const ProfileDataPage: React.FC = () => {
               <p className="text-muted-foreground">{profile?.professional_title || 'Professional'}</p>
               
               <div className="mt-3 space-y-2">
+                {(profile as any)?.email && (
+                  <div className="flex items-center space-x-2 text-sm">
+                    <Mail className="h-4 w-4" />
+                    <a 
+                      href={`mailto:${(profile as any).email}`}
+                      className="text-blue-600 hover:text-blue-800 hover:underline"
+                    >
+                      {(profile as any).email}
+                    </a>
+                  </div>
+                )}
                 {profile?.location && (
                   <div className="flex items-center space-x-2 text-sm">
                     <MapPin className="h-4 w-4" />
@@ -81,7 +106,27 @@ const ProfileDataPage: React.FC = () => {
                 {profile?.linkedin_url && (
                   <div className="flex items-center space-x-2 text-sm">
                     <Globe className="h-4 w-4" />
-                    <span>LinkedIn Profile</span>
+                    <a 
+                      href={profile.linkedin_url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 hover:underline"
+                    >
+                      LinkedIn Profile
+                    </a>
+                  </div>
+                )}
+                {profile?.portfolio_url && (
+                  <div className="flex items-center space-x-2 text-sm">
+                    <Globe className="h-4 w-4" />
+                    <a 
+                      href={profile.portfolio_url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 hover:underline"
+                    >
+                      Portfolio Website
+                    </a>
                   </div>
                 )}
               </div>
