@@ -15,8 +15,17 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
       /\(\d{3}\)\s*\d{3}-\d{4}/, // Phone (XXX) XXX-XXXX
       /\d{3}-\d{3}-\d{4}/, // Phone XXX-XXX-XXXX
       /\+\d{3}\s*\d{3}\s*\d{3}\s*\d{4}/, // International phone
+      /\+\d{1,4}\s*\d{3,4}\s*\d{3,4}\s*\d{3,4}/, // More flexible international phone
       /linkedin\.com/, // LinkedIn
       /github\.com/, // GitHub
+      /^Phone:/i, // Phone label
+      /^Email:/i, // Email label
+      /^LinkedIn:/i, // LinkedIn label
+      /^Portfolio:/i, // Portfolio label
+      /^Professional Title:/i, // Professional title
+      /^Location:/i, // Location
+      /^Website:/i, // Website
+      /^Github:/i, // Github
     ];
     return contactPatterns.some(pattern => pattern.test(text));
   };
@@ -141,11 +150,16 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
   let lastSection: PDFSection | null = null;
   
   sections.forEach(section => {
-    // Don't merge different types or headers
+    // Merge consecutive contact sections into one
     if (lastSection && 
-        lastSection.type === section.type && 
-        section.type === 'text' && 
-        lastSection.content.length + section.content.length < 400) {
+        lastSection.type === 'contact' && 
+        section.type === 'contact') {
+      // Combine contact info with line breaks
+      lastSection.content += '\n' + section.content;
+    } else if (lastSection && 
+               lastSection.type === section.type && 
+               section.type === 'text' && 
+               lastSection.content.length + section.content.length < 400) {
       // Merge similar text sections if they're not too long
       lastSection.content += ' ' + section.content;
     } else {

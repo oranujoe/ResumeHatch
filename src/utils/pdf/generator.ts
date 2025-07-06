@@ -23,7 +23,7 @@ export const generatePDFFromSections = (
   let yPosition = dimensions.margin + 20; // Start with proper top margin
   
   sections.forEach((section, index) => {
-    console.log(`Processing section ${index + 1}:`, section.type, section.content.substring(0, 50) + '...');
+    console.log(`Processing section ${index + 1}:`, section.type, '|', section.content.substring(0, 100) + '...');
     
     // Add extra spacing between different section types
     if (index > 0 && section.type === 'header' && section.level === 2) {

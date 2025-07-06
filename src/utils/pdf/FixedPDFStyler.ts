@@ -60,8 +60,8 @@ export class FixedPDFStyler {
     const isMainHeader = section.level === 1;
     const headerFontSize = isMainHeader ? pdfStyles.headerFontSize : pdfStyles.sectionTitleFontSize;
     
-    // Remove top spacing for main header to eliminate unwanted gaps
-    const topSpacing = isMainHeader ? 0 : 10;
+    // Add appropriate spacing before headers
+    const topSpacing = isMainHeader ? 0 : 16; // More space before section headers
     yPosition += topSpacing;
     
     yPosition = this.checkNewPage(this.spacing.headerHeight + 15, yPosition);
@@ -71,16 +71,8 @@ export class FixedPDFStyler {
     this.doc.setCharSpace(isMainHeader ? 0.02 : 0.01);
     
     if (isMainHeader) {
-      // Apply background for templates that need it (like Creative Edge)
-      if (pdfStyles.headerStyle === 'background') {
-        this.doc.setFillColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
-        // Create a larger background area to accommodate both name and contact info
-        const backgroundHeight = headerFontSize + 40; // Increased height for better coverage
-        this.doc.rect(this.dimensions.margin - 5, yPosition - 12, this.dimensions.maxWidth + 10, backgroundHeight, 'F');
-        this.doc.setTextColor(255, 255, 255);
-      } else {
-        this.setTemplateColor('primary');
-      }
+      // Remove colored background - just use primary color for text
+      this.setTemplateColor('primary');
     } else {
       this.setTemplateColor('primary');
     }
@@ -93,17 +85,17 @@ export class FixedPDFStyler {
       this.doc.setDrawColor(pdfStyles.primaryColor[0], pdfStyles.primaryColor[1], pdfStyles.primaryColor[2]);
       this.doc.setLineWidth(2);
       this.doc.line(this.dimensions.margin, yPosition + 1, this.dimensions.margin + this.dimensions.maxWidth, yPosition + 1);
-      yPosition += 18;
+      yPosition += 18; // More spacing after underlined headers
     } else if (!isMainHeader && pdfStyles.sectionTitleStyle === 'underline') {
       this.doc.setDrawColor(pdfStyles.secondaryColor[0], pdfStyles.secondaryColor[1], pdfStyles.secondaryColor[2]);
       this.doc.setLineWidth(2);
       this.doc.line(this.dimensions.margin, yPosition + 1, this.dimensions.margin + this.dimensions.maxWidth, yPosition + 1);
-      yPosition += 14;
+      yPosition += 16; // More spacing after underlined section headers
     } else if (isMainHeader) {
       // For main headers without underlines (like nomad), add minimal spacing
-      yPosition += 8;
+      yPosition += 6; // Tighter spacing after main header
     } else {
-      yPosition += 6;
+      yPosition += 8; // Consistent spacing after section headers
     }
     
     // Reset character spacing
@@ -112,34 +104,58 @@ export class FixedPDFStyler {
   }
   
   public applyContactStyle(section: PDFSection, yPosition: number): number {
-    // Remove extra spacing before contact info to align properly with header
+    // Minimal spacing before contact info to keep it close to header
     yPosition = this.checkNewPage(25, yPosition);
     
-    // Use slightly larger font size for contact info in background header templates
-    const contactFontSize = this.template.pdfStyles.headerStyle === 'background' 
-      ? this.template.pdfStyles.bodyFontSize + 2 
-      : this.template.pdfStyles.bodyFontSize;
+    // Use consistent font size for contact info
+    const contactFontSize = this.template.pdfStyles.bodyFontSize;
     
     this.doc.setFontSize(contactFontSize);
     this.doc.setFont('helvetica', 'normal');
     this.doc.setCharSpace(0.005);
     
-    // For templates with background headers, ensure white text on colored background
-    if (this.template.pdfStyles.headerStyle === 'background') {
-      this.doc.setTextColor(255, 255, 255);
-    } else {
-      this.setTemplateColor('text');
-    }
+    // Always use normal text color since we removed colored backgrounds
+    this.setTemplateColor('text');
     
-    const contactLines = this.splitTextToLines(section.content, this.dimensions.maxWidth, contactFontSize);
+    // Split contact info into individual lines and ensure consistent spacing
+    const contactText = section.content.trim();
+    const contactLines = contactText.split('\n').filter(line => line.trim().length > 0);
+    
+    // Use consistent line height for contact info
+    const contactLineHeight = contactFontSize * 1.4 + 2; // Add 2 points between lines
     
     contactLines.forEach((line, index) => {
-      this.doc.text(line, this.dimensions.margin, yPosition + (index * this.spacing.lineHeight));
+      const trimmedLine = line.trim();
+      const currentY = yPosition + (index * contactLineHeight);
+      
+      // Check if line contains a URL
+      const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\/[^\s]*)/g;
+      const urlMatch = trimmedLine.match(urlRegex);
+      
+      if (urlMatch && urlMatch.length > 0) {
+        // Extract the URL from the line
+        let url = urlMatch[0];
+        
+        // Ensure URL has protocol
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+          if (url.startsWith('www.')) {
+            url = 'https://' + url;
+          } else if (url.includes('linkedin.com') || url.includes('github.com') || url.includes('.com/')) {
+            url = 'https://' + url;
+          }
+        }
+        
+        // Add the text as a clickable link
+        this.doc.textWithLink(trimmedLine, this.dimensions.margin, currentY, { url: url });
+      } else {
+        // Regular text without links
+        this.doc.text(trimmedLine, this.dimensions.margin, currentY);
+      }
     });
     
     this.doc.setCharSpace(0.01);
-    // Reduced spacing after contact info to prevent gaps
-    return yPosition + (contactLines.length * this.spacing.lineHeight) + 6;
+    // Proper spacing after contact info before next section
+    return yPosition + (contactLines.length * contactLineHeight) + 12;
   }
   
   public applySubheaderStyle(section: PDFSection, yPosition: number): number {
@@ -160,7 +176,7 @@ export class FixedPDFStyler {
     const textLines = this.splitTextToLines(section.content, this.dimensions.maxWidth, fontSize);
     const textBlockHeight = textLines.length * this.spacing.lineHeight;
     
-    yPosition = this.checkNewPage(textBlockHeight + 12, yPosition);
+    yPosition = this.checkNewPage(textBlockHeight + 8, yPosition);
     
     this.doc.setFontSize(fontSize);
     this.doc.setFont('helvetica', 'normal');
@@ -171,43 +187,39 @@ export class FixedPDFStyler {
       this.doc.text(line, this.dimensions.margin, yPosition + (index * this.spacing.lineHeight));
     });
     
-    return yPosition + textBlockHeight + 8;
+    return yPosition + textBlockHeight + 6; // Tighter spacing after text blocks
   }
   
   public applyListStyle(section: PDFSection, yPosition: number): number {
     const fontSize = this.template.pdfStyles.bodyFontSize;
     const bulletText = `• ${section.content}`;
     
-    const availableWidth = this.dimensions.maxWidth - 15;
-    const listLines = this.splitTextToLines(bulletText, availableWidth, fontSize);
+    // Use consistent indentation for all list items
+    const listIndent = 20; // Fixed indent for bullet points
+    const availableWidth = this.dimensions.maxWidth - listIndent;
+    const listLines = this.splitTextToLines(section.content, availableWidth, fontSize);
     const listBlockHeight = listLines.length * this.spacing.lineHeight;
     
-    yPosition = this.checkNewPage(listBlockHeight + 10, yPosition);
+    yPosition = this.checkNewPage(listBlockHeight + 6, yPosition);
     
     this.doc.setFontSize(fontSize);
     this.doc.setFont('helvetica', 'normal');
     this.doc.setCharSpace(0.005);
     this.setTemplateColor('text');
     
+    // Add bullet point
+    this.doc.text('•', this.dimensions.margin + 5, yPosition);
+    
+    // Add text content with proper alignment
     listLines.forEach((line, index) => {
-      const xPosition = index === 0 ? this.dimensions.margin : this.dimensions.margin + 15;
-      this.doc.text(line, xPosition, yPosition + (index * this.spacing.lineHeight));
+      this.doc.text(line, this.dimensions.margin + listIndent, yPosition + (index * this.spacing.lineHeight));
     });
     
-    return yPosition + listBlockHeight + 6;
+    return yPosition + listBlockHeight + 4; // Tighter spacing between list items
   }
   
   public addFooter(): void {
-    const today = new Date().toLocaleDateString();
-    this.doc.setFontSize(8);
-    this.doc.setFont('helvetica', 'normal');
-    this.doc.setCharSpace(0);
-    this.doc.setTextColor(120, 120, 120);
-    this.doc.text(
-      `Generated on ${today} • Template: ${this.template.name}`, 
-      this.dimensions.margin, 
-      this.dimensions.pageHeight - 20
-    );
+    // Footer removed - no message at bottom of resume
   }
   
   public getDimensions(): PDFDimensions {
