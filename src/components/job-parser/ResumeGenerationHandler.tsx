@@ -59,6 +59,11 @@ export const useResumeGeneration = ({
     
     try {
       console.log(`Generating resume with template: ${selectedTemplate} for user: ${user.id}`);
+      console.log('User from auth context:', {
+        id: user.id,
+        email: user.email,
+        user_metadata: user.user_metadata
+      });
       
       const { data, error } = await supabase.functions.invoke('generate-resume', {
         body: { 
@@ -66,6 +71,13 @@ export const useResumeGeneration = ({
           templateId: selectedTemplate,
           userId: user.id
         }
+      });
+
+      console.log('Resume generation response:', {
+        error: error,
+        hasData: !!data,
+        resumeLength: data?.resume?.length,
+        resumePreview: data?.resume?.substring(0, 500)
       });
 
       if (error) {
@@ -83,6 +95,40 @@ export const useResumeGeneration = ({
       try {
         processedResume = cleanResumeContent(data.resume);
         console.log('Resume content cleaned successfully');
+        
+        // CLIENT-SIDE WORKAROUND: Add email to resume if missing
+        if (user.email && !processedResume.includes(user.email)) {
+          console.log('Adding missing email to resume:', user.email);
+          
+          // Try to find and enhance the contact section
+          const contactRegex = /<div[^>]*class[^>]*contact[^>]*>[\s\S]*?<\/div>/i;
+          const headerRegex = /<header[\s\S]*?<\/header>/i;
+          const h1Regex = /(<h1[^>]*>.*?<\/h1>)/i;
+          
+          if (contactRegex.test(processedResume)) {
+            // Replace existing contact section to include email
+            processedResume = processedResume.replace(contactRegex, (match) => {
+              if (!match.includes(user.email)) {
+                return match.replace(/(<p[^>]*>)/, `$1${user.email} • `);
+              }
+              return match;
+            });
+          } else if (headerRegex.test(processedResume)) {
+            // Add email to header section
+            processedResume = processedResume.replace(headerRegex, (match) => {
+              if (!match.includes(user.email)) {
+                return match.replace(/(<\/h1>)/, `$1\n<p>${user.email}</p>`);
+              }
+              return match;
+            });
+          } else if (h1Regex.test(processedResume)) {
+            // Add email after the first h1 (name)
+            processedResume = processedResume.replace(h1Regex, `$1\n<p style="margin-top: 5px; font-size: 14px;">${user.email}</p>`);
+          }
+          
+          console.log('Email injection completed');
+        }
+        
       } catch (cleanupError) {
         console.warn('Frontend cleanup failed, using original content:', cleanupError);
         processedResume = data.resume;

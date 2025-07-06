@@ -48,6 +48,12 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ initialData, onComp
     if (!user) return;
 
     try {
+      console.log('Saving personal info:', {
+        linkedin_url: personalInfo.linkedin_url,
+        portfolio_url: personalInfo.portfolio_url,
+        phone: personalInfo.phone
+      });
+
       const { error } = await supabase
         .from('user_profiles')
         .upsert({
@@ -67,6 +73,8 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ initialData, onComp
           full_name: personalInfo.full_name,
           updated_at: new Date().toISOString()
         });
+
+      console.log('Personal info saved successfully');
 
       toast({
         title: "Personal information saved",

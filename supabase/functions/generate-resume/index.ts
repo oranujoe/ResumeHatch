@@ -68,6 +68,7 @@ async function fetchUserProfile(userId: string): Promise<UserProfileData | null>
       // Fallback to profiles table if user_profiles is empty
       mergedProfile = {
         full_name: profilesResult.data.full_name,
+        email: profilesResult.data.email,
         professional_title: profilesResult.data.full_name,
         professional_summary: 'Experienced professional seeking new opportunities.',
         phone: null,
@@ -76,8 +77,12 @@ async function fetchUserProfile(userId: string): Promise<UserProfileData | null>
         portfolio_url: null
       };
     } else if (mergedProfile && !mergedProfile.full_name && profilesResult.data?.full_name) {
-      // Enhance user_profiles with name from profiles table
+      // Enhance user_profiles with name and email from profiles table
       mergedProfile.full_name = profilesResult.data.full_name;
+      mergedProfile.email = profilesResult.data.email;
+    } else if (mergedProfile && profilesResult.data?.email) {
+      // Always include email from profiles table if available
+      mergedProfile.email = profilesResult.data.email;
     }
 
     // Transform data to match our interfaces
@@ -145,6 +150,10 @@ serve(async (req) => {
 
     console.log(`Profile data loaded for user ${userId}:`, {
       name: userProfileData.profile?.full_name || 'No name',
+      email: userProfileData.profile?.email || 'No email',
+      phone: userProfileData.profile?.phone || 'No phone',
+      linkedin: userProfileData.profile?.linkedin_url || 'No LinkedIn',
+      portfolio: userProfileData.profile?.portfolio_url || 'No portfolio',
       workExperiences: userProfileData.workExperiences.length,
       education: userProfileData.education.length,
       skills: userProfileData.skills.length
