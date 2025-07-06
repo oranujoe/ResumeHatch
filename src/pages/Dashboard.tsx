@@ -16,6 +16,9 @@ import KnowledgeBaseLayout from '../components/knowledge/KnowledgeBaseLayout';
 import ProfileDataPage from '../components/knowledge/ProfileDataPage';
 import SkillsGapPage from '../components/knowledge/SkillsGapPage';
 import ComingSoonPage from '../components/dashboard/ComingSoonPage';
+import AdminRoute from '../components/admin/AdminRoute';
+import AdminLayout from '../components/admin/AdminLayout';
+import AdminOverview from '../components/admin/AdminOverview';
 
 const Dashboard = () => {
   const location = useLocation();
@@ -26,6 +29,36 @@ const Dashboard = () => {
         <DashboardLayout pageTitle="Dashboard">
           <Routes>
             <Route index element={<DashboardOverview />} />
+            
+            {/* Admin Routes - Protected */}
+            <Route path="admin" element={
+              <AdminRoute>
+                <AdminLayout>
+                  <AdminOverview />
+                </AdminLayout>
+              </AdminRoute>
+            } />
+            <Route path="admin/users" element={
+              <AdminRoute>
+                <AdminLayout title="User Management">
+                  <ComingSoonPage />
+                </AdminLayout>
+              </AdminRoute>
+            } />
+            <Route path="admin/audit" element={
+              <AdminRoute>
+                <AdminLayout title="Audit Logs">
+                  <ComingSoonPage />
+                </AdminLayout>
+              </AdminRoute>
+            } />
+            <Route path="admin/system" element={
+              <AdminRoute>
+                <AdminLayout title="System Data">
+                  <ComingSoonPage />
+                </AdminLayout>
+              </AdminRoute>
+            } />
             
             {/* Coming Soon Routes */}
             <Route path="applications/*" element={<ComingSoonPage />} />

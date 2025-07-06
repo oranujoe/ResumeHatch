@@ -1,3 +1,4 @@
+
 import { 
   Home, 
   FileText, 
@@ -9,7 +10,11 @@ import {
   Users, 
   Settings, 
   User, 
-  HelpCircle
+  HelpCircle,
+  Shield,
+  UserCog,
+  Activity,
+  Database
 } from 'lucide-react';
 
 export interface NavItem {
@@ -19,6 +24,7 @@ export interface NavItem {
   subItems?: { title: string; url: string; comingSoon?: boolean }[];
   comingSoon?: boolean;
   disabled?: boolean;
+  adminOnly?: boolean;
 }
 
 export const mainNavItems: NavItem[] = [
@@ -95,6 +101,39 @@ export const mainNavItems: NavItem[] = [
     title: "Referrals",
     url: "/dashboard/referrals",
     icon: Users,
+    comingSoon: true,
+    disabled: true
+  }
+];
+
+export const adminNavItems: NavItem[] = [
+  {
+    title: "Admin Dashboard",
+    url: "/dashboard/admin",
+    icon: Shield,
+    adminOnly: true
+  },
+  {
+    title: "User Management",
+    url: "/dashboard/admin/users",
+    icon: UserCog,
+    adminOnly: true,
+    comingSoon: true,
+    disabled: true
+  },
+  {
+    title: "Audit Logs",
+    url: "/dashboard/admin/audit",
+    icon: Activity,
+    adminOnly: true,
+    comingSoon: true,
+    disabled: true
+  },
+  {
+    title: "System Data",
+    url: "/dashboard/admin/system",
+    icon: Database,
+    adminOnly: true,
     comingSoon: true,
     disabled: true
   }
