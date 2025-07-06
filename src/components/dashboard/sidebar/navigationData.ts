@@ -1,81 +1,129 @@
-
 import { LayoutDashboard, FileText, Database, Bot, HelpCircle, Settings, User, Briefcase, Users, Calendar, MessageSquare, Shield } from 'lucide-react';
 
-export const navigationItems = [
+export interface NavItem {
+  title: string;
+  url: string;
+  icon: any;
+  subItems?: { title: string; url: string; comingSoon?: boolean }[];
+  disabled?: boolean;
+  comingSoon?: boolean;
+}
+
+export const mainNavItems: NavItem[] = [
   {
-    label: 'Dashboard',
-    href: '/dashboard',
+    title: 'Dashboard',
+    url: '/dashboard',
     icon: LayoutDashboard,
   },
   {
-    label: 'Job Parser',
-    href: '/dashboard/job-parser',
+    title: 'Job Parser',
+    url: '/dashboard/job-parser',
     icon: Bot,
     subItems: [
-      { label: 'Parse & Apply', href: '/dashboard/job-parser/parse' },
-      { label: 'Chrome Extension', href: '/dashboard/job-parser/chrome' },
-      { label: 'Bulk Queue', href: '/dashboard/job-parser/bulk' },
-      { label: 'Job Zone', href: '/dashboard/job-parser/zone' },
+      { title: 'Parse & Apply', url: '/dashboard/job-parser/parse' },
+      { title: 'Chrome Extension', url: '/dashboard/job-parser/chrome' },
+      { title: 'Bulk Queue', url: '/dashboard/job-parser/bulk' },
+      { title: 'Job Zone', url: '/dashboard/job-parser/zone' },
     ]
   },
   {
-    label: 'Applications',
-    href: '/dashboard/applications',
+    title: 'Applications',
+    url: '/dashboard/applications',
     icon: Briefcase,
+    comingSoon: true,
   },
   {
-    label: 'Documents',
-    href: '/dashboard/documents',
+    title: 'Documents',
+    url: '/dashboard/documents',
     icon: FileText,
+    comingSoon: true,
   },
   {
-    label: 'Job Feed',
-    href: '/dashboard/job-feed',
+    title: 'Job Feed',
+    url: '/dashboard/job-feed',
     icon: Briefcase,
+    comingSoon: true,
   },
   {
-    label: 'Interview Prep',
-    href: '/dashboard/interview-prep',
+    title: 'Interview Prep',
+    url: '/dashboard/interview-prep',
     icon: MessageSquare,
+    comingSoon: true,
   },
   {
-    label: 'Referrals',
-    href: '/dashboard/referrals',
+    title: 'Referrals',
+    url: '/dashboard/referrals',
+    icon: Users,
+    comingSoon: true,
+  },
+  {
+    title: 'Knowledge Base',
+    url: '/dashboard/knowledge',
+    icon: Database,
+    subItems: [
+      { title: 'Profile Data', url: '/dashboard/knowledge/profile' },
+      { title: 'Skills Gap', url: '/dashboard/knowledge/skills' },
+    ]
+  },
+  {
+    title: 'Help & Support',
+    url: '/dashboard/help',
+    icon: HelpCircle,
+    subItems: [
+      { title: 'Documentation', url: '/dashboard/help/docs' },
+      { title: 'Live Chat', url: '/dashboard/help/chat' },
+      { title: 'Changelog', url: '/dashboard/help/changelog' },
+    ]
+  },
+];
+
+export const adminNavItems: NavItem[] = [
+  {
+    title: 'Admin Dashboard',
+    url: '/admin',
+    icon: Shield,
+  },
+  {
+    title: 'User Management',
+    url: '/admin/users',
     icon: Users,
   },
   {
-    label: 'Knowledge Base',
-    href: '/dashboard/knowledge',
+    title: 'Audit Logs',
+    url: '/admin/audit',
+    icon: FileText,
+    comingSoon: true,
+  },
+  {
+    title: 'System Data',
+    url: '/admin/system',
     icon: Database,
-    subItems: [
-      { label: 'Profile Data', href: '/dashboard/knowledge/profile' },
-      { label: 'Skills Gap', href: '/dashboard/knowledge/skills' },
-    ]
+    comingSoon: true,
   },
+];
+
+export const bottomNavItems: NavItem[] = [
   {
-    label: 'Help & Support',
-    href: '/dashboard/help',
-    icon: HelpCircle,
-    subItems: [
-      { label: 'Documentation', href: '/dashboard/help/docs' },
-      { label: 'Live Chat', href: '/dashboard/help/chat' },
-      { label: 'Changelog', href: '/dashboard/help/changelog' },
-    ]
-  },
-  {
-    label: 'Settings',
-    href: '/dashboard/settings',
+    title: 'Settings',
+    url: '/dashboard/settings',
     icon: Settings,
+    comingSoon: true,
   },
   {
-    label: 'Profile',
-    href: '/dashboard/profile',
+    title: 'Profile',
+    url: '/dashboard/profile',
     icon: User,
+    comingSoon: true,
   },
   {
-    label: 'Admin Setup',
-    href: '/dashboard/setup-admin',
+    title: 'Admin Setup',
+    url: '/dashboard/setup-admin',
     icon: Shield,
-    className: 'border-t border-gray-200 pt-2 mt-2'
   },
+];
+
+// Keep the old export for backward compatibility
+export const navigationItems = [
+  ...mainNavItems,
+  ...bottomNavItems,
 ];
