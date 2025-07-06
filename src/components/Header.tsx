@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+
+import React from 'react';
 import { Button } from "@/components/ui/button";
-import WaitlistDialog from './WaitlistDialog';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Header = () => {
-  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
   const { user, signOut } = useAuth();
 
   const handleSignOut = async () => {
     console.log('Header: Sign out clicked');
     await signOut();
+  };
+
+  const handleJoinBeta = () => {
+    window.location.href = '/auth';
   };
 
   return (
@@ -43,7 +46,7 @@ const Header = () => {
             className="text-gray-600 hover:text-brand-blue transition-all duration-300 relative group font-medium"
           >
             Pricing
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-brand-blue to-purple-500 transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute -bottom-1 left-0 w-0.5 bg-gradient-to-r from-brand-blue to-purple-500 transition-all duration-300 group-hover:w-full"></span>
           </a>
           <a 
             href="#faq" 
@@ -88,16 +91,14 @@ const Header = () => {
               </Button>
               <Button 
                 className="bg-gradient-to-r from-brand-blue to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 font-semibold px-6" 
-                onClick={() => setIsWaitlistOpen(true)}
+                onClick={handleJoinBeta}
               >
-                Join the Waitlist
+                Join Beta
               </Button>
             </>
           )}
         </div>
       </div>
-
-      <WaitlistDialog open={isWaitlistOpen} onOpenChange={setIsWaitlistOpen} />
     </header>
   );
 };

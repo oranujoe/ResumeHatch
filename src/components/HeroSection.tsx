@@ -1,25 +1,34 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import WaitlistDialog from './WaitlistDialog';
 import { useIsMobile } from '@/hooks/use-mobile';
 import PricingBadge from './pricing/PricingBadge';
+
 const HeroSection = () => {
-  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
   const [isYellowShapeActive, setIsYellowShapeActive] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const isMobile = useIsMobile();
+  
   useEffect(() => {
     setIsVisible(true);
   }, []);
+
   const handleYellowShapeClick = () => {
     setIsYellowShapeActive(!isYellowShapeActive);
   };
+
   const handleSeeHowItWorks = () => {
     document.getElementById('how-it-works')?.scrollIntoView({
       behavior: 'smooth'
     });
   };
-  return <section className="relative py-20 px-4 overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 md:py-[60px]">
+
+  const handleJoinBeta = () => {
+    window.location.href = '/auth';
+  };
+
+  return (
+    <section className="relative py-20 px-4 overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 md:py-[60px]">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-32 w-96 h-96 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full opacity-30 animate-float"></div>
@@ -31,7 +40,7 @@ const HeroSection = () => {
           <div className="w-full lg:w-1/2 space-y-6 mb-12 lg:mb-0 pr-0 lg:pr-12">
             {/* Badge with animation */}
             <div className={`mb-2 transition-all duration-700 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
-              <PricingBadge text="Launching Soon • Join the Waitlist" className="!bg-gradient-to-r !from-blue-100 !to-purple-100 !text-blue-800 font-medium border border-blue-200 hover:shadow-lg transition-all duration-300" />
+              <PricingBadge text="Live Beta • Start Today" className="!bg-gradient-to-r !from-green-100 !to-blue-100 !text-green-800 font-medium border border-green-200 hover:shadow-lg transition-all duration-300" />
             </div>
 
             {/* Main Headline with gradient text and staggered animation */}
@@ -44,15 +53,24 @@ const HeroSection = () => {
             </h1>
 
             {/* Description with animation */}
-            <p className={`text-xl text-gray-600 leading-relaxed max-w-xl transition-all duration-700 delay-400 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>Paste any job link, and let our AI craft an ATS-optimised résumé and cover letter, then apply with a single click — all while tracking every application in your personal dashboard.</p>
+            <p className={`text-xl text-gray-600 leading-relaxed max-w-xl transition-all duration-700 delay-400 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
+              Paste any job link, and let our AI craft an ATS-optimised résumé and cover letter, then apply with a single click — all while tracking every application in your personal dashboard.
+            </p>
 
             {/* CTA Buttons with enhanced styling and animation */}
             <div className={`pt-6 flex flex-col sm:flex-row gap-4 transition-all duration-700 delay-600 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
-              <Button className="relative overflow-hidden bg-gradient-to-r from-brand-blue to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white h-12 px-8 rounded-md text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group" onClick={() => setIsWaitlistOpen(true)}>
-                <span className="relative z-10">Join the Waitlist</span>
+              <Button 
+                className="relative overflow-hidden bg-gradient-to-r from-brand-blue to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white h-12 px-8 rounded-md text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group" 
+                onClick={handleJoinBeta}
+              >
+                <span className="relative z-10">Join Beta Now</span>
                 <div className="absolute inset-0 bg-shimmer animate-shimmer opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </Button>
-              <Button variant="outline" className="h-12 px-8 rounded-md text-lg border-2 border-gray-300 hover:border-brand-blue hover:text-brand-blue hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 font-semibold" onClick={handleSeeHowItWorks}>
+              <Button 
+                variant="outline" 
+                className="h-12 px-8 rounded-md text-lg border-2 border-gray-300 hover:border-brand-blue hover:text-brand-blue hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 font-semibold" 
+                onClick={handleSeeHowItWorks}
+              >
                 See How it Works
               </Button>
             </div>
@@ -87,9 +105,12 @@ const HeroSection = () => {
               </div>
               
               {/* Enhanced AI shape with advanced interactions */}
-              <div onClick={handleYellowShapeClick} className={`absolute -bottom-6 -right-6 w-20 h-20 rounded-full flex items-center justify-center 
+              <div 
+                onClick={handleYellowShapeClick} 
+                className={`absolute -bottom-6 -right-6 w-20 h-20 rounded-full flex items-center justify-center 
                   cursor-pointer transition-all duration-500 hover:scale-125 group
-                  ${isYellowShapeActive ? 'bg-gradient-to-br from-yellow-400 to-orange-400 animate-pulse-glow shadow-2xl scale-125' : 'bg-gradient-to-br from-brand-yellow to-orange-500 hover:shadow-xl'}`}>
+                  ${isYellowShapeActive ? 'bg-gradient-to-br from-yellow-400 to-orange-400 animate-pulse-glow shadow-2xl scale-125' : 'bg-gradient-to-br from-brand-yellow to-orange-500 hover:shadow-xl'}`}
+              >
                 <div className={`text-white text-xl font-bold transition-all duration-300 ${isYellowShapeActive ? 'scale-110' : 'group-hover:scale-110'}`}>
                   AI
                 </div>
@@ -105,8 +126,8 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
-      
-      <WaitlistDialog open={isWaitlistOpen} onOpenChange={setIsWaitlistOpen} />
-    </section>;
+    </section>
+  );
 };
+
 export default HeroSection;
