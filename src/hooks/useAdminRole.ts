@@ -42,8 +42,8 @@ export const useAdminStats = () => {
         const [usersResult, adminsResult, actions24hResult, actions7dResult] = await Promise.all([
           supabase.from('profiles').select('id', { count: 'exact', head: true }),
           supabase.from('user_roles').select('id', { count: 'exact', head: true }).eq('role', 'admin'),
-          supabase.from('admin_actions').select('id', { count: 'exact', head: true }).gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),
-          supabase.from('admin_actions').select('id', { count: 'exact', head: true }).gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+          supabase.from('admin_actions' as any).select('id', { count: 'exact', head: true }).gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),
+          supabase.from('admin_actions' as any).select('id', { count: 'exact', head: true }).gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
         ]);
 
         return {
