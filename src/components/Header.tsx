@@ -24,7 +24,7 @@ const Header = () => {
       <div className="container mx-auto flex items-center justify-between animate-fade-in-up">
         <div className="flex items-center group">
           <img 
-            src="/lovable-uploads/50353ac3-d3ff-4643-979a-fafcf6a1492f.png" 
+            src="/lovable-uploads/d7842ad0-c17b-4034-aba5-bde70600bc1c.png" 
             alt="Resume Hatch Logo" 
             className="h-16 w-auto cursor-pointer transition-transform duration-300 hover:scale-105"
             onClick={handleLogoClick}
