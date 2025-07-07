@@ -13,9 +13,9 @@ const AuthLayout = ({ children, title, subtitle }: AuthLayoutProps) => {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <img 
-            src="/lovable-uploads/c1fa3a5b-2ee1-47c2-a887-35cc50f1f63f.png" 
+            src="/lovable-uploads/6610ef0a-471b-46d5-a721-eb178ddfcc6f.png" 
             alt="ResumeHatch Logo" 
-            className="h-12 mx-auto mb-4" 
+            className="h-16 mx-auto mb-4" 
           />
           <h2 className="text-3xl font-bold text-gray-900">{title}</h2>
           <p className="mt-2 text-gray-600">{subtitle}</p>
