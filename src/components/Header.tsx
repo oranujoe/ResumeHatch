@@ -29,7 +29,7 @@ const Header = () => {
           <img 
             src="/lovable-uploads/ad6e0f0a-0fb7-4886-93fc-07343026882f.png" 
             alt="Resume Hatch Logo" 
-            className="h-12 cursor-pointer hover:scale-105 transition-transform duration-200"
+            className="h-16 w-auto cursor-pointer hover:scale-105 transition-transform duration-200"
             onClick={handleLogoClick}
           />
         </div>
