@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { useAuth } from '@/contexts/AuthContext';
@@ -26,9 +27,9 @@ const Header = () => {
       <div className="container mx-auto flex items-center justify-between animate-fade-in-up">
         <div className="flex items-center group">
           <img 
-            src="/lovable-uploads/8f6020c3-a2cf-43cb-b4df-889b322e251a.png" 
+            src="/lovable-uploads/ad6e0f0a-0fb7-4886-93fc-07343026882f.png" 
             alt="Resume Hatch Logo" 
-            className="h-8 cursor-pointer hover:scale-105 transition-transform duration-200"
+            className="h-12 cursor-pointer hover:scale-105 transition-transform duration-200"
             onClick={handleLogoClick}
           />
         </div>
