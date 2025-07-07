@@ -1,37 +1,22 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { useAuth } from '@/contexts/AuthContext';
-
 const Header = () => {
   const {
     user,
     signOut
   } = useAuth();
-
   const handleSignOut = async () => {
     console.log('Header: Sign out clicked');
     await signOut();
   };
-
   const handleJoinBeta = () => {
     window.location.href = '/auth';
   };
-
-  const handleLogoClick = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  return (
-    <header className="py-4 px-4 sm:px-6 lg:px-8 w-full border-b border-white/20 sticky top-0 bg-white/80 backdrop-blur-md z-50 shadow-lg">
+  return <header className="py-4 px-4 sm:px-6 lg:px-8 w-full border-b border-white/20 sticky top-0 bg-white/80 backdrop-blur-md z-50 shadow-lg">
       <div className="container mx-auto flex items-center justify-between animate-fade-in-up">
         <div className="flex items-center group">
-          <img 
-            src="/lovable-uploads/ad6e0f0a-0fb7-4886-93fc-07343026882f.png" 
-            alt="Resume Hatch Logo" 
-            className="h-16 w-auto cursor-pointer hover:scale-105 transition-transform duration-200"
-            onClick={handleLogoClick}
-          />
+          
         </div>
         
         <nav className="hidden md:flex items-center space-x-8">
@@ -75,8 +60,6 @@ const Header = () => {
             </>}
         </div>
       </div>
-    </header>
-  );
+    </header>;
 };
-
 export default Header;
