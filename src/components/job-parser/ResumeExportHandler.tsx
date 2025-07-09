@@ -1,6 +1,8 @@
+
 import React from 'react';
 import { toast } from '@/hooks/use-toast';
 import { parseHTMLToPDFSections, generatePDFFromSections } from '@/utils/pdfGenerator';
+import { formatLinkedInForPDF, extractLinkedInUrls } from './utilityFunction';
 
 export const useResumeExport = (selectedTemplate?: string) => {
   const downloadPDF = async () => {
@@ -31,7 +33,7 @@ export const useResumeExport = (selectedTemplate?: string) => {
       });
 
       // Enhanced HTML processing to ensure LinkedIn URLs are preserved
-      const enhancedHTML = preprocessHTMLForPDF(resumeElement.innerHTML);
+      const enhancedHTML = formatLinkedInForPDF(resumeElement.innerHTML);
       
       const sections = parseHTMLToPDFSections(enhancedHTML);
       
@@ -94,35 +96,10 @@ export const useResumeExport = (selectedTemplate?: string) => {
     }
   };
 
-  // Helper function to preprocess HTML for PDF generation
-  const preprocessHTMLForPDF = (html: string): string => {
-    // Ensure LinkedIn URLs are properly formatted for PDF
-    const linkedinRegex = /<a[^>]*href=["']([^"']*linkedin\.com[^"']*)["'][^>]*>([^<]*)<\/a>/gi;
-    
-    return html.replace(linkedinRegex, (match, url, text) => {
-      // Ensure the URL is absolute
-      const absoluteUrl = url.startsWith('http') ? url : `https://${url}`;
-      
-      // For PDF, we want to show the URL as clickable text
-      return `<a href="${absoluteUrl}" target="_blank" rel="noopener noreferrer">${text || absoluteUrl}</a>`;
-    });
-  };
-
   // Helper function to process text for clipboard with LinkedIn URLs
   const processTextForClipboard = (plainText: string, html: string): string => {
     // Extract LinkedIn URLs from HTML and add them to plain text if missing
-    const linkedinRegex = /<a[^>]*href=["']([^"']*linkedin\.com[^"']*)["'][^>]*>([^<]*)<\/a>/gi;
-    const linkedinUrls: string[] = [];
-    
-    let match;
-    while ((match = linkedinRegex.exec(html)) !== null) {
-      const url = match[1];
-      const absoluteUrl = url.startsWith('http') ? url : `https://${url}`;
-      
-      if (!linkedinUrls.includes(absoluteUrl)) {
-        linkedinUrls.push(absoluteUrl);
-      }
-    }
+    const linkedinUrls = extractLinkedInUrls(html);
 
     // If we found LinkedIn URLs in HTML but they're not in plain text, add them
     linkedinUrls.forEach(url => {
