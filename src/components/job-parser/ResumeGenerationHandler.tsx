@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -143,9 +144,9 @@ export const useResumeGeneration = ({
   const getLinkedInUrlFromProfile = async (userId: string): Promise<string | null> => {
     try {
       const { data, error } = await supabase
-        .from('profiles')
+        .from('user_profiles')
         .select('linkedin_url')
-        .eq('id', userId)
+        .eq('user_id', userId)
         .single();
 
       if (error) {
