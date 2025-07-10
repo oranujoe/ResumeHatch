@@ -114,6 +114,7 @@ const JobZonePage = () => {
         <ResumeWorkspace
           generatedResume={generatedResume}
           selectedTemplate={selectedTemplate}
+          jobDescription={jobDescription}
           onTemplateChange={handleTemplateChange}
           onResumeEdit={handleResumeEdit}
           onDownloadPDF={downloadPDF}
