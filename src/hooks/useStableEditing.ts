@@ -7,14 +7,15 @@ interface UseStableEditingProps {
   debounceDelay?: number;
 }
 
-export const useStableEditing = ({ onContentChange, debounceDelay = 500 }: UseStableEditingProps) => {
+export const useStableEditing = ({ onContentChange, debounceDelay = 200 }: UseStableEditingProps) => {
   const elementRef = useRef<HTMLDivElement>(null);
   const isUpdatingRef = useRef(false);
   const lastCursorPositionRef = useRef<CursorPosition>({ textOffset: 0, containerPath: [] });
   
-  // Debounced content change handler
+  // Debounced content change handler with reduced delay for faster ATS updates
   const debouncedContentChange = useCallback(
     debounce((content: string) => {
+      console.log('Content change triggered - length:', content.length);
       onContentChange(content);
       isUpdatingRef.current = false;
     }, debounceDelay),
@@ -25,7 +26,6 @@ export const useStableEditing = ({ onContentChange, debounceDelay = 500 }: UseSt
     // Don't prevent input - just save cursor position
     const target = event.currentTarget;
     lastCursorPositionRef.current = saveCursorPosition(target);
-    console.log('Cursor position saved before input:', lastCursorPositionRef.current);
   }, []);
   
   const handleInput = useCallback((event: React.FormEvent<HTMLDivElement>) => {

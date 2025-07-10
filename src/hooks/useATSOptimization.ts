@@ -1,6 +1,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { debounce } from '@/utils/cursorUtils';
+import { extractPlainTextFromHTML, calculateKeywordMatch } from '@/utils/textExtraction';
 
 interface ATSScore {
   overall: number;
@@ -27,7 +28,7 @@ interface UseATSOptimizationProps {
 export const useATSOptimization = ({ 
   resumeContent, 
   jobDescription, 
-  debounceDelay = 500 
+  debounceDelay = 300 
 }: UseATSOptimizationProps): ATSAnalysis => {
   const [analysis, setAnalysis] = useState<ATSAnalysis>({
     score: { overall: 0, keyword: 0, formatting: 0, content: 0, compatibility: 0 },
@@ -37,48 +38,31 @@ export const useATSOptimization = ({
     issues: []
   });
 
-  // Extract keywords from job description
-  const extractKeywords = (text: string): string[] => {
-    const commonWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should']);
+  // Analyze keyword matching using plain text extraction
+  const analyzeKeywords = (resumeHTML: string, jobDesc: string) => {
+    const resumePlainText = extractPlainTextFromHTML(resumeHTML);
+    const jobPlainText = extractPlainTextFromHTML(jobDesc);
     
-    return text
-      .toLowerCase()
-      .replace(/[^\w\s]/g, ' ')
-      .split(/\s+/)
-      .filter(word => word.length > 2 && !commonWords.has(word))
-      .filter((word, index, arr) => arr.indexOf(word) === index)
-      .slice(0, 20); // Focus on top 20 keywords
-  };
-
-  // Analyze keyword matching
-  const analyzeKeywords = (resume: string, jobDesc: string) => {
-    const jobKeywords = extractKeywords(jobDesc);
-    const resumeText = resume.toLowerCase();
+    console.log('ATS Analysis - Resume text length:', resumePlainText.length);
+    console.log('ATS Analysis - Job text length:', jobPlainText.length);
     
-    const matches = jobKeywords.filter(keyword => 
-      resumeText.includes(keyword.toLowerCase())
-    );
-    
-    return {
-      matches: matches.length,
-      total: jobKeywords.length,
-      score: jobKeywords.length > 0 ? (matches.length / jobKeywords.length) * 100 : 0
-    };
+    return calculateKeywordMatch(resumePlainText, jobPlainText);
   };
 
   // Analyze formatting quality
-  const analyzeFormatting = (resume: string) => {
+  const analyzeFormatting = (resumeHTML: string) => {
+    const plainText = extractPlainTextFromHTML(resumeHTML);
     let score = 100;
     const issues: string[] = [];
     
     // Check for contact information
-    if (!resume.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/)) {
+    if (!plainText.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/)) {
       score -= 20;
       issues.push('Missing email address');
     }
     
     // Check for phone number
-    if (!resume.match(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/)) {
+    if (!plainText.match(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/)) {
       score -= 15;
       issues.push('Missing or improperly formatted phone number');
     }
@@ -86,7 +70,7 @@ export const useATSOptimization = ({
     // Check for section headers
     const sections = ['experience', 'education', 'skills'];
     sections.forEach(section => {
-      if (!resume.toLowerCase().includes(section)) {
+      if (!plainText.toLowerCase().includes(section)) {
         score -= 10;
         issues.push(`Missing ${section} section`);
       }
@@ -96,29 +80,30 @@ export const useATSOptimization = ({
   };
 
   // Analyze content quality
-  const analyzeContent = (resume: string) => {
+  const analyzeContent = (resumeHTML: string) => {
+    const plainText = extractPlainTextFromHTML(resumeHTML);
     let score = 100;
     const issues: string[] = [];
     
     // Check resume length
-    if (resume.length < 500) {
+    if (plainText.length < 300) {
       score -= 30;
       issues.push('Resume content too brief');
-    } else if (resume.length > 4000) {
+    } else if (plainText.length > 3000) {
       score -= 20;
       issues.push('Resume content too lengthy');
     }
     
     // Check for action verbs
-    const actionVerbs = ['managed', 'led', 'developed', 'created', 'implemented', 'improved', 'achieved'];
-    const hasActionVerbs = actionVerbs.some(verb => resume.toLowerCase().includes(verb));
+    const actionVerbs = ['managed', 'led', 'developed', 'created', 'implemented', 'improved', 'achieved', 'designed', 'built', 'launched'];
+    const hasActionVerbs = actionVerbs.some(verb => plainText.toLowerCase().includes(verb));
     if (!hasActionVerbs) {
       score -= 25;
       issues.push('Use more action verbs to describe achievements');
     }
     
     // Check for quantifiable results
-    const hasNumbers = /\d+/.test(resume);
+    const hasNumbers = /\d+/.test(plainText);
     if (!hasNumbers) {
       score -= 20;
       issues.push('Include quantifiable results and metrics');
@@ -128,20 +113,21 @@ export const useATSOptimization = ({
   };
 
   // Analyze ATS compatibility
-  const analyzeCompatibility = (resume: string) => {
+  const analyzeCompatibility = (resumeHTML: string) => {
     let score = 100;
     const issues: string[] = [];
     
-    // Simple text-based analysis (in real implementation, this would be more sophisticated)
-    if (resume.includes('│') || resume.includes('┌') || resume.includes('└')) {
+    // Check for problematic characters in HTML
+    if (resumeHTML.includes('│') || resumeHTML.includes('┌') || resumeHTML.includes('└')) {
       score -= 30;
       issues.push('Avoid special characters that may not parse correctly');
     }
     
     // Check for proper structure
-    if (!resume.includes('\n')) {
-      score -= 20;
-      issues.push('Improve resume structure with proper line breaks');
+    const plainText = extractPlainTextFromHTML(resumeHTML);
+    if (plainText.length < 50) {
+      score -= 40;
+      issues.push('Resume structure appears incomplete');
     }
     
     return { score: Math.max(0, score), issues };
@@ -172,12 +158,18 @@ export const useATSOptimization = ({
       suggestions.push('Simplify formatting for better ATS compatibility');
     }
     
+    if (suggestions.length === 0) {
+      suggestions.push('Your resume looks good! Consider fine-tuning keywords for this specific role.');
+    }
+    
     return suggestions;
   };
 
   const debouncedAnalysis = useMemo(
-    () => debounce((resume: string, jobDesc: string) => {
-      if (!resume.trim()) {
+    () => debounce((resumeHTML: string, jobDesc: string) => {
+      console.log('Starting ATS analysis...');
+      
+      if (!resumeHTML.trim()) {
         setAnalysis({
           score: { overall: 0, keyword: 0, formatting: 0, content: 0, compatibility: 0 },
           suggestions: ['Generate a resume to see ATS optimization score'],
@@ -188,10 +180,10 @@ export const useATSOptimization = ({
         return;
       }
 
-      const keywordAnalysis = analyzeKeywords(resume, jobDesc);
-      const formatAnalysis = analyzeFormatting(resume);
-      const contentAnalysis = analyzeContent(resume);
-      const compatibilityAnalysis = analyzeCompatibility(resume);
+      const keywordAnalysis = analyzeKeywords(resumeHTML, jobDesc);
+      const formatAnalysis = analyzeFormatting(resumeHTML);
+      const contentAnalysis = analyzeContent(resumeHTML);
+      const compatibilityAnalysis = analyzeCompatibility(resumeHTML);
 
       const scores = {
         keyword: keywordAnalysis.score,
@@ -207,6 +199,12 @@ export const useATSOptimization = ({
         ...contentAnalysis.issues,
         ...compatibilityAnalysis.issues
       ];
+
+      console.log('ATS Analysis completed:', {
+        overall: Math.round(overall),
+        keywordMatches: keywordAnalysis.matches,
+        totalKeywords: keywordAnalysis.total
+      });
 
       setAnalysis({
         score: {
