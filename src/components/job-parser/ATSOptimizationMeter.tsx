@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ChevronDown, ChevronUp, Target, AlertTriangle, CheckCircle, TrendingUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Target, AlertTriangle, CheckCircle, TrendingUp, Loader2 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 interface ATSScore {
@@ -46,11 +46,8 @@ const ATSOptimizationMeter: React.FC<ATSOptimizationMeterProps> = ({
     return 'Needs Work';
   };
 
-  const getProgressColor = (scoreValue: number) => {
-    if (scoreValue >= 80) return 'bg-green-500';
-    if (scoreValue >= 60) return 'bg-yellow-500';
-    return 'bg-red-500';
-  };
+  // Show analyzing state for very low scores that indicate processing
+  const isProcessing = isAnalyzing || (score.overall === 0 && keywordMatches === 0);
 
   return (
     <Card className="h-fit">
@@ -60,9 +57,9 @@ const ATSOptimizationMeter: React.FC<ATSOptimizationMeterProps> = ({
             <Target className="h-5 w-5 text-primary" />
             <span>ATS Optimization</span>
           </div>
-          {isAnalyzing && (
+          {isProcessing && (
             <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-              <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full" />
+              <Loader2 className="h-4 w-4 animate-spin" />
               <span>Analyzing...</span>
             </div>
           )}
@@ -120,20 +117,22 @@ const ATSOptimizationMeter: React.FC<ATSOptimizationMeterProps> = ({
         </div>
 
         {/* Top Suggestions */}
-        <div className="space-y-2">
-          <div className="flex items-center space-x-2">
-            <TrendingUp className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium">Quick Wins</span>
+        {!isProcessing && (
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2">
+              <TrendingUp className="h-4 w-4 text-primary" />
+              <span className="text-sm font-medium">Quick Wins</span>
+            </div>
+            <div className="space-y-1">
+              {suggestions.slice(0, 2).map((suggestion, index) => (
+                <div key={index} className="flex items-start space-x-2 text-xs">
+                  <CheckCircle className="h-3 w-3 text-green-500 mt-0.5 flex-shrink-0" />
+                  <span className="text-muted-foreground">{suggestion}</span>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="space-y-1">
-            {suggestions.slice(0, 2).map((suggestion, index) => (
-              <div key={index} className="flex items-start space-x-2 text-xs">
-                <CheckCircle className="h-3 w-3 text-green-500 mt-0.5 flex-shrink-0" />
-                <span className="text-muted-foreground">{suggestion}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+        )}
 
         {/* Detailed Analysis (Collapsible) */}
         <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
