@@ -5,7 +5,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4';
 import { buildToneSpecificPrompt } from './promptBuilder.ts';
 import { sanitizeResumeContent } from './contentSanitizer.ts';
 
-const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
+const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL');
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
@@ -184,41 +184,44 @@ serve(async (req) => {
 
     const prompt = buildToneSpecificPrompt(jobDescription, templateId, userProfileData);
 
-    console.log(`Calling Gemini API with ${templateId} template tone and user profile data...`);
+    console.log(`Calling OpenAI API with ${templateId} template tone and user profile data...`);
     
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
+        'Authorization': `Bearer ${openaiApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: prompt
-          }]
-        }],
-        generationConfig: {
-          temperature: 0.7,
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 2048,
-        }
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an expert resume writer who creates professional, ATS-friendly resumes tailored to specific job descriptions. You use real user data to create personalized resumes that highlight relevant experience and skills.'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 2048,
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Gemini API error:', errorText);
-      throw new Error(`Gemini API error: ${response.status}`);
+      console.error('OpenAI API error:', errorText);
+      throw new Error(`OpenAI API error: ${response.status}`);
     }
 
     const data = await response.json();
     
-    if (!data.candidates || data.candidates.length === 0) {
-      throw new Error('No response generated from Gemini API');
+    if (!data.choices || data.choices.length === 0) {
+      throw new Error('No response generated from OpenAI API');
     }
 
-    const rawResume = data.candidates[0].content.parts[0].text;
+    const rawResume = data.choices[0].message.content;
     const cleanedResume = sanitizeResumeContent(rawResume);
     
     console.log(`Resume generated successfully with ${templateId} tone and user profile data for ${userProfileData.profile?.full_name || 'user'}`);
