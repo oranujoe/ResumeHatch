@@ -114,48 +114,93 @@ export class FixedPDFStyler {
     this.doc.setFont('helvetica', 'normal');
     this.doc.setCharSpace(0.005);
     
-    // Always use normal text color since we removed colored backgrounds
+    // Always use normal text color
     this.setTemplateColor('text');
     
-    // Split contact info into individual lines and ensure consistent spacing
-    const contactText = section.content.trim();
-    const contactLines = contactText.split('\n').filter(line => line.trim().length > 0);
-    
-    // Use consistent line height for contact info
-    const contactLineHeight = contactFontSize * 1.4 + 2; // Add 2 points between lines
-    
-    contactLines.forEach((line, index) => {
-      const trimmedLine = line.trim();
-      const currentY = yPosition + (index * contactLineHeight);
+    // Handle contact info with embedded links
+    if ('links' in section && section.links) {
+      // Process contact text with embedded clickable links
+      const contactText = section.content.trim();
+      const links = section.links;
       
-      // Check if line contains a URL
-      const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\/[^\s]*)/g;
-      const urlMatch = trimmedLine.match(urlRegex);
+      // Split contact text by common separators (•, |, -, etc.)
+      const parts = contactText.split(/\s*[•|·-]\s*/).filter(part => part.trim().length > 0);
       
-      if (urlMatch && urlMatch.length > 0) {
-        // Extract the URL from the line
-        let url = urlMatch[0];
+      let currentX = this.dimensions.margin;
+      const lineY = yPosition;
+      
+      parts.forEach((part, index) => {
+        const trimmedPart = part.trim();
         
-        // Ensure URL has protocol
-        if (!url.startsWith('http://') && !url.startsWith('https://')) {
-          if (url.startsWith('www.')) {
-            url = 'https://' + url;
-          } else if (url.includes('linkedin.com') || url.includes('github.com') || url.includes('.com/')) {
-            url = 'https://' + url;
-          }
+        // Check if this part matches any of our link texts
+        const matchingLinkText = Object.keys(links).find(linkText => 
+          trimmedPart.toLowerCase().includes(linkText.toLowerCase())
+        );
+        
+        if (matchingLinkText && links[matchingLinkText]) {
+          // This part contains a link - make it clickable
+          this.doc.setTextColor(...this.template.pdfStyles.primaryColor);
+          this.doc.textWithLink(trimmedPart, currentX, lineY, { url: links[matchingLinkText] });
+          this.setTemplateColor('text'); // Reset color
+        } else {
+          // Regular text
+          this.doc.text(trimmedPart, currentX, lineY);
         }
         
-        // Add the text as a clickable link
-        this.doc.textWithLink(trimmedLine, this.dimensions.margin, currentY, { url: url });
-      } else {
-        // Regular text without links
-        this.doc.text(trimmedLine, this.dimensions.margin, currentY);
-      }
-    });
-    
-    this.doc.setCharSpace(0.01);
-    // Proper spacing after contact info before next section
-    return yPosition + (contactLines.length * contactLineHeight) + 12;
+        // Calculate width and add separator for next part
+        const partWidth = this.doc.getTextWidth(trimmedPart);
+        currentX += partWidth;
+        
+        // Add separator between parts (except for last part)
+        if (index < parts.length - 1) {
+          const separator = ' • ';
+          this.doc.text(separator, currentX, lineY);
+          currentX += this.doc.getTextWidth(separator);
+        }
+      });
+      
+      return yPosition + contactFontSize * 1.4 + 12;
+    } else {
+      // Handle regular contact info without embedded links
+      const contactText = section.content.trim();
+      const contactLines = contactText.split('\n').filter(line => line.trim().length > 0);
+      
+      // Use consistent line height for contact info
+      const contactLineHeight = contactFontSize * 1.4 + 2; // Add 2 points between lines
+      
+      contactLines.forEach((line, index) => {
+        const trimmedLine = line.trim();
+        const currentY = yPosition + (index * contactLineHeight);
+        
+        // Check if line contains a URL
+        const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\/[^\s]*)/g;
+        const urlMatch = trimmedLine.match(urlRegex);
+        
+        if (urlMatch && urlMatch.length > 0) {
+          // Extract the URL from the line
+          let url = urlMatch[0];
+          
+          // Ensure URL has protocol
+          if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            if (url.startsWith('www.')) {
+              url = 'https://' + url;
+            } else if (url.includes('linkedin.com') || url.includes('github.com') || url.includes('.com/')) {
+              url = 'https://' + url;
+            }
+          }
+          
+          // Add the text as a clickable link
+          this.doc.textWithLink(trimmedLine, this.dimensions.margin, currentY, { url: url });
+        } else {
+          // Regular text without links
+          this.doc.text(trimmedLine, this.dimensions.margin, currentY);
+        }
+      });
+      
+      this.doc.setCharSpace(0.01);
+      // Proper spacing after contact info before next section
+      return yPosition + (contactLines.length * contactLineHeight) + 12;
+    }
   }
   
   public applyLinkStyle(section: PDFSection, yPosition: number): number {

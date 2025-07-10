@@ -78,6 +78,17 @@ export function buildToneSpecificPrompt(
 
   const selectedTone = templateTones[templateId as keyof typeof templateTones] || templateTones.modern;
 
+  // Build contact line with proper links
+  let contactLine = `${contactInfo.email} • ${contactInfo.phone} • ${contactInfo.location}`;
+  
+  if (contactInfo.linkedin !== '[LinkedIn URL]') {
+    contactLine += ` • <a href="${contactInfo.linkedin}" target="_blank">LinkedIn</a>`;
+  }
+  
+  if (contactInfo.portfolio !== '[Portfolio URL]') {
+    contactLine += ` • <a href="${contactInfo.portfolio}" target="_blank">Portfolio</a>`;
+  }
+
   const basePrompt = `
 Create a professional resume that matches this job description using the ${selectedTone.tone} tone and ${selectedTone.structure}. Use ${selectedTone.language}.
 
@@ -86,20 +97,6 @@ ${jobDescription}
 
 USER'S ACTUAL INFORMATION TO USE:
 Name: ${userName}
-Email: ${contactInfo.email}
-Phone: ${contactInfo.phone}
-Location: ${contactInfo.location}
-LinkedIn: ${contactInfo.linkedin}
-Portfolio: ${contactInfo.portfolio}
-
-CONTACT SECTION REQUIREMENTS:
-- Include a prominent contact header with the user's name
-- Display email address: ${contactInfo.email}
-- Display phone number: ${contactInfo.phone}
-- Display location: ${contactInfo.location}
-${contactInfo.linkedin !== '[LinkedIn URL]' ? `- Include clickable LinkedIn link: <a href="${contactInfo.linkedin}" target="_blank">LinkedIn Profile</a>` : '- LinkedIn: [Add LinkedIn URL]'}
-${contactInfo.portfolio !== '[Portfolio URL]' ? `- Include clickable portfolio link: <a href="${contactInfo.portfolio}" target="_blank">Portfolio Website</a>` : '- Portfolio: [Add Portfolio URL]'}
-
 Professional Summary: ${professionalSummary}
 
 Work Experience:
@@ -127,29 +124,21 @@ ${userProfileData.projects.map(project =>
 IMPORTANT INSTRUCTIONS:
 1. Use the user's ACTUAL NAME "${userName}" - never use placeholder names like "John Doe"
 2. Use all provided user information exactly as given
-3. **MANDATORY: Include ALL contact information in the contact section**:
-   - Name: ${userName}
-   - Email: ${contactInfo.email}
-   - Phone: ${contactInfo.phone}
-   - Location: ${contactInfo.location}
-   ${contactInfo.linkedin !== '[LinkedIn URL]' ? `- LinkedIn: Must include as clickable link <a href="${contactInfo.linkedin}">LinkedIn</a>` : '- LinkedIn: [Add LinkedIn URL]'}
-   ${contactInfo.portfolio !== '[Portfolio URL]' ? `- Portfolio: Must include as clickable link <a href="${contactInfo.portfolio}">Portfolio</a>` : '- Portfolio: [Add Portfolio URL]'}
-4. Tailor the content to match the job requirements while highlighting relevant user experience
-5. If user information is incomplete, use professional placeholders in [brackets] that the user can easily find and replace
-6. Structure the resume with the ${templateId} template style
-7. Make sure all contact information uses the user's actual details
-8. Focus on achievements and quantifiable results where possible
-9. Ensure the resume is ATS-friendly with clear section headers
-10. Keep the resume to 1-2 pages maximum
-11. Use consistent formatting throughout
-12. **CRITICAL: The contact section must appear at the top and include all provided contact details**
+3. Tailor the content to match the job requirements while highlighting relevant user experience
+4. If user information is incomplete, use professional placeholders in [brackets] that the user can easily find and replace
+5. Structure the resume with the ${templateId} template style
+6. Focus on achievements and quantifiable results where possible
+7. Ensure the resume is ATS-friendly with clear section headers
+8. Keep the resume to 1-2 pages maximum
+9. Use consistent formatting throughout
 
 **REQUIRED CONTACT SECTION STRUCTURE:**
-Use this exact structure for the contact section:
+Generate the contact section using EXACTLY this HTML structure (this is the ONLY place contact information should appear):
+
 <header>
 <h1>${userName}</h1>
 <div class="contact-info">
-<p>${contactInfo.email} • ${contactInfo.phone} • ${contactInfo.location}${contactInfo.linkedin !== '[LinkedIn URL]' ? ` • <a href="${contactInfo.linkedin}" target="_blank">LinkedIn</a>` : ''}${contactInfo.portfolio !== '[Portfolio URL]' ? ` • <a href="${contactInfo.portfolio}" target="_blank">Portfolio</a>` : ''}</p>
+<p>${contactLine}</p>
 </div>
 </header>
 
