@@ -45,12 +45,45 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
     return sectionTitles.some(title => text.includes(title)) && text.length < 50;
   };
   
+  // Function to extract links from element
+  const extractLinks = (element: Element): PDFSection[] => {
+    const linkSections: PDFSection[] = [];
+    const links = element.querySelectorAll('a[href]');
+    
+    links.forEach(link => {
+      const href = link.getAttribute('href');
+      const text = link.textContent?.trim();
+      
+      if (href && text) {
+        // Normalize URLs
+        let normalizedUrl = href;
+        if (!href.startsWith('http://') && !href.startsWith('https://')) {
+          if (href.includes('linkedin.com') || href.includes('github.com') || href.includes('.com')) {
+            normalizedUrl = 'https://' + href;
+          }
+        }
+        
+        linkSections.push({
+          type: 'link',
+          content: text,
+          url: normalizedUrl
+        });
+      }
+    });
+    
+    return linkSections;
+  };
+  
   // Function to process each element
   const processElement = (element: Element) => {
     const tagName = element.tagName.toLowerCase();
     const textContent = element.textContent?.trim() || '';
     
     if (!textContent || textContent.length < 3) return;
+    
+    // First extract any links from this element
+    const linkSections = extractLinks(element);
+    sections.push(...linkSections);
     
     switch (tagName) {
       case 'header':
@@ -92,14 +125,30 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
         sections.push({ type: 'subheader', content: textContent, level: 4 });
         break;
         
+      case 'a':
+        // Skip anchor tags as they're handled by extractLinks
+        break;
+        
       case 'p':
         if (textContent.length > 5) {
-          if (isContactInfo(textContent)) {
-            sections.push({ type: 'contact', content: textContent });
-          } else if (isSectionHeader(element)) {
-            sections.push({ type: 'header', content: textContent, level: 2 });
-          } else {
-            sections.push({ type: 'text', content: textContent });
+          // Remove link text from paragraph content since links are handled separately
+          let cleanText = textContent;
+          const links = element.querySelectorAll('a');
+          links.forEach(link => {
+            const linkText = link.textContent?.trim();
+            if (linkText) {
+              cleanText = cleanText.replace(linkText, '').trim();
+            }
+          });
+          
+          if (cleanText.length > 3) {
+            if (isContactInfo(cleanText)) {
+              sections.push({ type: 'contact', content: cleanText });
+            } else if (isSectionHeader(element)) {
+              sections.push({ type: 'header', content: cleanText, level: 2 });
+            } else {
+              sections.push({ type: 'text', content: cleanText });
+            }
           }
         }
         break;
@@ -168,6 +217,16 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
   let lastSection: PDFSection | null = null;
   
   sections.forEach(section => {
+    // Don't merge link sections
+    if (section.type === 'link') {
+      if (lastSection) {
+        processedSections.push(lastSection);
+      }
+      processedSections.push(section);
+      lastSection = null;
+      return;
+    }
+    
     // Merge consecutive contact sections into one
     if (lastSection && 
         lastSection.type === 'contact' && 
@@ -193,5 +252,6 @@ export const parseHTMLToPDFSections = (html: string): PDFSection[] => {
   }
   
   console.log('Parsed PDF sections:', processedSections.length, 'sections');
+  console.log('Link sections found:', processedSections.filter(s => s.type === 'link').length);
   return processedSections;
 };

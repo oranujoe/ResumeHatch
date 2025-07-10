@@ -158,6 +158,29 @@ export class FixedPDFStyler {
     return yPosition + (contactLines.length * contactLineHeight) + 12;
   }
   
+  public applyLinkStyle(section: PDFSection, yPosition: number): number {
+    const fontSize = this.template.pdfStyles.bodyFontSize;
+    
+    yPosition = this.checkNewPage(this.spacing.lineHeight + 8, yPosition);
+    
+    this.doc.setFontSize(fontSize);
+    this.doc.setFont('helvetica', 'normal');
+    this.doc.setCharSpace(0.005);
+    
+    // Use primary color for links to make them stand out
+    this.setTemplateColor('primary');
+    
+    // Add the clickable link
+    if (section.url) {
+      this.doc.textWithLink(section.content, this.dimensions.margin, yPosition, { url: section.url });
+    } else {
+      // Fallback to regular text if no URL
+      this.doc.text(section.content, this.dimensions.margin, yPosition);
+    }
+    
+    return yPosition + this.spacing.lineHeight + 4;
+  }
+  
   public applySubheaderStyle(section: PDFSection, yPosition: number): number {
     yPosition += 8;
     yPosition = this.checkNewPage(this.spacing.subHeaderHeight + 12, yPosition);
@@ -192,7 +215,6 @@ export class FixedPDFStyler {
   
   public applyListStyle(section: PDFSection, yPosition: number): number {
     const fontSize = this.template.pdfStyles.bodyFontSize;
-    const bulletText = `• ${section.content}`;
     
     // Use consistent indentation for all list items
     const listIndent = 20; // Fixed indent for bullet points

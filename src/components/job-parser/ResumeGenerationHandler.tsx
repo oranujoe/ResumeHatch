@@ -4,7 +4,6 @@ import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { cleanResumeContent } from '@/utils/resumeContentCleaner';
-import { addLinkedInToResumeContent } from './utilityFunction';
 
 interface ResumeGenerationHandlerProps {
   jobDescription: string;
@@ -102,18 +101,6 @@ export const useResumeGeneration = ({
           console.log('Adding missing email to resume:', user.email);
           processedResume = addEmailToResume(processedResume, user.email);
         }
-
-        // NEW: Add LinkedIn URL if missing using centralized utility
-        try {
-          const linkedinUrl = await getLinkedInUrlFromProfile(user.id);
-          if (linkedinUrl && !processedResume.includes(linkedinUrl)) {
-            console.log('Adding missing LinkedIn URL to resume:', linkedinUrl);
-            processedResume = addLinkedInToResumeContent(processedResume, linkedinUrl);
-          }
-        } catch (linkedinError) {
-          console.warn('Failed to add LinkedIn URL, continuing without it:', linkedinError);
-          // Continue without LinkedIn URL rather than failing the entire generation
-        }
         
       } catch (cleanupError) {
         console.warn('Frontend cleanup failed, using original content:', cleanupError);
@@ -143,27 +130,6 @@ export const useResumeGeneration = ({
       setTimeout(() => {
         setProgress(0);
       }, 500);
-    }
-  };
-
-  // Helper function to get LinkedIn URL from user profile
-  const getLinkedInUrlFromProfile = async (userId: string): Promise<string | null> => {
-    try {
-      const { data, error } = await supabase
-        .from('user_profiles')
-        .select('linkedin_url')
-        .eq('user_id', userId)
-        .maybeSingle();
-
-      if (error) {
-        console.error('Error fetching LinkedIn URL:', error);
-        return null;
-      }
-
-      return data?.linkedin_url || null;
-    } catch (error) {
-      console.error('Error in getLinkedInUrlFromProfile:', error);
-      return null;
     }
   };
 
