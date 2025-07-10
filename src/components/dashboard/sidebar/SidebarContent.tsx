@@ -19,6 +19,14 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
 }) => {
   const { data: isAdmin, isLoading } = useAdminRole();
 
+  // Filter bottom nav items based on admin status
+  const filteredBottomNavItems = bottomNavItems.filter(item => {
+    if (item.adminOnly) {
+      return !isLoading && isAdmin;
+    }
+    return true;
+  });
+
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="p-1.5 space-y-1">
@@ -63,9 +71,9 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
           </>
         )}
         
-        {/* Bottom Navigation */}
+        {/* Bottom Navigation - filtered based on admin status */}
         <div className="pt-3 mt-3 border-t border-sidebar-border space-y-1">
-          {bottomNavItems.map(item => (
+          {filteredBottomNavItems.map(item => (
             <NavItem
               key={item.title}
               item={item}

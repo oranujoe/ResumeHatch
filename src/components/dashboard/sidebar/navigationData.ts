@@ -7,6 +7,7 @@ export interface NavItem {
   subItems?: { title: string; url: string; comingSoon?: boolean }[];
   disabled?: boolean;
   comingSoon?: boolean;
+  adminOnly?: boolean; // New property to mark admin-only items
 }
 
 export const mainNavItems: NavItem[] = [
@@ -119,6 +120,7 @@ export const bottomNavItems: NavItem[] = [
     title: 'Admin Setup',
     url: '/dashboard/setup-admin',
     icon: Shield,
+    adminOnly: true, // Mark as admin-only
   },
 ];
 
