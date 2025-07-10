@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Plus } from 'lucide-react';
-import WorkExperienceForm from '../../forms/WorkExperienceForm';
+import WorkExperienceForm from '../../../forms/WorkExperienceForm';
 import { WorkExperienceActionsProps } from '../types/WorkExperienceTypes';
 
 const WorkExperienceActions: React.FC<WorkExperienceActionsProps> = ({
