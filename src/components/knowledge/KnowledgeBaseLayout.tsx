@@ -27,7 +27,7 @@ const KnowledgeBaseLayout: React.FC<KnowledgeBaseLayoutProps> = ({ children }) =
       <div className="space-y-2">
         <h2 className="text-2xl font-bold">Knowledge Base</h2>
         <p className="text-muted-foreground">
-          Manage your professional profile and analyze skill gaps for career growth.
+          Manage your professional profile data to generate personalized, accurate resumes without placeholder content.
         </p>
       </div>
 
