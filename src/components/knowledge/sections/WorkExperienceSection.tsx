@@ -8,6 +8,15 @@ import { Briefcase, Plus, Edit, Trash2 } from 'lucide-react';
 import { useWorkExperiences, useCreateWorkExperience, useUpdateWorkExperience, useDeleteWorkExperience } from '@/hooks/useKnowledgeBase';
 import WorkExperienceForm from '../forms/WorkExperienceForm';
 
+// Helper function to safely convert Json to string array
+const jsonToStringArray = (jsonValue: any): string[] => {
+  if (!jsonValue) return [];
+  if (Array.isArray(jsonValue)) {
+    return jsonValue.filter((item): item is string => typeof item === 'string');
+  }
+  return [];
+};
+
 const WorkExperienceSection: React.FC = () => {
   const { data: workExperiences, isLoading } = useWorkExperiences();
   const createWorkExperience = useCreateWorkExperience();
@@ -66,73 +75,77 @@ const WorkExperienceSection: React.FC = () => {
       <CardContent>
         {workExperiences && workExperiences.length > 0 ? (
           <div className="space-y-4">
-            {workExperiences.map((exp) => (
-              <div key={exp.id} className="border rounded-lg p-4 space-y-3">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <h4 className="font-medium text-lg">{exp.job_title}</h4>
-                    <p className="text-muted-foreground">{exp.company_name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {new Date(exp.start_date).toLocaleDateString()} - 
-                      {exp.is_current ? ' Present' : ` ${new Date(exp.end_date!).toLocaleDateString()}`}
-                      {exp.location && ` • ${exp.location}`}
-                    </p>
-                  </div>
-                  <div className="flex space-x-2">
-                    <Dialog open={editingExperience?.id === exp.id} onOpenChange={(open) => setEditingExperience(open ? exp : null)}>
-                      <DialogTrigger asChild>
-                        <Button variant="outline" size="sm">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-2xl">
-                        <DialogHeader>
-                          <DialogTitle>Edit Work Experience</DialogTitle>
-                        </DialogHeader>
-                        <WorkExperienceForm
-                          initialData={editingExperience}
-                          onSubmit={handleUpdate}
-                          onCancel={() => setEditingExperience(null)}
-                          isLoading={updateWorkExperience.isPending}
-                        />
-                      </DialogContent>
-                    </Dialog>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => handleDelete(exp.id)}
-                      disabled={deleteWorkExperience.isPending}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                {exp.achievements && Array.isArray(exp.achievements) && exp.achievements.length > 0 && (
-                  <div>
-                    <h5 className="font-medium text-sm mb-2">Key Achievements:</h5>
-                    <ul className="list-disc list-inside space-y-1">
-                      {exp.achievements.map((achievement, index) => (
-                        <li key={index} className="text-sm text-muted-foreground">{achievement}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {exp.technologies_used && exp.technologies_used.length > 0 && (
-                  <div>
-                    <h5 className="font-medium text-sm mb-2">Technologies Used:</h5>
-                    <div className="flex flex-wrap gap-2">
-                      {exp.technologies_used.map((tech, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
-                          {tech}
-                        </Badge>
-                      ))}
+            {workExperiences.map((exp) => {
+              const achievements = jsonToStringArray(exp.achievements);
+              
+              return (
+                <div key={exp.id} className="border rounded-lg p-4 space-y-3">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <h4 className="font-medium text-lg">{exp.job_title}</h4>
+                      <p className="text-muted-foreground">{exp.company_name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {new Date(exp.start_date).toLocaleDateString()} - 
+                        {exp.is_current ? ' Present' : ` ${new Date(exp.end_date!).toLocaleDateString()}`}
+                        {exp.location && ` • ${exp.location}`}
+                      </p>
+                    </div>
+                    <div className="flex space-x-2">
+                      <Dialog open={editingExperience?.id === exp.id} onOpenChange={(open) => setEditingExperience(open ? exp : null)}>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" size="sm">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-2xl">
+                          <DialogHeader>
+                            <DialogTitle>Edit Work Experience</DialogTitle>
+                          </DialogHeader>
+                          <WorkExperienceForm
+                            initialData={editingExperience}
+                            onSubmit={handleUpdate}
+                            onCancel={() => setEditingExperience(null)}
+                            isLoading={updateWorkExperience.isPending}
+                          />
+                        </DialogContent>
+                      </Dialog>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => handleDelete(exp.id)}
+                        disabled={deleteWorkExperience.isPending}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
-                )}
-              </div>
-            ))}
+
+                  {achievements.length > 0 && (
+                    <div>
+                      <h5 className="font-medium text-sm mb-2">Key Achievements:</h5>
+                      <ul className="list-disc list-inside space-y-1">
+                        {achievements.map((achievement, index) => (
+                          <li key={index} className="text-sm text-muted-foreground">{achievement}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {exp.technologies_used && exp.technologies_used.length > 0 && (
+                    <div>
+                      <h5 className="font-medium text-sm mb-2">Technologies Used:</h5>
+                      <div className="flex flex-wrap gap-2">
+                        {exp.technologies_used.map((tech, index) => (
+                          <Badge key={index} variant="secondary" className="text-xs">
+                            {tech}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         ) : (
           <div className="text-center py-8">
