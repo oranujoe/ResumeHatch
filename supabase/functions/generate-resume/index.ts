@@ -62,6 +62,29 @@ async function fetchUserProfile(userId: string): Promise<UserProfileData | null>
       supabase.from('projects_portfolio').select('*').eq('user_id', userId).order('start_date', { ascending: false })
     ]);
 
+    // Check for any errors in the parallel queries
+    if (profileResult.error) {
+      console.warn('Error fetching user_profiles:', profileResult.error);
+    }
+    if (profilesResult.error) {
+      console.warn('Error fetching profiles:', profilesResult.error);
+    }
+    if (workResult.error) {
+      console.warn('Error fetching work_experiences:', workResult.error);
+    }
+    if (educationResult.error) {
+      console.warn('Error fetching education_records:', educationResult.error);
+    }
+    if (skillsResult.error) {
+      console.warn('Error fetching skills_inventory:', skillsResult.error);
+    }
+    if (certificationsResult.error) {
+      console.warn('Error fetching certifications:', certificationsResult.error);
+    }
+    if (projectsResult.error) {
+      console.warn('Error fetching projects_portfolio:', projectsResult.error);
+    }
+
     // Merge profile data with fallback logic
     let mergedProfile = profileResult.data;
     if (!mergedProfile && profilesResult.data) {

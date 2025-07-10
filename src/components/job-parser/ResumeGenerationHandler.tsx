@@ -104,10 +104,15 @@ export const useResumeGeneration = ({
         }
 
         // NEW: Add LinkedIn URL if missing using centralized utility
-        const linkedinUrl = await getLinkedInUrlFromProfile(user.id);
-        if (linkedinUrl && !processedResume.includes(linkedinUrl)) {
-          console.log('Adding missing LinkedIn URL to resume:', linkedinUrl);
-          processedResume = addLinkedInToResumeContent(processedResume, linkedinUrl);
+        try {
+          const linkedinUrl = await getLinkedInUrlFromProfile(user.id);
+          if (linkedinUrl && !processedResume.includes(linkedinUrl)) {
+            console.log('Adding missing LinkedIn URL to resume:', linkedinUrl);
+            processedResume = addLinkedInToResumeContent(processedResume, linkedinUrl);
+          }
+        } catch (linkedinError) {
+          console.warn('Failed to add LinkedIn URL, continuing without it:', linkedinError);
+          // Continue without LinkedIn URL rather than failing the entire generation
         }
         
       } catch (cleanupError) {
@@ -148,7 +153,7 @@ export const useResumeGeneration = ({
         .from('user_profiles')
         .select('linkedin_url')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error fetching LinkedIn URL:', error);
