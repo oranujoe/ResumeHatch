@@ -117,9 +117,52 @@ export class FixedPDFStyler {
     // Always use normal text color
     this.setTemplateColor('text');
     
-    // Handle contact info with embedded links
-    if ('links' in section && section.links) {
-      // Process contact text with embedded clickable links
+    // Handle contact info with inline links
+    if ('inlineLinks' in section && section.inlineLinks) {
+      // Process contact text with inline clickable links
+      const contactText = section.content.trim();
+      const inlineLinks = section.inlineLinks;
+      
+      // Split contact text by common separators (•, |, -, etc.)
+      const parts = contactText.split(/\s*[•|·-]\s*/).filter(part => part.trim().length > 0);
+      
+      let currentX = this.dimensions.margin;
+      const lineY = yPosition;
+      
+      parts.forEach((part, index) => {
+        const trimmedPart = part.trim();
+        
+        // Check if this part matches any of our inline link texts
+        const matchingLinkKey = Object.keys(inlineLinks).find(linkKey => 
+          trimmedPart.toLowerCase().includes(linkKey.toLowerCase())
+        );
+        
+        if (matchingLinkKey && inlineLinks[matchingLinkKey]) {
+          // This part contains a link - make it clickable with primary color
+          const primaryColor = this.template.pdfStyles.primaryColor;
+          this.doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+          this.doc.textWithLink(trimmedPart, currentX, lineY, { url: inlineLinks[matchingLinkKey] });
+          this.setTemplateColor('text'); // Reset color
+        } else {
+          // Regular text
+          this.doc.text(trimmedPart, currentX, lineY);
+        }
+        
+        // Calculate width and add separator for next part
+        const partWidth = this.doc.getTextWidth(trimmedPart);
+        currentX += partWidth;
+        
+        // Add separator between parts (except for last part)
+        if (index < parts.length - 1) {
+          const separator = ' • ';
+          this.doc.text(separator, currentX, lineY);
+          currentX += this.doc.getTextWidth(separator);
+        }
+      });
+      
+      return yPosition + contactFontSize * 1.4 + 12;
+    } else if ('links' in section && section.links) {
+      // Handle legacy contact info with embedded links
       const contactText = section.content.trim();
       const links = section.links;
       
@@ -139,7 +182,8 @@ export class FixedPDFStyler {
         
         if (matchingLinkText && links[matchingLinkText]) {
           // This part contains a link - make it clickable
-          this.doc.setTextColor(...this.template.pdfStyles.primaryColor);
+          const primaryColor = this.template.pdfStyles.primaryColor;
+          this.doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
           this.doc.textWithLink(trimmedPart, currentX, lineY, { url: links[matchingLinkText] });
           this.setTemplateColor('text'); // Reset color
         } else {
