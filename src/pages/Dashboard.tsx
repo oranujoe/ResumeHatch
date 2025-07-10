@@ -16,6 +16,10 @@ import KnowledgeBaseLayout from '../components/knowledge/KnowledgeBaseLayout';
 import ProfileDataPage from '../components/knowledge/ProfileDataPage';
 import SkillsGapPage from '../components/knowledge/SkillsGapPage';
 import ComingSoonPage from '../components/dashboard/ComingSoonPage';
+import AdminRoute from '../components/admin/AdminRoute';
+import AdminLayout from '../components/admin/AdminLayout';
+import AdminOverview from '../components/admin/AdminOverview';
+import AdminUserManagement from '../components/admin/AdminUserManagement';
 
 const Dashboard = () => {
   const location = useLocation();
@@ -26,6 +30,51 @@ const Dashboard = () => {
         <DashboardLayout pageTitle="Dashboard">
           <Routes>
             <Route index element={<DashboardOverview />} />
+            
+            {/* Admin Setup Route - Accessible to all authenticated users */}
+            <Route path="setup-admin" element={
+              <AdminLayout title="Admin Setup">
+                <div className="space-y-4">
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <p className="text-sm text-yellow-800">
+                      Use this section to grant admin privileges to users. Once you become an admin, 
+                      you can access the full admin dashboard at <code>/admin</code>.
+                    </p>
+                  </div>
+                  <AdminUserManagement />
+                </div>
+              </AdminLayout>
+            } />
+            
+            {/* Admin Routes - Protected */}
+            <Route path="admin" element={
+              <AdminRoute>
+                <AdminLayout>
+                  <AdminOverview />
+                </AdminLayout>
+              </AdminRoute>
+            } />
+            <Route path="admin/users" element={
+              <AdminRoute>
+                <AdminLayout title="User Management">
+                  <AdminUserManagement />
+                </AdminLayout>
+              </AdminRoute>
+            } />
+            <Route path="admin/audit" element={
+              <AdminRoute>
+                <AdminLayout title="Audit Logs">
+                  <ComingSoonPage />
+                </AdminLayout>
+              </AdminRoute>
+            } />
+            <Route path="admin/system" element={
+              <AdminRoute>
+                <AdminLayout title="System Data">
+                  <ComingSoonPage />
+                </AdminLayout>
+              </AdminRoute>
+            } />
             
             {/* Coming Soon Routes */}
             <Route path="applications/*" element={<ComingSoonPage />} />

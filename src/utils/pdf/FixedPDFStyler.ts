@@ -114,48 +114,160 @@ export class FixedPDFStyler {
     this.doc.setFont('helvetica', 'normal');
     this.doc.setCharSpace(0.005);
     
-    // Always use normal text color since we removed colored backgrounds
+    // Always use normal text color
     this.setTemplateColor('text');
     
-    // Split contact info into individual lines and ensure consistent spacing
-    const contactText = section.content.trim();
-    const contactLines = contactText.split('\n').filter(line => line.trim().length > 0);
-    
-    // Use consistent line height for contact info
-    const contactLineHeight = contactFontSize * 1.4 + 2; // Add 2 points between lines
-    
-    contactLines.forEach((line, index) => {
-      const trimmedLine = line.trim();
-      const currentY = yPosition + (index * contactLineHeight);
+    // Handle contact info with inline links
+    if ('inlineLinks' in section && section.inlineLinks) {
+      // Process contact text with inline clickable links
+      const contactText = section.content.trim();
+      const inlineLinks = section.inlineLinks;
       
-      // Check if line contains a URL
-      const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\/[^\s]*)/g;
-      const urlMatch = trimmedLine.match(urlRegex);
+      // Split contact text by common separators (•, |, -, etc.)
+      const parts = contactText.split(/\s*[•|·-]\s*/).filter(part => part.trim().length > 0);
       
-      if (urlMatch && urlMatch.length > 0) {
-        // Extract the URL from the line
-        let url = urlMatch[0];
+      let currentX = this.dimensions.margin;
+      const lineY = yPosition;
+      
+      parts.forEach((part, index) => {
+        const trimmedPart = part.trim();
         
-        // Ensure URL has protocol
-        if (!url.startsWith('http://') && !url.startsWith('https://')) {
-          if (url.startsWith('www.')) {
-            url = 'https://' + url;
-          } else if (url.includes('linkedin.com') || url.includes('github.com') || url.includes('.com/')) {
-            url = 'https://' + url;
-          }
+        // Check if this part matches any of our inline link texts
+        const matchingLinkKey = Object.keys(inlineLinks).find(linkKey => 
+          trimmedPart.toLowerCase().includes(linkKey.toLowerCase())
+        );
+        
+        if (matchingLinkKey && inlineLinks[matchingLinkKey]) {
+          // This part contains a link - make it clickable with primary color
+          const primaryColor = this.template.pdfStyles.primaryColor;
+          this.doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+          this.doc.textWithLink(trimmedPart, currentX, lineY, { url: inlineLinks[matchingLinkKey] });
+          this.setTemplateColor('text'); // Reset color
+        } else {
+          // Regular text
+          this.doc.text(trimmedPart, currentX, lineY);
         }
         
-        // Add the text as a clickable link
-        this.doc.textWithLink(trimmedLine, this.dimensions.margin, currentY, { url: url });
-      } else {
-        // Regular text without links
-        this.doc.text(trimmedLine, this.dimensions.margin, currentY);
-      }
-    });
+        // Calculate width and add separator for next part
+        const partWidth = this.doc.getTextWidth(trimmedPart);
+        currentX += partWidth;
+        
+        // Add separator between parts (except for last part)
+        if (index < parts.length - 1) {
+          const separator = ' • ';
+          this.doc.text(separator, currentX, lineY);
+          currentX += this.doc.getTextWidth(separator);
+        }
+      });
+      
+      return yPosition + contactFontSize * 1.4 + 12;
+    } else if ('links' in section && section.links) {
+      // Handle legacy contact info with embedded links
+      const contactText = section.content.trim();
+      const links = section.links;
+      
+      // Split contact text by common separators (•, |, -, etc.)
+      const parts = contactText.split(/\s*[•|·-]\s*/).filter(part => part.trim().length > 0);
+      
+      let currentX = this.dimensions.margin;
+      const lineY = yPosition;
+      
+      parts.forEach((part, index) => {
+        const trimmedPart = part.trim();
+        
+        // Check if this part matches any of our link texts
+        const matchingLinkText = Object.keys(links).find(linkText => 
+          trimmedPart.toLowerCase().includes(linkText.toLowerCase())
+        );
+        
+        if (matchingLinkText && links[matchingLinkText]) {
+          // This part contains a link - make it clickable
+          const primaryColor = this.template.pdfStyles.primaryColor;
+          this.doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+          this.doc.textWithLink(trimmedPart, currentX, lineY, { url: links[matchingLinkText] });
+          this.setTemplateColor('text'); // Reset color
+        } else {
+          // Regular text
+          this.doc.text(trimmedPart, currentX, lineY);
+        }
+        
+        // Calculate width and add separator for next part
+        const partWidth = this.doc.getTextWidth(trimmedPart);
+        currentX += partWidth;
+        
+        // Add separator between parts (except for last part)
+        if (index < parts.length - 1) {
+          const separator = ' • ';
+          this.doc.text(separator, currentX, lineY);
+          currentX += this.doc.getTextWidth(separator);
+        }
+      });
+      
+      return yPosition + contactFontSize * 1.4 + 12;
+    } else {
+      // Handle regular contact info without embedded links
+      const contactText = section.content.trim();
+      const contactLines = contactText.split('\n').filter(line => line.trim().length > 0);
+      
+      // Use consistent line height for contact info
+      const contactLineHeight = contactFontSize * 1.4 + 2; // Add 2 points between lines
+      
+      contactLines.forEach((line, index) => {
+        const trimmedLine = line.trim();
+        const currentY = yPosition + (index * contactLineHeight);
+        
+        // Check if line contains a URL
+        const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\/[^\s]*)/g;
+        const urlMatch = trimmedLine.match(urlRegex);
+        
+        if (urlMatch && urlMatch.length > 0) {
+          // Extract the URL from the line
+          let url = urlMatch[0];
+          
+          // Ensure URL has protocol
+          if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            if (url.startsWith('www.')) {
+              url = 'https://' + url;
+            } else if (url.includes('linkedin.com') || url.includes('github.com') || url.includes('.com/')) {
+              url = 'https://' + url;
+            }
+          }
+          
+          // Add the text as a clickable link
+          this.doc.textWithLink(trimmedLine, this.dimensions.margin, currentY, { url: url });
+        } else {
+          // Regular text without links
+          this.doc.text(trimmedLine, this.dimensions.margin, currentY);
+        }
+      });
+      
+      this.doc.setCharSpace(0.01);
+      // Proper spacing after contact info before next section
+      return yPosition + (contactLines.length * contactLineHeight) + 12;
+    }
+  }
+  
+  public applyLinkStyle(section: PDFSection, yPosition: number): number {
+    const fontSize = this.template.pdfStyles.bodyFontSize;
     
-    this.doc.setCharSpace(0.01);
-    // Proper spacing after contact info before next section
-    return yPosition + (contactLines.length * contactLineHeight) + 12;
+    yPosition = this.checkNewPage(this.spacing.lineHeight + 8, yPosition);
+    
+    this.doc.setFontSize(fontSize);
+    this.doc.setFont('helvetica', 'normal');
+    this.doc.setCharSpace(0.005);
+    
+    // Use primary color for links to make them stand out
+    this.setTemplateColor('primary');
+    
+    // Add the clickable link
+    if (section.url) {
+      this.doc.textWithLink(section.content, this.dimensions.margin, yPosition, { url: section.url });
+    } else {
+      // Fallback to regular text if no URL
+      this.doc.text(section.content, this.dimensions.margin, yPosition);
+    }
+    
+    return yPosition + this.spacing.lineHeight + 4;
   }
   
   public applySubheaderStyle(section: PDFSection, yPosition: number): number {
@@ -192,7 +304,6 @@ export class FixedPDFStyler {
   
   public applyListStyle(section: PDFSection, yPosition: number): number {
     const fontSize = this.template.pdfStyles.bodyFontSize;
-    const bulletText = `• ${section.content}`;
     
     // Use consistent indentation for all list items
     const listIndent = 20; // Fixed indent for bullet points

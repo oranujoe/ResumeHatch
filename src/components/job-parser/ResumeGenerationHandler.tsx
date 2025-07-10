@@ -96,37 +96,10 @@ export const useResumeGeneration = ({
         processedResume = cleanResumeContent(data.resume);
         console.log('Resume content cleaned successfully');
         
-        // CLIENT-SIDE WORKAROUND: Add email to resume if missing
+        // Enhanced CLIENT-SIDE WORKAROUND: Add missing contact information
         if (user.email && !processedResume.includes(user.email)) {
           console.log('Adding missing email to resume:', user.email);
-          
-          // Try to find and enhance the contact section
-          const contactRegex = /<div[^>]*class[^>]*contact[^>]*>[\s\S]*?<\/div>/i;
-          const headerRegex = /<header[\s\S]*?<\/header>/i;
-          const h1Regex = /(<h1[^>]*>.*?<\/h1>)/i;
-          
-          if (contactRegex.test(processedResume)) {
-            // Replace existing contact section to include email
-            processedResume = processedResume.replace(contactRegex, (match) => {
-              if (!match.includes(user.email)) {
-                return match.replace(/(<p[^>]*>)/, `$1${user.email} • `);
-              }
-              return match;
-            });
-          } else if (headerRegex.test(processedResume)) {
-            // Add email to header section
-            processedResume = processedResume.replace(headerRegex, (match) => {
-              if (!match.includes(user.email)) {
-                return match.replace(/(<\/h1>)/, `$1\n<p>${user.email}</p>`);
-              }
-              return match;
-            });
-          } else if (h1Regex.test(processedResume)) {
-            // Add email after the first h1 (name)
-            processedResume = processedResume.replace(h1Regex, `$1\n<p style="margin-top: 5px; font-size: 14px;">${user.email}</p>`);
-          }
-          
-          console.log('Email injection completed');
+          processedResume = addEmailToResume(processedResume, user.email);
         }
         
       } catch (cleanupError) {
@@ -158,6 +131,36 @@ export const useResumeGeneration = ({
         setProgress(0);
       }, 500);
     }
+  };
+
+  // Helper function to add email to resume
+  const addEmailToResume = (resume: string, email: string): string => {
+    const contactRegex = /<div[^>]*class[^>]*contact[^>]*>[\s\S]*?<\/div>/i;
+    const headerRegex = /<header[\s\S]*?<\/header>/i;
+    const h1Regex = /(<h1[^>]*>.*?<\/h1>)/i;
+    
+    if (contactRegex.test(resume)) {
+      // Replace existing contact section to include email
+      return resume.replace(contactRegex, (match) => {
+        if (!match.includes(email)) {
+          return match.replace(/(<p[^>]*>)/, `$1${email} • `);
+        }
+        return match;
+      });
+    } else if (headerRegex.test(resume)) {
+      // Add email to header section
+      return resume.replace(headerRegex, (match) => {
+        if (!match.includes(email)) {
+          return match.replace(/(<\/h1>)/, `$1\n<p>${email}</p>`);
+        }
+        return match;
+      });
+    } else if (h1Regex.test(resume)) {
+      // Add email after the first h1 (name)
+      return resume.replace(h1Regex, `$1\n<p style="margin-top: 5px; font-size: 14px;">${email}</p>`);
+    }
+    
+    return resume;
   };
 
   return { generateResume };

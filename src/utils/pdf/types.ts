@@ -1,8 +1,10 @@
 
 export interface PDFSection {
-  type: 'header' | 'subheader' | 'text' | 'list' | 'contact';
+  type: 'header' | 'subheader' | 'text' | 'list' | 'contact' | 'link';
   content: string;
   level?: number;
+  url?: string; // For link sections
+  links?: { [linkText: string]: string }; // For contact sections with embedded links
 }
 
 export interface PDFGenerationOptions {
