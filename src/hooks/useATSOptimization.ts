@@ -2,26 +2,36 @@
 import { useState, useEffect } from 'react';
 import { extractTextFromHTML, normalizeContent, getWordCount } from '@/utils/textExtraction';
 
-export interface ATSMetrics {
-  overallScore: number;
-  keywordDensity: number;
-  readabilityScore: number;
+export interface ATSScore {
+  overall: number;
+  keyword: number;
   formatting: number;
-  wordCount: number;
+  content: number;
+  compatibility: number;
+}
+
+export interface ATSMetrics {
+  score: ATSScore;
   keywordMatches: string[];
+  totalKeywords: number;
   suggestions: string[];
+  issues: string[];
   isAnalyzing: boolean;
 }
 
-export const useATSOptimization = (resumeContent: string, jobDescription: string) => {
+export const useATSOptimization = (resumeContent: string, jobDescription: string): ATSMetrics => {
   const [metrics, setMetrics] = useState<ATSMetrics>({
-    overallScore: 0,
-    keywordDensity: 0,
-    readabilityScore: 0,
-    formatting: 0,
-    wordCount: 0,
+    score: {
+      overall: 0,
+      keyword: 0,
+      formatting: 0,
+      content: 0,
+      compatibility: 0
+    },
     keywordMatches: [],
+    totalKeywords: 0,
     suggestions: [],
+    issues: [],
     isAnalyzing: false
   });
 
@@ -95,28 +105,34 @@ const analyzeContent = (resumeText: string, jobText: string): Omit<ATSMetrics, '
   console.log('analyzeContent: Keyword matches', keywordMatches);
 
   // Calculate metrics
-  const keywordDensity = jobKeywords.length > 0 ? (keywordMatches.length / jobKeywords.length) * 100 : 0;
-  const readabilityScore = calculateReadabilityScore(resumeText);
-  const formatting = calculateFormattingScore(resumeText);
+  const keywordScore = jobKeywords.length > 0 ? (keywordMatches.length / jobKeywords.length) * 100 : 0;
+  const contentScore = calculateReadabilityScore(resumeText);
+  const formattingScore = calculateFormattingScore(resumeText);
+  const compatibilityScore = Math.min(100, (keywordScore + contentScore + formattingScore) / 3);
   
   // Overall score (weighted average)
   const overallScore = Math.round(
-    (keywordDensity * 0.4) + 
-    (readabilityScore * 0.3) + 
-    (formatting * 0.3)
+    (keywordScore * 0.4) + 
+    (contentScore * 0.3) + 
+    (formattingScore * 0.3)
   );
 
-  // Generate suggestions
+  // Generate suggestions and issues
   const suggestions = generateSuggestions(keywordMatches, jobKeywords, wordCount);
+  const issues = generateIssues(keywordMatches, jobKeywords, wordCount);
 
   const result = {
-    overallScore,
-    keywordDensity: Math.round(keywordDensity),
-    readabilityScore: Math.round(readabilityScore),
-    formatting: Math.round(formatting),
-    wordCount,
+    score: {
+      overall: overallScore,
+      keyword: Math.round(keywordScore),
+      formatting: Math.round(formattingScore),
+      content: Math.round(contentScore),
+      compatibility: Math.round(compatibilityScore)
+    },
     keywordMatches,
-    suggestions
+    totalKeywords: jobKeywords.length,
+    suggestions,
+    issues
   };
 
   console.log('analyzeContent: Final result', result);
@@ -201,6 +217,24 @@ const generateSuggestions = (matches: string[], allKeywords: string[], wordCount
   }
   
   return suggestions;
+};
+
+const generateIssues = (matches: string[], allKeywords: string[], wordCount: number): string[] => {
+  const issues: string[] = [];
+  
+  if (matches.length === 0) {
+    issues.push("No matching keywords found");
+  }
+  
+  if (wordCount < 200) {
+    issues.push("Resume content is too short");
+  }
+  
+  if (matches.length < allKeywords.length * 0.2) {
+    issues.push("Low keyword density");
+  }
+  
+  return issues;
 };
 
 // Common words to filter out during keyword extraction

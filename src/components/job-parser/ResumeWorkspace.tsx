@@ -27,10 +27,7 @@ const ResumeWorkspace: React.FC<ResumeWorkspaceProps> = ({
   onCopyToClipboard,
 }) => {
   // Get ATS optimization analysis
-  const atsAnalysis = useATSOptimization({
-    resumeContent: generatedResume,
-    jobDescription: jobDescription
-  });
+  const atsAnalysis = useATSOptimization(generatedResume, jobDescription);
 
   return (
     <div className="space-y-6">
@@ -62,10 +59,10 @@ const ResumeWorkspace: React.FC<ResumeWorkspaceProps> = ({
           <ATSOptimizationMeter
             score={atsAnalysis.score}
             suggestions={atsAnalysis.suggestions}
-            keywordMatches={atsAnalysis.keywordMatches}
+            keywordMatches={atsAnalysis.keywordMatches.length}
             totalKeywords={atsAnalysis.totalKeywords}
             issues={atsAnalysis.issues}
-            isAnalyzing={!generatedResume.trim()}
+            isAnalyzing={atsAnalysis.isAnalyzing}
           />
         </div>
       </div>
