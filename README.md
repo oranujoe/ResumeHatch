@@ -71,3 +71,51 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## Chrome Extension (Resume Hatch Assistant)
+
+The repository now contains a companion browser extension under `browser-extension/` that lets you:
+
+1. Capture job postings from any website and send them to your Resume Hatch dashboard.
+2. Autofill common application fields using the data you already store in Resume Hatch.
+3. Record each submission so your Dashboard KPIs stay up-to-date.
+
+### Build & load in Chrome (dev mode)
+
+```sh
+# One-time: install deps
+npm i
+
+# Build the extension (outputs to browser-extension/dist)
+npm run build:extension
+```
+
+1. Visit `chrome://extensions` and enable **Developer Mode**.
+2. Click **Load unpacked** and select the `browser-extension/dist` folder.
+3. Pin the Resume Hatch icon and try it on a job posting page.
+
+### Development watch mode
+
+```sh
+vite build --watch --config browser-extension/vite.config.ts
+```
+
+Chrome will auto-reload the background service-worker each time you save.
+
+### Structure
+
+```
+browser-extension/
+  manifest.json          # Chrome manifest (v3)
+  vite.config.ts         # Multi-entry Vite build (popup, content, SW)
+  src/
+    background.ts        # Service-worker entry
+    contentScripts/
+      jobScraper.ts      # Injected on all pages, scrapes job data
+    popup/
+      index.html         # Popup HTML
+      index.tsx          # React root
+      Popup.tsx          # UI component
+```
+
+Future iterations will add site-specific scraping logic, application-form autofill, and Supabase auth token sharing with the main web app.
