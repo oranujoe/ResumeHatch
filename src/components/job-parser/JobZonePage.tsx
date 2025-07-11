@@ -1,11 +1,11 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfile } from '@/hooks/useProfile';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { User, ArrowRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import JobZoneHeader from './JobZoneHeader';
 import JobDescriptionInput from './JobDescriptionInput';
 import GenerationProgress from './GenerationProgress';
@@ -15,6 +15,7 @@ import { useResumeGeneration } from './ResumeGenerationHandler';
 import { useResumeExport } from './ResumeExportHandler';
 
 const JobZonePage = () => {
+  const [searchParams] = useSearchParams();
   const [jobDescription, setJobDescription] = useState('');
   const [generatedResume, setGeneratedResume] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState('modern');
@@ -51,6 +52,17 @@ const JobZonePage = () => {
   });
 
   const { downloadPDF, copyToClipboard } = useResumeExport(selectedTemplate);
+
+  // Sync job description from query param (supports SSR/CSR)
+  useEffect(() => {
+    const desc = searchParams.get('description');
+    if (desc && !jobDescription) {
+      setJobDescription(desc);
+      // Trigger generation once description is set
+      generateResume();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleResumeEdit = (content: string) => {
     setGeneratedResume(content);

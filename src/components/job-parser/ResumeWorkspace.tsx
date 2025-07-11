@@ -26,7 +26,7 @@ const ResumeWorkspace: React.FC<ResumeWorkspaceProps> = ({
   onDownloadPDF,
   onCopyToClipboard,
 }) => {
-  // Get ATS optimization analysis
+  // Get ATS optimization analysis with proper parameters
   const atsAnalysis = useATSOptimization({
     resumeContent: generatedResume,
     jobDescription: jobDescription
