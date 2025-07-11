@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Instagram, Linkedin, X } from 'lucide-react';
+import { Instagram, Linkedin, X, Mail } from 'lucide-react';
 
 const Footer = () => {
   const year = new Date().getFullYear();
@@ -42,11 +42,17 @@ const Footer = () => {
             </ul>
           </div>
           <div className="animate-fade-in-left" style={{ animationDelay: '0.4s' }}>
-            <h3 className="font-bold text-lg mb-6 text-gray-800">Legal</h3>
+            <h3 className="font-bold text-lg mb-6 text-gray-800">Contact</h3>
             <ul className="space-y-3">
-              <li><a href="#" className="text-gray-600 hover:text-brand-blue transition-all duration-300 hover:translate-x-1 inline-block">Privacy</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-brand-blue transition-all duration-300 hover:translate-x-1 inline-block">Terms</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-brand-blue transition-all duration-300 hover:translate-x-1 inline-block">Security</a></li>
+              <li>
+                <a 
+                  href="mailto:founder@resumehatch.com" 
+                  className="text-gray-600 hover:text-brand-blue transition-all duration-300 hover:translate-x-1 inline-flex items-center gap-2"
+                >
+                  <Mail className="h-4 w-4" />
+                  founder@resumehatch.com
+                </a>
+              </li>
             </ul>
           </div>
         </div>
