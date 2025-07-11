@@ -1,228 +1,212 @@
 
-import { useState, useEffect, useMemo } from 'react';
-import { debounce } from '@/utils/cursorUtils';
-import { extractPlainTextFromHTML, calculateKeywordMatch } from '@/utils/textExtraction';
+import { useState, useEffect } from 'react';
+import { extractTextFromHTML, normalizeContent, getWordCount } from '@/utils/textExtraction';
 
-interface ATSScore {
-  overall: number;
-  keyword: number;
+export interface ATSMetrics {
+  overallScore: number;
+  keywordDensity: number;
+  readabilityScore: number;
   formatting: number;
-  content: number;
-  compatibility: number;
-}
-
-interface ATSAnalysis {
-  score: ATSScore;
+  wordCount: number;
+  keywordMatches: string[];
   suggestions: string[];
-  keywordMatches: number;
-  totalKeywords: number;
-  issues: string[];
+  isAnalyzing: boolean;
 }
 
-interface UseATSOptimizationProps {
-  resumeContent: string;
-  jobDescription: string;
-  debounceDelay?: number;
-}
-
-export const useATSOptimization = ({ 
-  resumeContent, 
-  jobDescription, 
-  debounceDelay = 300 
-}: UseATSOptimizationProps): ATSAnalysis => {
-  const [analysis, setAnalysis] = useState<ATSAnalysis>({
-    score: { overall: 0, keyword: 0, formatting: 0, content: 0, compatibility: 0 },
+export const useATSOptimization = (resumeContent: string, jobDescription: string) => {
+  const [metrics, setMetrics] = useState<ATSMetrics>({
+    overallScore: 0,
+    keywordDensity: 0,
+    readabilityScore: 0,
+    formatting: 0,
+    wordCount: 0,
+    keywordMatches: [],
     suggestions: [],
-    keywordMatches: 0,
-    totalKeywords: 0,
-    issues: []
+    isAnalyzing: false
   });
 
-  // Analyze keyword matching using plain text extraction
-  const analyzeKeywords = (resumeHTML: string, jobDesc: string) => {
-    const resumePlainText = extractPlainTextFromHTML(resumeHTML);
-    const jobPlainText = extractPlainTextFromHTML(jobDesc);
-    
-    console.log('ATS Analysis - Resume text length:', resumePlainText.length);
-    console.log('ATS Analysis - Job text length:', jobPlainText.length);
-    
-    return calculateKeywordMatch(resumePlainText, jobPlainText);
-  };
-
-  // Analyze formatting quality
-  const analyzeFormatting = (resumeHTML: string) => {
-    const plainText = extractPlainTextFromHTML(resumeHTML);
-    let score = 100;
-    const issues: string[] = [];
-    
-    // Check for contact information
-    if (!plainText.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/)) {
-      score -= 20;
-      issues.push('Missing email address');
-    }
-    
-    // Check for phone number
-    if (!plainText.match(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/)) {
-      score -= 15;
-      issues.push('Missing or improperly formatted phone number');
-    }
-    
-    // Check for section headers
-    const sections = ['experience', 'education', 'skills'];
-    sections.forEach(section => {
-      if (!plainText.toLowerCase().includes(section)) {
-        score -= 10;
-        issues.push(`Missing ${section} section`);
-      }
+  useEffect(() => {
+    console.log('useATSOptimization: Input changed', { 
+      resumeLength: resumeContent?.length || 0, 
+      jobDescLength: jobDescription?.length || 0 
     });
-    
-    return { score: Math.max(0, score), issues };
-  };
 
-  // Analyze content quality
-  const analyzeContent = (resumeHTML: string) => {
-    const plainText = extractPlainTextFromHTML(resumeHTML);
-    let score = 100;
-    const issues: string[] = [];
-    
-    // Check resume length
-    if (plainText.length < 300) {
-      score -= 30;
-      issues.push('Resume content too brief');
-    } else if (plainText.length > 3000) {
-      score -= 20;
-      issues.push('Resume content too lengthy');
+    if (!resumeContent && !jobDescription) {
+      console.log('useATSOptimization: No content provided, resetting metrics');
+      setMetrics(prev => ({ ...prev, isAnalyzing: false }));
+      return;
     }
-    
-    // Check for action verbs
-    const actionVerbs = ['managed', 'led', 'developed', 'created', 'implemented', 'improved', 'achieved', 'designed', 'built', 'launched'];
-    const hasActionVerbs = actionVerbs.some(verb => plainText.toLowerCase().includes(verb));
-    if (!hasActionVerbs) {
-      score -= 25;
-      issues.push('Use more action verbs to describe achievements');
-    }
-    
-    // Check for quantifiable results
-    const hasNumbers = /\d+/.test(plainText);
-    if (!hasNumbers) {
-      score -= 20;
-      issues.push('Include quantifiable results and metrics');
-    }
-    
-    return { score: Math.max(0, score), issues };
-  };
 
-  // Analyze ATS compatibility
-  const analyzeCompatibility = (resumeHTML: string) => {
-    let score = 100;
-    const issues: string[] = [];
-    
-    // Check for problematic characters in HTML
-    if (resumeHTML.includes('│') || resumeHTML.includes('┌') || resumeHTML.includes('└')) {
-      score -= 30;
-      issues.push('Avoid special characters that may not parse correctly');
-    }
-    
-    // Check for proper structure
-    const plainText = extractPlainTextFromHTML(resumeHTML);
-    if (plainText.length < 50) {
-      score -= 40;
-      issues.push('Resume structure appears incomplete');
-    }
-    
-    return { score: Math.max(0, score), issues };
-  };
+    // Set analyzing state immediately
+    setMetrics(prev => ({ ...prev, isAnalyzing: true }));
 
-  // Generate suggestions based on analysis
-  const generateSuggestions = (
-    keywordAnalysis: any,
-    formatIssues: string[],
-    contentIssues: string[],
-    compatibilityIssues: string[]
-  ): string[] => {
-    const suggestions: string[] = [];
-    
-    if (keywordAnalysis.score < 50) {
-      suggestions.push('Include more relevant keywords from the job description');
-    }
-    
-    if (formatIssues.length > 0) {
-      suggestions.push('Add missing contact information and standard sections');
-    }
-    
-    if (contentIssues.length > 0) {
-      suggestions.push('Use action verbs and include quantifiable achievements');
-    }
-    
-    if (compatibilityIssues.length > 0) {
-      suggestions.push('Simplify formatting for better ATS compatibility');
-    }
-    
-    if (suggestions.length === 0) {
-      suggestions.push('Your resume looks good! Consider fine-tuning keywords for this specific role.');
-    }
-    
-    return suggestions;
-  };
-
-  const debouncedAnalysis = useMemo(
-    () => debounce((resumeHTML: string, jobDesc: string) => {
-      console.log('Starting ATS analysis...');
-      
-      if (!resumeHTML.trim()) {
-        setAnalysis({
-          score: { overall: 0, keyword: 0, formatting: 0, content: 0, compatibility: 0 },
-          suggestions: ['Generate a resume to see ATS optimization score'],
-          keywordMatches: 0,
-          totalKeywords: 0,
-          issues: []
+    const timeoutId = setTimeout(() => {
+      try {
+        console.log('useATSOptimization: Starting analysis...');
+        
+        // Extract plain text from HTML content
+        const plainTextResume = extractTextFromHTML(resumeContent || '');
+        const plainTextJob = extractTextFromHTML(jobDescription || '');
+        
+        console.log('useATSOptimization: Extracted plain text', {
+          resumeText: plainTextResume.substring(0, 100) + '...',
+          jobText: plainTextJob.substring(0, 100) + '...'
         });
-        return;
+
+        // Analyze the content
+        const newMetrics = analyzeContent(plainTextResume, plainTextJob);
+        
+        console.log('useATSOptimization: Analysis complete', newMetrics);
+        
+        setMetrics({ ...newMetrics, isAnalyzing: false });
+      } catch (error) {
+        console.error('useATSOptimization: Analysis error', error);
+        setMetrics(prev => ({ ...prev, isAnalyzing: false }));
       }
+    }, 300);
 
-      const keywordAnalysis = analyzeKeywords(resumeHTML, jobDesc);
-      const formatAnalysis = analyzeFormatting(resumeHTML);
-      const contentAnalysis = analyzeContent(resumeHTML);
-      const compatibilityAnalysis = analyzeCompatibility(resumeHTML);
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [resumeContent, jobDescription]);
 
-      const scores = {
-        keyword: keywordAnalysis.score,
-        formatting: formatAnalysis.score,
-        content: contentAnalysis.score,
-        compatibility: compatibilityAnalysis.score
-      };
+  return metrics;
+};
 
-      const overall = (scores.keyword + scores.formatting + scores.content + scores.compatibility) / 4;
+const analyzeContent = (resumeText: string, jobText: string): Omit<ATSMetrics, 'isAnalyzing'> => {
+  console.log('analyzeContent: Starting analysis', { 
+    resumeLength: resumeText.length, 
+    jobLength: jobText.length 
+  });
 
-      const allIssues = [
-        ...formatAnalysis.issues,
-        ...contentAnalysis.issues,
-        ...compatibilityAnalysis.issues
-      ];
+  // Basic word count
+  const wordCount = getWordCount(resumeText);
+  console.log('analyzeContent: Word count', wordCount);
 
-      console.log('ATS Analysis completed:', {
-        overall: Math.round(overall),
-        keywordMatches: keywordAnalysis.matches,
-        totalKeywords: keywordAnalysis.total
-      });
+  // Extract keywords from job description
+  const jobKeywords = extractKeywords(jobText);
+  console.log('analyzeContent: Job keywords', jobKeywords);
 
-      setAnalysis({
-        score: {
-          overall,
-          ...scores
-        },
-        suggestions: generateSuggestions(keywordAnalysis, formatAnalysis.issues, contentAnalysis.issues, compatibilityAnalysis.issues),
-        keywordMatches: keywordAnalysis.matches,
-        totalKeywords: keywordAnalysis.total,
-        issues: allIssues
-      });
-    }, debounceDelay),
-    [debounceDelay]
+  // Find matching keywords in resume
+  const normalizedResume = normalizeContent(resumeText);
+  const keywordMatches = jobKeywords.filter(keyword => 
+    normalizedResume.includes(normalizeContent(keyword))
+  );
+  console.log('analyzeContent: Keyword matches', keywordMatches);
+
+  // Calculate metrics
+  const keywordDensity = jobKeywords.length > 0 ? (keywordMatches.length / jobKeywords.length) * 100 : 0;
+  const readabilityScore = calculateReadabilityScore(resumeText);
+  const formatting = calculateFormattingScore(resumeText);
+  
+  // Overall score (weighted average)
+  const overallScore = Math.round(
+    (keywordDensity * 0.4) + 
+    (readabilityScore * 0.3) + 
+    (formatting * 0.3)
   );
 
-  useEffect(() => {
-    debouncedAnalysis(resumeContent, jobDescription);
-  }, [resumeContent, jobDescription, debouncedAnalysis]);
+  // Generate suggestions
+  const suggestions = generateSuggestions(keywordMatches, jobKeywords, wordCount);
 
-  return analysis;
+  const result = {
+    overallScore,
+    keywordDensity: Math.round(keywordDensity),
+    readabilityScore: Math.round(readabilityScore),
+    formatting: Math.round(formatting),
+    wordCount,
+    keywordMatches,
+    suggestions
+  };
+
+  console.log('analyzeContent: Final result', result);
+  return result;
 };
+
+const extractKeywords = (text: string): string[] => {
+  if (!text) return [];
+  
+  // Simple keyword extraction - split by common separators and filter
+  const words = text.toLowerCase()
+    .replace(/[^\w\s]/g, ' ')
+    .split(/\s+/)
+    .filter(word => word.length > 2)
+    .filter(word => !commonWords.includes(word));
+  
+  // Get unique words and return most frequent ones
+  const wordFreq = words.reduce((acc, word) => {
+    acc[word] = (acc[word] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+  
+  return Object.entries(wordFreq)
+    .sort(([,a], [,b]) => b - a)
+    .slice(0, 20)
+    .map(([word]) => word);
+};
+
+const calculateReadabilityScore = (text: string): number => {
+  if (!text) return 0;
+  
+  const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+  const words = text.split(/\s+/).filter(w => w.length > 0);
+  const avgWordsPerSentence = words.length / Math.max(sentences.length, 1);
+  
+  // Simple readability score (higher is better, max 100)
+  return Math.min(100, Math.max(0, 100 - (avgWordsPerSentence - 15) * 2));
+};
+
+const calculateFormattingScore = (text: string): number => {
+  if (!text) return 0;
+  
+  let score = 60; // Base score
+  
+  // Check for bullet points or structure
+  if (text.includes('•') || text.includes('-') || text.includes('*')) {
+    score += 20;
+  }
+  
+  // Check for section headers (words in caps)
+  if (/[A-Z]{3,}/.test(text)) {
+    score += 10;
+  }
+  
+  // Check for adequate length
+  if (text.length > 500) {
+    score += 10;
+  }
+  
+  return Math.min(100, score);
+};
+
+const generateSuggestions = (matches: string[], allKeywords: string[], wordCount: number): string[] => {
+  const suggestions: string[] = [];
+  
+  if (matches.length === 0) {
+    suggestions.push("Add relevant keywords from the job description");
+  }
+  
+  if (matches.length < allKeywords.length * 0.3) {
+    suggestions.push("Include more job-specific terminology");
+  }
+  
+  if (wordCount < 300) {
+    suggestions.push("Expand your resume with more detailed descriptions");
+  } else if (wordCount > 800) {
+    suggestions.push("Consider condensing content for better readability");
+  }
+  
+  if (matches.length > 0) {
+    suggestions.push(`Great! Found ${matches.length} relevant keywords`);
+  }
+  
+  return suggestions;
+};
+
+// Common words to filter out during keyword extraction
+const commonWords = [
+  'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by',
+  'a', 'an', 'as', 'are', 'was', 'were', 'been', 'be', 'have', 'has', 'had',
+  'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might',
+  'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they'
+];
