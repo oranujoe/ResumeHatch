@@ -1,0 +1,46 @@
+{
+  "name": "Resume Hatch Assistant",
+  "description": "Capture job postings, autofill applications, and track submissions with Resume Hatch.",
+  "version": "0.1.0",
+  "manifest_version": 3,
+  "icons": {
+    "16": "favicon.ico",
+    "32": "favicon.ico",
+    "48": "favicon.ico",
+    "128": "favicon.ico"
+  },
+  "permissions": ["storage", "activeTab", "scripting", "tabs"],
+  "host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Resume Hatch",
+    "default_popup": "src/popup/index.html",
+    "default_icon": {
+      "16": "favicon.ico",
+      "32": "favicon.ico",
+      "48": "favicon.ico",
+      "128": "favicon.ico"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.linkedin.com/jobs/*"
+      ],
+      "js": ["jobScraper.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+} 

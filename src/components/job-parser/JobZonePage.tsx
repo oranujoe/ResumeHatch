@@ -58,11 +58,11 @@ const JobZonePage = () => {
     const desc = searchParams.get('description');
     if (desc && !jobDescription) {
       setJobDescription(desc);
-      // Trigger generation once description is set
-      generateResume();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Removed auto-generation effect; user must click "Generate Resume" button manually
 
   const handleResumeEdit = (content: string) => {
     setGeneratedResume(content);
