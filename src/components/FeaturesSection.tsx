@@ -1,10 +1,9 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Key, BarChart2, Bell, Shield } from "lucide-react";
+import { FileText, Key, BarChart2, Bell, Shield, Chrome } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const features = [
@@ -46,6 +45,7 @@ const features = [
 ];
 
 const tabOptions = [
+  { value: "extension", label: "Extension", icon: Chrome, color: "orange" },
   { value: "resume", label: "Resume", icon: FileText, color: "green" },
   { value: "ats", label: "ATS", icon: Key, color: "purple" },
   { value: "dashboard", label: "Dashboard", icon: BarChart2, color: "blue" },
@@ -55,7 +55,7 @@ const tabOptions = [
 
 const FeaturesSection = () => {
   const isMobile = useIsMobile();
-  const [activeTab, setActiveTab] = React.useState("resume");
+  const [activeTab, setActiveTab] = React.useState("extension");
   
   return (
     <section id="features" className="py-12 px-4 bg-gradient-to-br from-gray-50 via-blue-50/20 to-purple-50/20 md:py-[80px] relative overflow-hidden">
@@ -67,15 +67,15 @@ const FeaturesSection = () => {
       <div className="container mx-auto relative z-10">
         <div className="flex justify-center mb-4 animate-fade-in-up">
           <Badge className="inline-block rounded-full px-6 py-2 text-sm font-medium text-gray-700 mb-4 bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-            ✨ Powerful Features
+            ⚡ Revolutionary Technology
           </Badge>
         </div>
         <div className="text-center mb-10 md:mb-16 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent">
-            Everything you need to land that job
+            The Complete Job Application Solution
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto px-2 text-lg leading-relaxed">
-            Our comprehensive platform handles every step of the job application process, from customizing your résumé to tracking your applications.
+            From instant job capture to ATS-optimized applications - we've revolutionized every step of the job search process.
           </p>
         </div>
         
@@ -122,7 +122,14 @@ const FeaturesSection = () => {
               </div>
             ) : (
               /* Desktop/Tablet Tabs */
-              <TabsList className="w-full flex-wrap justify-between mb-8 md:mb-10 bg-white/70 backdrop-blur-md p-2 space-y-0 space-x-2 rounded-xl border border-white/20 shadow-lg min-h-fit py-3">
+              <TabsList className="w-full flex-wrap justify-between mb-8 md:mb-10 bg-white/70 backdrop-blur-md p-2 space-y-0 space-x-1 rounded-xl border border-white/20 shadow-lg min-h-fit py-3">
+                <TabsTrigger value="extension" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-red-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap transition-all duration-300 hover:scale-105 group">
+                  <div className="bg-orange-100 group-data-[state=active]:bg-white/20 p-1 md:p-2 rounded-md transition-all duration-300">
+                    <Chrome size={20} className="text-orange-600 group-data-[state=active]:text-white transition-colors duration-300" />
+                  </div>
+                  <span className="font-medium">Extension</span>
+                </TabsTrigger>
+
                 <TabsTrigger value="resume" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg px-3 md:px-4 py-2 md:py-3 whitespace-nowrap transition-all duration-300 hover:scale-105 group">
                   <div className="bg-green-100 group-data-[state=active]:bg-white/20 p-1 md:p-2 rounded-md transition-all duration-300">
                     <FileText size={20} className="text-green-600 group-data-[state=active]:text-white transition-colors duration-300" />
@@ -159,6 +166,93 @@ const FeaturesSection = () => {
                 </TabsTrigger>
               </TabsList>
             )}
+            
+            <TabsContent value="extension" className="animate-scale-in">
+              <div className="flex flex-col lg:flex-row items-center bg-white/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
+                <div className="w-full lg:w-1/2 mb-10 lg:mb-0 pr-0 lg:pr-10">
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">Browser Extension Revolution</h2>
+                  <p className="text-gray-600 mb-6 md:mb-8 text-lg leading-relaxed">
+                    Transform any job posting into a tailored application in seconds. Our Chrome extension captures job details instantly and creates ATS-optimized résumés.
+                  </p>
+                  <ul className="space-y-3 md:space-y-4 mb-6 md:mb-8">
+                    <li className="flex items-start">
+                      <div className="mr-3 text-orange-600 mt-1 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div>
+                        <strong className="font-medium">One-Click Job Capture:</strong> Install once, capture any job from LinkedIn, Indeed, or company sites instantly
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="mr-3 text-orange-600 mt-1 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div>
+                        <strong className="font-medium">Smart Job Analysis:</strong> AI extracts company culture, required skills, and hidden job requirements
+                      </div>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="mr-3 text-orange-600 mt-1 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div>
+                        <strong className="font-medium">Privacy Protected:</strong> Only accesses job postings you choose to capture, your browsing stays private
+                      </div>
+                    </li>
+                  </ul>
+                  <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center gap-2">
+                    <Chrome className="w-5 h-5" />
+                    Install Extension
+                  </Button>
+                </div>
+                <div className="w-full lg:w-1/2 relative">
+                  <div className="bg-white rounded-lg shadow-xl p-4 md:p-6 max-w-md mx-auto">
+                    {/* Browser window mockup */}
+                    <div className="flex items-center justify-between mb-4 pb-3 border-b">
+                      <div className="flex space-x-2">
+                        <div className="w-3 h-3 bg-red-400 rounded-full"></div>
+                        <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                        <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                      </div>
+                      <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">linkedin.com/jobs</div>
+                    </div>
+                    
+                    {/* Job posting mockup */}
+                    <div className="space-y-3 mb-4">
+                      <div className="h-4 w-3/4 bg-gray-200 rounded"></div>
+                      <div className="h-3 w-1/2 bg-gray-200 rounded"></div>
+                      <div className="space-y-2">
+                        <div className="h-2 w-full bg-gray-100 rounded"></div>
+                        <div className="h-2 w-full bg-gray-100 rounded"></div>
+                        <div className="h-2 w-2/3 bg-gray-100 rounded"></div>
+                      </div>
+                    </div>
+                    
+                    {/* Extension popup */}
+                    <div className="relative">
+                      <div className="absolute right-0 top-0 bg-gradient-to-r from-orange-500 to-red-500 text-white p-3 rounded-lg shadow-lg transform -translate-y-2 max-w-[200px]">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Chrome className="w-4 h-4" />
+                          <span className="text-xs font-semibold">Resume Hatch</span>
+                        </div>
+                        <div className="text-xs mb-2">Job captured! Creating your tailored résumé...</div>
+                        <div className="w-full bg-white/20 rounded-full h-1">
+                          <div className="bg-white h-1 rounded-full animate-pulse" style={{width: '75%'}}></div>
+                        </div>
+                      </div>
+                      {/* Arrow pointing to the job */}
+                      <div className="absolute right-12 top-6 w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-t-4 border-t-orange-500"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
             
             <TabsContent value="resume" className="animate-scale-in">
               <div className="flex flex-col lg:flex-row items-center bg-white/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
@@ -491,9 +585,7 @@ const FeaturesSection = () => {
                         <div className="text-lg font-bold text-green-600">92%</div>
                       </div>
                       <div className="w-full bg-gray-200 h-2 rounded-full mt-2">
-                        <div className="bg-green-500 h-2 rounded-full" style={{
-                        width: '92%'
-                      }}></div>
+                        <div className="bg-green-500 h-2 rounded-full" style={{width: '92%'}}></div>
                       </div>
                     </div>
                   </div>

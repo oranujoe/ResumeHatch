@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from '@/hooks/use-mobile';
 import PricingBadge from './pricing/PricingBadge';
+import { Download, Chrome } from 'lucide-react';
 
 const HeroSection = () => {
   const [isYellowShapeActive, setIsYellowShapeActive] = useState(false);
@@ -27,6 +28,11 @@ const HeroSection = () => {
     window.location.href = '/auth';
   };
 
+  const handleInstallExtension = () => {
+    // TODO: Replace with actual Chrome Web Store URL when published
+    window.open('https://chrome.google.com/webstore/', '_blank');
+  };
+
   return (
     <section className="relative py-20 px-4 overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 md:py-[60px]">
       {/* Animated Background Elements */}
@@ -40,21 +46,24 @@ const HeroSection = () => {
           <div className="w-full lg:w-1/2 space-y-6 mb-12 lg:mb-0 pr-0 lg:pr-12">
             {/* Badge with animation */}
             <div className={`mb-2 transition-all duration-700 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
-              <PricingBadge text="Live Beta • Start Today" className="!bg-gradient-to-r !from-green-100 !to-blue-100 !text-green-800 font-medium border border-green-200 hover:shadow-lg transition-all duration-300" />
+              <div className="flex flex-wrap gap-2">
+                <PricingBadge text="Live Beta • Start Today" className="!bg-gradient-to-r !from-green-100 !to-blue-100 !text-green-800 font-medium border border-green-200 hover:shadow-lg transition-all duration-300" />
+                <PricingBadge text="🔥 Chrome Extension Available" className="!bg-gradient-to-r !from-orange-100 !to-red-100 !text-orange-800 font-medium border border-orange-200 hover:shadow-lg transition-all duration-300" />
+              </div>
             </div>
 
             {/* Main Headline with gradient text and staggered animation */}
             <h1 className={`text-4xl md:text-5xl lg:text-6xl font-bold leading-tight transition-all duration-700 delay-200 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
-              Get Your Dream Job with{' '}
+              Instantly Capture Any Job & Get{' '}
               <span className="bg-gradient-to-r from-brand-blue via-purple-600 to-brand-blue bg-clip-text text-transparent animate-gradient-x">
-                AI-Powered
+                ATS-Optimized
               </span>{' '}
-              Applications
+              Résumés in Seconds
             </h1>
 
             {/* Description with animation */}
             <p className={`text-xl text-gray-600 leading-relaxed max-w-xl transition-all duration-700 delay-400 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
-              Paste any job link, and let our AI craft an ATS-optimised résumé and cover letter, then apply with a single click — all while tracking every application in your personal dashboard.
+              One-click capture any job from LinkedIn with our browser extension. Our AI reverse-engineers job requirements to craft perfectly tailored résumés and cover letters that beat ATS systems.
             </p>
 
             {/* CTA Buttons with enhanced styling and animation */}
@@ -68,10 +77,22 @@ const HeroSection = () => {
               </Button>
               <Button 
                 variant="outline" 
-                className="h-12 px-8 rounded-md text-lg border-2 border-gray-300 hover:border-brand-blue hover:text-brand-blue hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 font-semibold" 
+                className="h-12 px-6 rounded-md text-lg border-2 border-orange-300 hover:border-orange-500 hover:text-orange-600 hover:bg-orange-50 transition-all duration-300 transform hover:scale-105 font-semibold flex items-center gap-2" 
+                onClick={handleInstallExtension}
+              >
+                <Chrome className="w-5 h-5" />
+                Install Extension
+              </Button>
+            </div>
+
+            {/* Alternative CTA */}
+            <div className={`pt-2 transition-all duration-700 delay-700 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
+              <Button 
+                variant="ghost" 
+                className="text-gray-600 hover:text-brand-blue underline decoration-dotted underline-offset-4 font-medium" 
                 onClick={handleSeeHowItWorks}
               >
-                See How it Works
+                See How it Works →
               </Button>
             </div>
 
@@ -79,15 +100,15 @@ const HeroSection = () => {
             <div className={`flex space-x-12 pt-8 transition-all duration-700 delay-800 ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}`}>
               <div className="text-center group cursor-pointer">
                 <div className="text-4xl font-bold bg-gradient-to-r from-brand-blue to-purple-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300">93%</div>
-                <div className="text-sm text-gray-500 mt-1">Success rate</div>
+                <div className="text-sm text-gray-500 mt-1">ATS Pass Rate</div>
               </div>
               <div className="text-center group cursor-pointer">
-                <div className="text-4xl font-bold bg-gradient-to-r from-brand-blue to-purple-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300">2.5x</div>
-                <div className="text-sm text-gray-500 mt-1">More interviews</div>
+                <div className="text-4xl font-bold bg-gradient-to-r from-brand-blue to-purple-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300">3x</div>
+                <div className="text-sm text-gray-500 mt-1">Faster Applications</div>
               </div>
               <div className="text-center group cursor-pointer">
-                <div className="text-4xl font-bold bg-gradient-to-r from-brand-blue to-purple-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300">5min</div>
-                <div className="text-sm text-gray-500 mt-1">Average setup</div>
+                <div className="text-4xl font-bold bg-gradient-to-r from-brand-blue to-purple-600 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300">30s</div>
+                <div className="text-sm text-gray-500 mt-1">Job to Resume</div>
               </div>
             </div>
           </div>
@@ -118,8 +139,13 @@ const HeroSection = () => {
                 {isYellowShapeActive && <div className="absolute inset-0 rounded-full border-4 border-yellow-400 animate-ping"></div>}
               </div>
 
+              {/* Browser Extension Badge */}
+              <div className="absolute -top-4 -left-4 bg-white rounded-full p-3 shadow-lg border border-gray-200 animate-bounce-gentle">
+                <Chrome className="w-6 h-6 text-blue-600" />
+              </div>
+
               {/* Floating elements around the dashboard */}
-              <div className="absolute -top-4 -left-4 w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full animate-bounce-gentle opacity-60"></div>
+              <div className="absolute -top-4 right-1/4 w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full animate-bounce-gentle opacity-60"></div>
               <div className="absolute top-1/4 -right-8 w-6 h-6 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full animate-float opacity-50"></div>
               <div className="absolute bottom-1/4 -left-6 w-4 h-4 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full animate-bounce-gentle opacity-40"></div>
             </div>
