@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { scrapeLinkedIn } from './jobScraper';
+import LinkedInScraper from '../scrapers/linkedin';
 
 const sampleHtml = `
   <html>
@@ -27,11 +27,10 @@ describe('scrapeLinkedIn', () => {
       });
     }
     // Replace global document with our sample for the duration of the test
-    // @ts-ignore
     const originalDocument = global.document;
     // @ts-ignore
     global.document = doc;
-    const result = scrapeLinkedIn();
+    const result = LinkedInScraper.scrape(doc);
     // Restore original document
     // @ts-ignore
     global.document = originalDocument;
