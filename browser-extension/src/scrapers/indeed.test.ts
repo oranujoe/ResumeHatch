@@ -4,6 +4,7 @@ import IndeedScraper from './indeed';
 const sampleHtml = `
 <html>
   <body>
+    <div class="jobsearch-JobComponent">
     <h1 class="jobsearch-JobInfoHeader-title">Frontend Developer</h1>
     <div class="jobsearch-CompanyInfoWithoutHeaderImage">
       <div class="icl-u-lg-mr--sm">TechStars</div>
@@ -11,6 +12,7 @@ const sampleHtml = `
     </div>
     <div id="jobDescriptionText">
       We are seeking a skilled frontend developer to build intuitive user interfaces and collaborate closely with designers and backend engineers to deliver high-quality products.
+    </div>
     </div>
   </body>
 </html>`;
