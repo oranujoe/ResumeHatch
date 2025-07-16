@@ -6,6 +6,9 @@
 // Fired when extension is installed or updated
 chrome.runtime.onInstalled.addListener(() => {
   console.log("Resume Hatch Assistant installed");
+  if (chrome.action.setBadgeTextColor) {
+    chrome.action.setBadgeTextColor({ color: "#FFFFFF" });
+  }
 });
 
 import { ExtensionMessage, JobPosting } from './messages';

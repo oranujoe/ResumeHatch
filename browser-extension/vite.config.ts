@@ -29,6 +29,15 @@ function staticCopy() {
         const faviconSource = fs.readFileSync(faviconPath);
         this.emitFile({ type: "asset", fileName: "favicon.ico", source: faviconSource });
       }
+
+      // after copying favicon
+      const iconDir = resolve(__dirname, "icons");
+      if (fs.existsSync(iconDir)) {
+        for (const file of fs.readdirSync(iconDir)) {
+          const p = resolve(iconDir, file);
+          this.emitFile({ type: "asset", fileName: `icons/${file}`, source: fs.readFileSync(p) });
+        }
+      }
     },
   };
 }
