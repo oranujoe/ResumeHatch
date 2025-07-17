@@ -4,10 +4,10 @@
   "version": "0.1.0",
   "manifest_version": 3,
   "icons": {
-    "16": "favicon.ico",
-    "32": "favicon.ico",
-    "48": "favicon.ico",
-    "128": "favicon.ico"
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
   },
   "permissions": ["storage", "activeTab", "scripting", "tabs"],
   "host_permissions": [
@@ -22,10 +22,10 @@
     "default_title": "Resume Hatch",
     "default_popup": "src/popup/index.html",
     "default_icon": {
-      "16": "favicon.ico",
-      "32": "favicon.ico",
-      "48": "favicon.ico",
-      "128": "favicon.ico"
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
     }
   },
   "content_scripts": [
