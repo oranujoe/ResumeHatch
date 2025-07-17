@@ -8,6 +8,7 @@ export default {
 		"./components/**/*.{ts,tsx}",
 		"./app/**/*.{ts,tsx}",
 		"./src/**/*.{ts,tsx}",
+		"./browser-extension/src/**/*.{ts,tsx,html}",
 	],
 	prefix: "",
 	theme: {
