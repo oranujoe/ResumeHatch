@@ -9,10 +9,14 @@
     "48": "icons/icon-48.png",
     "128": "icons/icon-128.png"
   },
-  "permissions": ["storage", "activeTab", "scripting", "tabs"],
+  "permissions": [
+    "storage", "activeTab", "scripting", "tabs", "notifications"
+  ],
   "host_permissions": [
     "https://*/*",
-    "http://*/*"
+    "http://*/*",
+    "https://*.glassdoor.com/*",
+    "https://weworkremotely.com/*"
   ],
   "background": {
     "service_worker": "background.js",
@@ -28,10 +32,17 @@
       "128": "icons/icon-128.png"
     }
   },
+  "options_ui": {
+    "page": "src/options/index.html",
+    "open_in_tab": true
+  },
   "content_scripts": [
     {
       "matches": [
-        "https://*.linkedin.com/jobs/*"
+        "https://*.linkedin.com/jobs/*",
+        "https://*.indeed.com/*",
+        "https://*.glassdoor.com/*",
+        "https://weworkremotely.com/*"
       ],
       "js": ["jobScraper.js"],
       "run_at": "document_idle"
