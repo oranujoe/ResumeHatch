@@ -1,64 +1,23 @@
 /// <reference types="chrome" />
-import React, { useEffect, useState } from 'react';
-import { JobPosting, ExtensionMessage, DetectedJobResponse } from '../messages';
+import React from 'react';
+import Header from './Header';
+import { useDetectedJob } from './useDetectedJob';
+import OptionsPage from '../options/OptionsPage';
+import DetectedJobCard from './DetectedJobCard';
+import EmptyState from './EmptyState';
 
 const Popup: React.FC = () => {
-  const [job, setJob] = useState<JobPosting | null>(null);
-  const [activeTabId, setActiveTabId] = useState<number | null>(null);
+  const { job, tabId } = useDetectedJob();
 
-  // Query active tab and ask background for detected job
-  useEffect(() => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const activeTab = tabs[0];
-      if (!activeTab?.id) return;
-      const tabId = activeTab.id;
-      setActiveTabId(tabId);
-
-      const msg: ExtensionMessage = { type: 'GET_DETECTED_JOB', tabId };
-      chrome.runtime.sendMessage(msg, (response: DetectedJobResponse) => {
-        if (response?.job) {
-          setJob(response.job);
-        } else {
-          setJob(null);
-        }
-      });
-    });
-  }, []);
-
-  const handleGenerateClick = () => {
-    if (activeTabId == null) return;
-    const msg: ExtensionMessage = { type: 'OPEN_RESUME_HATCH', tabId: activeTabId };
-    chrome.runtime.sendMessage(msg);
-    window.close();
-  };
+  const [view, setView] = React.useState<'home' | 'settings'>('home');
 
   return (
-    <div className="p-4 w-80 font-sans">
-      <h1 className="font-bold text-lg mb-2">Resume Hatch Assistant</h1>
-      {job ? (
-        <>
-          <p className="text-sm mb-4">
-            Detected job:<br />
-            <span className="font-semibold">{job.title}</span>
-            {job.company && ` @ ${job.company}`}
-          </p>
-          <button
-            onClick={handleGenerateClick}
-            className="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 w-full"
-          >
-            Generate Resume
-          </button>
-        </>
+    <div className="p-4 w-80 font-sans bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 animate-fade-in">
+      <Header view={view} onOpenSettings={() => setView('settings')} onBack={() => setView('home')} />
+      {view === 'home' ? (
+        job && tabId != null ? <DetectedJobCard job={job} tabId={tabId} /> : <EmptyState />
       ) : (
-        <>
-          <p className="text-sm mb-4">No job detected on this page.</p>
-          <button
-            disabled
-            className="bg-gray-400 text-white px-3 py-2 rounded w-full cursor-not-allowed"
-          >
-            Generate Resume
-          </button>
-        </>
+        <OptionsPage />
       )}
     </div>
   );

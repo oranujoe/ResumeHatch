@@ -4,15 +4,19 @@
   "version": "0.1.0",
   "manifest_version": 3,
   "icons": {
-    "16": "favicon.ico",
-    "32": "favicon.ico",
-    "48": "favicon.ico",
-    "128": "favicon.ico"
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
   },
-  "permissions": ["storage", "activeTab", "scripting", "tabs"],
+  "permissions": [
+    "storage", "activeTab", "scripting", "tabs", "notifications"
+  ],
   "host_permissions": [
     "https://*/*",
-    "http://*/*"
+    "http://*/*",
+    "https://*.glassdoor.com/*",
+    "https://weworkremotely.com/*"
   ],
   "background": {
     "service_worker": "background.js",
@@ -22,16 +26,23 @@
     "default_title": "Resume Hatch",
     "default_popup": "src/popup/index.html",
     "default_icon": {
-      "16": "favicon.ico",
-      "32": "favicon.ico",
-      "48": "favicon.ico",
-      "128": "favicon.ico"
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
     }
+  },
+  "options_ui": {
+    "page": "src/options/index.html",
+    "open_in_tab": true
   },
   "content_scripts": [
     {
       "matches": [
-        "https://*.linkedin.com/jobs/*"
+        "https://*.linkedin.com/jobs/*",
+        "https://*.indeed.com/*",
+        "https://*.glassdoor.com/*",
+        "https://weworkremotely.com/*"
       ],
       "js": ["jobScraper.js"],
       "run_at": "document_idle"

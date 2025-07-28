@@ -16,6 +16,7 @@ function staticCopy() {
     name: "static-copy-manifest",
     buildStart() {
       this.addWatchFile(resolve(__dirname, "manifest.json"));
+      this.addWatchFile(resolve(__dirname, 'icons'));
     },
     generateBundle() {
       // Copy manifest.json
@@ -28,6 +29,16 @@ function staticCopy() {
       if (fs.existsSync(faviconPath)) {
         const faviconSource = fs.readFileSync(faviconPath);
         this.emitFile({ type: "asset", fileName: "favicon.ico", source: faviconSource });
+      }
+
+      // Copy icons directory
+      const iconDir = resolve(__dirname, 'icons');
+      if (fs.existsSync(iconDir)) {
+        for (const file of fs.readdirSync(iconDir)) {
+          const full = resolve(iconDir, file);
+          const buff = fs.readFileSync(full);
+          this.emitFile({ type: 'asset', fileName: `icons/${file}`, source: buff });
+        }
       }
     },
   };
@@ -42,6 +53,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         popup: resolve(__dirname, "src/popup/index.html"),
+        options: resolve(__dirname, "src/options/index.html"),
         background: resolve(__dirname, "src/background.ts"),
         jobScraper: resolve(__dirname, "src/contentScripts/jobScraper.ts"),
       },
