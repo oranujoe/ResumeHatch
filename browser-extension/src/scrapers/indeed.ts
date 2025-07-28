@@ -5,85 +5,100 @@ const IndeedScraper: SiteScraper = {
   id: 'indeed',
   hostMatch: (hostname) => hostname.includes('indeed.'),
   scrape: (doc: Document): JobPosting | null => {
-    // Title
     const titleSelectors = [
       'h1.jobsearch-JobInfoHeader-title',
       'h1.jobsearch-JobInfoHeader-title span',
-      'h1'
+      'h2.jobTitle',
+      'h2[data-testid="jobdetail-title"]',
+      '#jobsearch-ViewJobPaneWrapper h1',
+      '#jobsearch-ViewJobPaneWrapper h2',
+      'h1',
+      'h2'
     ];
-    let title: string | undefined;
-    for (const sel of titleSelectors) {
-      const el = doc.querySelector<HTMLElement>(sel);
-      if (el && el.innerText.trim().length > 0) {
-        title = el.innerText.trim();
-        break;
-      }
-    }
-
-    // Company
     const companySelectors = [
       'div.jobsearch-CompanyInfoWithoutHeaderImage div.icl-u-lg-mr--sm',
       'div.jobsearch-CompanyInfoWithoutHeaderImage span',
       'div.jobsearch-InlineCompanyRating div',
       'div.topcard__flavor'
     ];
-    let company: string | undefined;
-    for (const sel of companySelectors) {
-      const el = doc.querySelector<HTMLElement>(sel);
-      if (el && el.innerText.trim().length > 0) {
-        company = el.innerText.trim();
-        break;
-      }
-    }
-
-    // Location
     const locSelectors = [
       'div.jobsearch-CompanyInfoWithoutHeaderImage div.icl-u-lg-mr--sm + div',
       'div.jobsearch-JobInfoHeader-subtitle div',
       'div.jobsearch-JobMetadataHeader-iconLabelContainer'
     ];
-    let location: string | undefined;
-    for (const sel of locSelectors) {
-      const el = doc.querySelector<HTMLElement>(sel);
-      if (el && el.innerText.trim().length > 0) {
-        location = el.innerText.trim();
-        break;
-      }
-    }
-
-    // Description
     const descSelectors = [
       '#jobDescriptionText',
       'div#jobDescriptionText',
       'div.jobsearch-JobComponent-description',
-      'div.jobsearch-jobDescriptionText'
+      'div.jobsearch-jobDescriptionText',
+      '[data-testid="job-detail-description"]'
     ];
-    let description: string | undefined;
-    for (const sel of descSelectors) {
-      const el = doc.querySelector<HTMLElement>(sel);
-      if (el && el.innerText.trim().length > 50) {
-        description = el.innerText.trim();
-        break;
-      }
+
+    // determine container first
+    const jobContainer =
+      doc.querySelector('#jobsearch-ViewJobPaneWrapper') || // side panel container
+      doc.querySelector('.jobsearch-JobComponent') || // dedicated page container
+      doc;
+
+    if (!jobContainer) {
+      console.log('[ResumeHatch][Indeed] No job container found in current DOM');
+      return null;
     }
 
-    // Ensure we are actually on a job view (side panel or dedicated page)
-    const hasJobComponent = !!doc.querySelector('.jobsearch-JobComponent, #jobsearch-ViewJobPaneWrapper');
+    function query(selArr: string[]): string | undefined {
+      for (const sel of selArr) {
+        const el = jobContainer.querySelector<HTMLElement>(sel);
+        if (el && el.innerText.trim()) return el.innerText.trim();
+      }
+      return undefined;
+    }
 
-    // Avoid false positives like captcha or listing pages
-    if (!hasJobComponent || !title) return null;
+    const title = query(titleSelectors);
+    const company = query(companySelectors);
+    const location = query(locSelectors);
+    let description = query(descSelectors);
 
-    // For stability, require some description text (≥ 50 chars) when available
-    if (!description || description.length < 50) return null;
+    const urlObj = new URL(window.location.href);
+    const isSearchPage = urlObj.pathname.includes('/jobs');
+
+    const q = urlObj.searchParams.get('q') || '';
+    const l = urlObj.searchParams.get('l') || '';
+
+    if (!title) {
+      console.log('[ResumeHatch][Indeed] No title found in current DOM');
+      return null;
+    }
+
+    if (!description || description.length < 50) {
+      console.log('[ResumeHatch][Indeed] description not ready yet');
+      return null;
+    }
+
+    let finalTitle = title;
+    if (isSearchPage) {
+      const cap = (s: string) => s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+      finalTitle = `${cap(q)} jobs${l ? ' – ' + l : ''}`.trim();
+    }
 
     console.log('[ResumeHatch][Indeed] scraped', { title, company, location, hasDescription: !!description });
 
+    // Attempt to create a stable per-job URL/key so duplicate suppression works when switching listings
+    let jobUrl = window.location.href;
+    const jkEl = jobContainer.querySelector('[data-jk]');
+    const jk = jkEl ? jkEl.getAttribute('data-jk') : null;
+    if (jk) {
+      jobUrl = `https://indeed.com/viewjob?jk=${jk}`;
+    } else {
+      // Fallback: include title hash so it changes when user clicks different listing
+      jobUrl = `${window.location.href}#${encodeURIComponent(title)}`;
+    }
+
     return {
-      title,
+      title: finalTitle,
       company,
       location,
-      description,
-      url: window.location.href
+      description: description || '',
+      url: jobUrl
     };
   }
 };

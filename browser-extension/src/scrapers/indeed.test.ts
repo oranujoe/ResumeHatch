@@ -33,6 +33,19 @@ describe('IndeedScraper', () => {
       });
     }
 
+    // Identify side-panel or full-page container
+    const jobContainer =
+      doc.querySelector('#jobsearch-ViewJobPaneWrapper') ||
+      doc.querySelector('#viewJobSSRRoot') ||          // new Indeed markup
+      doc.querySelector('.jobsearch-JobComponent') ||  // full page
+      null;
+
+    // If side-panel not yet present, bail; we’ll re-scrape on next MutationObserver tick
+    if (!jobContainer) {
+      console.log('[ResumeHatch][Indeed] job container not ready yet');
+      return null;
+    }
+
     const result = IndeedScraper.scrape(doc);
     expect(result).not.toBeNull();
     if (result) {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { JobPosting, ExtensionMessage } from '../messages';
 
 interface Props {
@@ -13,15 +13,21 @@ const DetectedJobCard: React.FC<Props> = ({ job, tabId }) => {
     window.close();
   };
 
+  const [copied, setCopied] = useState(false);
+
   const handleCopy = () => {
     navigator.clipboard.writeText(job.description || '').then(() => {
-      // Toast via Chrome notification for better UX
-      chrome.notifications?.create({
-        type: 'basic',
-        iconUrl: chrome.runtime.getURL('icons/icon-128.png'),
+      // Try native notification first
+      const msg: ExtensionMessage = {
+        type: 'SHOW_NOTIFICATION',
         title: 'Copied',
-        message: 'Job description copied to clipboard.'
-      });
+        message: 'Job description copied to clipboard.',
+      };
+      chrome.runtime.sendMessage(msg);
+
+      // Always show inline feedback as a fallback
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     });
   };
 
@@ -38,6 +44,9 @@ const DetectedJobCard: React.FC<Props> = ({ job, tabId }) => {
       </div>
       <button onClick={handleSend} className="w-full rounded bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-3 py-2 text-sm focus:outline-none focus:ring focus:ring-offset-2 focus:ring-blue-500 transition-colors">Send to Resume Hatch</button>
       <button onClick={handleCopy} className="w-full rounded border border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 px-3 py-2 text-sm focus:outline-none focus:ring focus:ring-offset-2 focus:ring-blue-500 transition">Copy description</button>
+      {copied && (
+        <p className="text-xs text-green-600 dark:text-green-400">Copied to clipboard</p>
+      )}
     </div>
   );
 };
