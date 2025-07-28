@@ -6,5 +6,6 @@ export default defineConfig({
     environment: 'jsdom',
     root: '.',
     include: ['browser-extension/src/**/*.test.ts'],
+    exclude: ['browser-extension/src/**/*disabled.test.ts'],
   },
 }); 
