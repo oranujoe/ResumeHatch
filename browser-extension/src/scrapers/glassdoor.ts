@@ -5,54 +5,108 @@ const GlassdoorScraper: SiteScraper = {
   id: 'glassdoor',
   hostMatch: (h) => h.includes('glassdoor.'),
   scrape(doc: Document): JobPosting | null {
-    // If search page uses iframe side panel, switch context to iframe document
+    // If search page uses iframe side panel, switch context to iframe document (same-origin)
     const iframe = doc.querySelector<HTMLIFrameElement>('iframe#JDIframe');
     if (iframe && iframe.contentDocument) {
       // eslint-disable-next-line no-param-reassign
       doc = iframe.contentDocument;
     }
 
-    // Detect side-panel job details container or fallback to full page
-    const container = doc.querySelector<HTMLElement>('div[data-test="jobDetails"], div[id="JobDetails"], div[data-test="job-preview"]')
-      || doc.querySelector<HTMLElement>('div.jobDetails')
-      || doc;
+    // 1) Find title element (new and old layouts)
+    let titleEl = doc.querySelector<HTMLElement>('h1[id^="jd-job-title"]')
+      || doc.querySelector<HTMLElement>('h2[data-test="detailTitle"]')
+      || null;
 
-    let title = container.querySelector<HTMLElement>('h2[data-test="detailTitle"], div[data-test="jobViewHeader"] h2')?.innerText.trim();
-    if (!title) {
-      title = doc.querySelector<HTMLElement>('h1[id^="jd-job-title"]')?.innerText.trim();
-    }
-    const company = container.querySelector<HTMLElement>('[data-test="employerName"]')?.innerText.trim();
-    const location = container.querySelector<HTMLElement>('[data-test="location"]')?.innerText.trim();
-    let descEl = container.querySelector<HTMLElement>('div.jobDescriptionContent');
-    if (!descEl) {
-      descEl = doc.querySelector<HTMLElement>('div.jobDescriptionContent, div[data-test="jobDescriptionText"]');
-    }
-    let description = descEl?.innerText.trim() || '';
-
-    const MIN_READY = 10;
-    const NEED_EXPAND = 150;
-
-    // If snippet is short, try clicking "Show more" once then retry on next mutation
-    const showBtn = container.querySelector<HTMLButtonElement>('button[aria-label="Show more"], button[data-test="readMore"]');
-    if (description.length < NEED_EXPAND && showBtn && !showBtn.dataset.rhClicked) {
-      showBtn.dataset.rhClicked = 'true';
-      showBtn.click();
+    if (!titleEl) {
+      (window as any).__RH_DEBUG && console.log('[RH][GD] null reason: no title element');
       return null;
     }
 
-    if (!title || description.length < MIN_READY) return null; // still not ready
+    const title = titleEl.innerText?.trim();
+    if (!title) {
+      (window as any).__RH_DEBUG && console.log('[RH][GD] null reason: empty title text');
+      return null;
+    }
 
-    // Build unique pseudo-URL so duplicate guard works even on SPA
-    const jobId = (container as HTMLElement).getAttribute?.('data-id') || title;
-    const uniqueUrl = `${window.location.href}#${encodeURIComponent(jobId)}`;
+    // 2) Choose a reasonable ancestor container to scope queries
+    // Walk up until we find a container that likely includes the description (has keywords)
+    const KEY_RE = /(overview|responsibilities|summary|qualifications|requirements|description)/i;
+    let ancestor: Element | Document = titleEl.closest('main, article, section, div') || doc.body || doc;
+    let probe: Element | null = titleEl as Element;
+    let steps = 0;
+    while (probe && steps < 8) {
+      const txt = (probe.textContent || '').toLowerCase();
+      if (KEY_RE.test(txt) && txt.length > 100) { ancestor = probe; break; }
+      probe = probe.parentElement; steps++;
+    }
 
-    return {
-      title,
-      company,
-      location,
-      description,
-      url: uniqueUrl,
-    };
+    // 3) Company / location (best-effort)
+    const company = (ancestor.querySelector<HTMLElement>('[data-test="employerName"], [data-test="companyName"], a[data-test="employer-name"]')
+      || doc.querySelector<HTMLElement>('[data-test="employerName"], [data-test="companyName"], a[data-test="employer-name"]'))?.innerText?.trim();
+
+    const location = (ancestor.querySelector<HTMLElement>('[data-test="location"], [data-test="job-location"]')
+      || doc.querySelector<HTMLElement>('[data-test="location"], [data-test="job-location"]'))?.innerText?.trim();
+
+    // 4) Description lookup (strict candidates first)
+    const strictSelector = [
+      'div[data-test="jobDescriptionText"]',
+      'div[data-test="jobDescription"]',
+      'div[data-test="JobDescription"]',
+      'div[data-test="job-description-text"]',
+      '#JobDescriptionText',
+      '#JobDescriptionContainer',
+      'article[data-test="jobDescriptionText"]',
+      'section[data-test="jobDescriptionText"]',
+      'div[class*="jobDescription"], section[class*="jobDescription"]'
+    ].join(', ');
+
+    const strictCandidates = Array.from((ancestor as Element | Document).querySelectorAll?.<HTMLElement>(strictSelector) || []);
+    let descEl = strictCandidates.sort((a, b) => (b.innerText?.length || 0) - (a.innerText?.length || 0))[0] || null;
+
+    // Fallback: scan ancestor, but ignore header-like blocks (company/rating snippets)
+    if (!descEl) {
+      const blocks = Array.from((ancestor as Element | Document).querySelectorAll?.<HTMLElement>('section, article, div') || [])
+        .filter((el) => {
+          const txt = (el.innerText || '').trim();
+          if (txt.length < 10) return false;
+          const hasHeaderBits =
+            el.querySelector('[data-test="employerName"], [data-test="rating"], [data-test="companyName"]') ||
+            /★/.test(txt) || /\b\d(?:\.\d)?\s*★?\b/.test(txt);
+          return !hasHeaderBits;
+        });
+      descEl = blocks.sort((a, b) => (b.innerText?.length || 0) - (a.innerText?.length || 0))[0] || null;
+    }
+
+    let description = descEl?.innerText?.trim() || '';
+
+    // Clean leading header noise (company name, rating line) if it slipped in
+    if (description) {
+      const lines = description.split('\n').map((l) => l.trim());
+      while (lines.length && (
+        (company && lines[0] === company) ||
+        /★/.test(lines[0]) ||
+        /^\d(?:\.\d)?\s*★?$/.test(lines[0])
+      )) {
+        lines.shift();
+      }
+      description = lines.join('\n').trim();
+    }
+
+    const MIN_READY = 80; // require a more substantial body to avoid sending header-only snippets
+    if (!title || description.length < MIN_READY || description === company || description === title) {
+      (window as any).__RH_DEBUG && console.log('[RH][GD] null reason: desc too short', description.length);
+      return null;
+    }
+
+    // 5) Stable unique key for duplicate guard
+    const stableId = (titleEl.id && titleEl.id.startsWith('jd-job-title')) ? titleEl.id : (
+      (ancestor as HTMLElement).getAttribute?.('data-id')
+      || (ancestor as HTMLElement).getAttribute?.('data-job-id')
+      || `${title}${company ? ' @ ' + company : ''}`
+    );
+    const uniqueUrl = `${window.location.href}#${encodeURIComponent(stableId)}`;
+
+    return { title, company, location, description, url: uniqueUrl };
   },
 };
 

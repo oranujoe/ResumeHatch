@@ -41,11 +41,18 @@
       "matches": [
         "https://*.linkedin.com/jobs/*",
         "https://*.indeed.com/*",
-        "https://*.glassdoor.com/*",
         "https://weworkremotely.com/*"
       ],
       "js": ["jobScraper.js"],
       "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://*.glassdoor.com/*"
+      ],
+      "js": ["jobScraper.js"],
+      "run_at": "document_idle",
+      "all_frames": true
     }
   ],
   "web_accessible_resources": [
