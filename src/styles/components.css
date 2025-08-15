@@ -1,0 +1,117 @@
+
+@layer components {
+  /* Enhanced Glass Morphism Effects - Flat Version */
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-sm border border-border/50;
+    background: linear-gradient(135deg, hsl(var(--card))/0.9, hsl(var(--card))/0.7);
+  }
+
+  .glass-card-hover {
+    @apply hover:bg-card/90 hover:scale-[1.02] transition-all duration-300 ease-out;
+    transition-property: transform, background-color;
+  }
+
+  /* Enhanced Status Badges with Psychology - Flat Version */
+  .status-applied {
+    @apply bg-info-primary text-white;
+    background: linear-gradient(135deg, hsl(var(--info-primary)), hsl(var(--info-secondary)));
+  }
+
+  .status-interview {
+    @apply bg-[#8B5CF6] text-white;
+    background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+  }
+
+  .status-offer {
+    @apply bg-success-primary text-white;
+    background: linear-gradient(135deg, hsl(var(--success-primary)), hsl(var(--success-secondary)));
+  }
+
+  .status-rejected {
+    @apply bg-error-primary text-white;
+    background: linear-gradient(135deg, hsl(var(--error-primary)), hsl(var(--error-secondary)));
+  }
+
+  .status-pending {
+    @apply bg-warning-primary text-white;
+    background: linear-gradient(135deg, hsl(var(--warning-primary)), hsl(var(--warning-secondary)));
+  }
+
+  .status-draft {
+    @apply bg-transparent border border-muted-foreground/30 text-muted-foreground hover:bg-muted/50 transition-colors;
+  }
+
+  /* Enhanced Button Variants - Flat Version */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200 ease-out;
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary))/0.9);
+  }
+
+  .btn-outline {
+    @apply border border-border bg-transparent hover:bg-accent hover:text-accent-foreground transition-all duration-200 ease-out;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent hover:bg-accent hover:text-accent-foreground transition-all duration-200 ease-out;
+  }
+
+  .btn-icon {
+    @apply p-1.5 rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-200 ease-out hover:scale-105;
+  }
+
+  /* Sidebar Active States - Updated to use brand blue with low opacity */
+  .sidebar-active {
+    @apply bg-primary/10 text-primary border-l-2 border-l-primary;
+  }
+
+  .dark .sidebar-active {
+    @apply bg-primary/15 text-primary border-l-2 border-l-primary;
+  }
+
+  /* Data Visualization Enhancements - Flat Version */
+  .kpi-card {
+    @apply glass-card glass-card-hover p-3 md:p-4 rounded-xl;
+    background: linear-gradient(135deg, hsl(var(--card))/0.95, hsl(var(--card))/0.85);
+  }
+
+  .kpi-value {
+    @apply text-display-small font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent;
+  }
+
+  .kpi-trend-positive {
+    @apply text-success-primary flex items-center space-x-0.5;
+  }
+
+  .kpi-trend-negative {
+    @apply text-error-primary flex items-center space-x-0.5;
+  }
+
+  .kpi-trend-neutral {
+    @apply text-muted-foreground flex items-center space-x-0.5;
+  }
+
+  /* Job Card Enhancements - Flat Version (No Hover) */
+  .job-card {
+    @apply glass-card p-3 md:p-4 rounded-xl border-l-4;
+  }
+
+  .job-card-applied {
+    @apply border-l-info-primary;
+  }
+
+  .job-card-interview {
+    @apply border-l-[#8B5CF6];
+  }
+
+  .job-card-offer {
+    @apply border-l-success-primary;
+  }
+
+  .job-card-rejected {
+    @apply border-l-error-primary;
+  }
+
+  .job-card-pending {
+    @apply border-l-warning-primary;
+  }
+}

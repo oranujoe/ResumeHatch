@@ -1,0 +1,64 @@
+
+@layer components {
+  /* Enhanced Loading States */
+  .skeleton {
+    @apply animate-pulse bg-muted rounded;
+    background: linear-gradient(90deg, hsl(var(--muted)), hsl(var(--muted))/0.8, hsl(var(--muted)));
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  .shimmer {
+    @apply animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent bg-[length:1000px_100%];
+  }
+
+  /* Enhanced Responsive Utilities */
+  .sidebar-expanded {
+    @apply w-64 lg:w-72;
+  }
+
+  .sidebar-collapsed {
+    @apply w-16 lg:w-18;
+  }
+
+  .sidebar-mobile {
+    @apply w-80 sm:w-72;
+  }
+
+  /* Mobile-First Responsive Grid */
+  .responsive-grid {
+    @apply grid gap-4 md:gap-6;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .responsive-grid-2 {
+    @apply responsive-grid lg:grid-cols-2;
+  }
+
+  .responsive-grid-3 {
+    @apply responsive-grid lg:grid-cols-3;
+  }
+
+  .responsive-grid-4 {
+    @apply responsive-grid lg:grid-cols-4;
+  }
+
+  /* Touch-Optimized Elements */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+
+  .touch-friendly {
+    @apply p-3 md:p-2 rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-200;
+  }
+
+  /* Essential Animations Only */
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+}
